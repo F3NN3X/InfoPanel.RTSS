@@ -143,8 +143,12 @@ namespace InfoPanel.RTSS.Services
                     // Get the PID that RTSS is actually monitoring (providing FPS data)
                     uint monitoredPid = state.Performance.MonitoredProcessId;
                     
+                    // DEBUG: Always log the state to understand what's happening
+                    Console.WriteLine($"[SENSOR DEBUG] IsMonitoring={state.IsMonitoring}, MonitoredPID={monitoredPid}, WindowPID={state.Window?.ProcessId ?? 0}, WindowTitle='{state.Window?.WindowTitle ?? "null"}'");
+                    
                     // Update cached title ONLY if window PID matches RTSS monitored PID
                     if (monitoredPid > 0 && 
+                        state.Window != null &&
                         state.Window.ProcessId == monitoredPid && 
                         !string.IsNullOrWhiteSpace(state.Window.WindowTitle))
                     {
@@ -156,11 +160,8 @@ namespace InfoPanel.RTSS.Services
                     }
                     else
                     {
-                        // Debug: Log why caching didn't happen (only when conditions are close)
-                        if (monitoredPid > 0 && state.Window.ProcessId == monitoredPid)
-                        {
-                            Console.WriteLine($"Title NOT cached - MonitoredPID: {monitoredPid}, WindowPID: {state.Window.ProcessId}, Title: '{state.Window.WindowTitle}', IsWhitespace: {string.IsNullOrWhiteSpace(state.Window.WindowTitle)}");
-                        }
+                        // Debug: Log why caching didn't happen
+                        Console.WriteLine($"Title NOT cached - MonitoredPID: {monitoredPid}, WindowPID: {state.Window?.ProcessId ?? 0}, Title: '{state.Window?.WindowTitle ?? "null"}', IsWhitespace: {string.IsNullOrWhiteSpace(state.Window?.WindowTitle)}");
                     }
                     
                     // Use cached title if we have one, otherwise show NoCapture

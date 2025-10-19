@@ -1,5 +1,48 @@
 # CHANGELOG
 
+## v1.1.0 (October 20, 2025)
+
+**🎯 Major FPS Accuracy & Consistency Improvements**
+
+### ✨ **Enhanced FPS Calculation**
+- **Period-Based FPS Algorithm**: Switched from instantaneous frame time calculation to period-based averaging
+  - **Formula**: `(1000.0 * frameCount) / (time1 - time0)` - matches RTSS's averaging method
+  - **Benefit**: Much smoother FPS display - eliminates rapid fluctuations seen with per-frame calculation
+  - **Example**: 60 FPS locked now shows stable 60.0 instead of jumping 58-62
+  - **Data Source**: Uses `dwTime0`, `dwTime1`, and `dwFrames` from RTSS shared memory (offsets 268, 272, 276)
+
+### 🔧 **Frame Time Consistency Fix**
+- **Derived Calculation**: Frame time now calculated directly from period FPS for perfect consistency
+  - **Formula**: `frameTimeMs = 1000.0 / periodFps`
+  - **Previous Issue**: Raw `dwFrameTime` (instantaneous) didn't match averaged period FPS
+  - **Result**: Frame time and FPS values now perfectly aligned
+  - **Example**: PeriodFPS=150.6 → FrameTime=6.64ms (1000/150.6) ✓
+
+### 📊 **RTSS Built-In Statistics Integration**
+- **New Sensors**: Added Min/Avg/Max FPS sensors from RTSS's pre-calculated statistics
+  - **Offsets**: `dwStatFramerateMin` (304), `dwStatFramerateAvg` (308), `dwStatFramerateMax` (312)
+  - **Format**: Statistics stored as millihertz (divided by 1000 for FPS display)
+  - **Validation**: Proper checks for `dwStatFlags` (284) and `dwStatCount` (300) before reading
+  - **Note**: Requires RTSS statistics to be manually enabled in RTSS settings
+
+### 🛡️ **Statistics Validation**
+- **Uninitialized Value Detection**: Added `0xFFFFFFFF` check to prevent displaying invalid statistics
+  - **Previous Issue**: Invalid values showed as 4294967.3 FPS (max uint32 / 1000)
+  - **Current Behavior**: Shows 0.0 when statistics unavailable or invalid
+  - **Validation Flags**: Reads `dwStatFlags` and `dwStatCount` to verify statistics are ready
+  - **Safety**: Only displays statistics when `statFlags != 0 && statCount > 0 && value != 0xFFFFFFFF`
+
+### 📝 **Technical Improvements**
+- **Debug Logging**: Enhanced logging with StatFlags and StatCount values for troubleshooting
+- **Memory Safety**: All statistics reads protected by validation checks
+- **Performance**: Period-based calculation reduces CPU overhead vs per-frame calculation
+
+### 🗑️ **Removed Features**
+- **GPU Frame Time Sensor**: Removed from roadmap (offset 679 reserved for future use)
+  - Reason: Focus on core FPS metrics first, may revisit in future versions
+
+---
+
 ## v1.0.0 (October 19, 2025)
 
 **🎉 Initial Release - Complete Rebranding from InfoPanel.FPS to InfoPanel.RTSS**

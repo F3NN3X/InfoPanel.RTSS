@@ -5,3 +5,5 @@
 **/bin/
 **/obj/
 dev-debug-log
+
+debug.log

@@ -877,6 +877,11 @@ namespace InfoPanel.RTSS.Services
                         const int OFF_TIME1 = 272;       // Period end time in milliseconds
                         const int OFF_FRAMES = 276;      // Frame count in period
                         const int OFF_FRAMETIME = 280;   // Instantaneous frame time in microseconds
+                        const int OFF_STAT_FLAGS = 284;  // Statistics flags (validation)
+                        const int OFF_STAT_TIME0 = 288;  // Stats period start
+                        const int OFF_STAT_TIME1 = 292;  // Stats period end
+                        const int OFF_STAT_FRAMES = 296; // Total frames in stats period
+                        const int OFF_STAT_COUNT = 300;  // Number of measurements
                         const int OFF_STAT_MIN = 304;    // Min FPS (1% low) in millihertz
                         const int OFF_STAT_AVG = 308;    // Average FPS in millihertz
                         const int OFF_STAT_MAX = 312;    // Max FPS in millihertz
@@ -901,23 +906,46 @@ namespace InfoPanel.RTSS.Services
                             if (timeDeltaMs > 0 && frameCount > 0 && timeDeltaMs < 10000) // Max 10 second window
                             {
                                 double periodFps = (1000.0 * frameCount) / timeDeltaMs;
-                                double frameTimeMs = frameTimeMicroseconds / 1000.0;
+                                
+                                // Calculate frame time from period FPS for consistency
+                                double frameTimeMs = 1000.0 / periodFps;
                                 
                                 // Validate FPS is in reasonable range
                                 if (periodFps >= 1.0 && periodFps < 1000.0)
                                 {
                                     _lastValidFps = periodFps; // Store for persistence
 
-                                    // Read RTSS built-in statistics (stored in millihertz, divide by 1000)
-                                    uint statMinMillihertz = accessor.ReadUInt32(entryOffset + OFF_STAT_MIN);
-                                    uint statAvgMillihertz = accessor.ReadUInt32(entryOffset + OFF_STAT_AVG);
-                                    uint statMaxMillihertz = accessor.ReadUInt32(entryOffset + OFF_STAT_MAX);
-
-                                    double minFps = statMinMillihertz / 1000.0;
-                                    double avgFps = statAvgMillihertz / 1000.0;
-                                    double maxFps = statMaxMillihertz / 1000.0;
+                                    // Read and validate RTSS built-in statistics
+                                    uint statFlags = accessor.ReadUInt32(entryOffset + OFF_STAT_FLAGS);
+                                    uint statCount = accessor.ReadUInt32(entryOffset + OFF_STAT_COUNT);
                                     
-                                    Console.WriteLine($"DXGIFrameMonitoringService: RTSS PID {processId} - PeriodFPS={periodFps:F1}, FrameTime={frameTimeMs:F2}ms, Min={minFps:F1}, Avg={avgFps:F1}, Max={maxFps:F1}");
+                                    double minFps = 0;
+                                    double avgFps = 0;
+                                    double maxFps = 0;
+                                    
+                                    // Only read statistics if they're valid (flags set and count > 0)
+                                    if (statFlags != 0 && statCount > 0)
+                                    {
+                                        uint statMinMillihertz = accessor.ReadUInt32(entryOffset + OFF_STAT_MIN);
+                                        uint statAvgMillihertz = accessor.ReadUInt32(entryOffset + OFF_STAT_AVG);
+                                        uint statMaxMillihertz = accessor.ReadUInt32(entryOffset + OFF_STAT_MAX);
+                                        
+                                        // Validate statistics aren't 0xFFFFFFFF (uninitialized)
+                                        if (statMinMillihertz != 0xFFFFFFFF && statMinMillihertz > 0)
+                                        {
+                                            minFps = statMinMillihertz / 1000.0;
+                                        }
+                                        if (statAvgMillihertz != 0xFFFFFFFF && statAvgMillihertz > 0)
+                                        {
+                                            avgFps = statAvgMillihertz / 1000.0;
+                                        }
+                                        if (statMaxMillihertz != 0xFFFFFFFF && statMaxMillihertz > 0)
+                                        {
+                                            maxFps = statMaxMillihertz / 1000.0;
+                                        }
+                                    }
+                                    
+                                    Console.WriteLine($"DXGIFrameMonitoringService: RTSS PID {processId} - PeriodFPS={periodFps:F1}, FrameTime={frameTimeMs:F2}ms, StatFlags={statFlags}, StatCount={statCount}, Min={minFps:F1}, Avg={avgFps:F1}, Max={maxFps:F1}");
                                     return (periodFps, frameTimeMs, minFps, avgFps, maxFps);
                                 }
                                 else

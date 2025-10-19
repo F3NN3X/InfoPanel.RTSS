@@ -65,16 +65,33 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
-        /// Gets information about the current fullscreen window.
-        /// This method replicates the original GetActiveFullscreenProcessIdAndTitle logic.
+        /// Gets information about the current fullscreen window using enhanced detection.
         /// </summary>
         /// <returns>Window information or null if no fullscreen window is detected.</returns>
         public WindowInformation? GetCurrentFullscreenWindow()
         {
+            // First try enhanced detection which enumerates all windows
+            var enhancedResult = DetectFullscreenWindowEnhanced();
+            if (enhancedResult != null)
+            {
+                Console.WriteLine($"Enhanced detection found: {enhancedResult.WindowTitle} (PID: {enhancedResult.ProcessId})");
+                return enhancedResult;
+            }
+
+            // Fallback to original foreground window detection
+            Console.WriteLine("Enhanced detection found nothing, trying foreground window detection");
+            return GetCurrentFullscreenWindowLegacy();
+        }
+
+        /// <summary>
+        /// Legacy method for detecting fullscreen windows (foreground window approach).
+        /// </summary>
+        private WindowInformation? GetCurrentFullscreenWindowLegacy()
+        {
             HWND hWnd = GetForegroundWindow();
             if (hWnd == IntPtr.Zero)
             {
-                Console.WriteLine("GetCurrentFullscreenWindow: No foreground window");
+                Console.WriteLine("GetCurrentFullscreenWindowLegacy: No foreground window");
                 return null;
             }
 
@@ -569,6 +586,370 @@ namespace InfoPanel.RTSS.Services
                 return false;
             }
         }
+
+        /// <summary>
+        /// Enhanced fullscreen detection that enumerates all windows for better game detection.
+        /// Uses improved blacklisting and process filtering from FullscreenDetectionService.
+        /// </summary>
+        public WindowInformation? DetectFullscreenWindowEnhanced()
+        {
+            WindowInformation? detectedWindow = null;
+            uint currentProcessId = (uint)Environment.ProcessId;
+            int windowsChecked = 0;
+            int fullscreenWindows = 0;
+            
+            Console.WriteLine($"Enhanced detection starting - current PID: {currentProcessId}");
+            
+            // Enhanced blacklist from the new detection service (simplified)
+            var enhancedBlacklist = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "audiodg", "backgroundtaskhost", "csrss", "ctfmon", "dasHost", "dllhost", "dwm",
+                "explorer", "fontdrvhost", "gamebar", "gamebarftserver", "infopanel", "lsass",
+                "mobsync", "msedge", "onedrive", "runtimebroker", "searchapp", "searchui",
+                "services", "shellexperiencehost", "sihost", "sppsvc", "spoolsv", "startmenuexperiencehost",
+                "steam", "system", "systemsettings", "taskhostw", "taskmgr", "textinputhost", "wininit",
+                "winlogon", "wmpnetwk", "wudfhost", "svchost", "conhost", "smss", "wininit", 
+                "services", "lsass", "winlogon", "fontdrvhost", "dwm", "spoolsv", "msdtc", 
+                "dfssvc", "dns", "eventlog", "eventcreate", "gpsvc", "ikeext", "iphlpsvc", 
+                "keyiso", "kdc", "wkssvc", "lanmanserver", "lanmanworkstation", "lltdsvc", 
+                "lmhosts", "mpssvc", "msiserver", "napagent", "netlogon", "netman", "netprofm",
+                "nlasvc", "nsi", "p2psvc", "pla", "plugplay", "policysvr", "profsvc", 
+                "protectedstorage", "rasauto", "rasman", "remoteaccess", "rpcss", "rsvp", 
+                "samss", "scardsvr", "schedule", "seclogon", "sens", "sessionenv", "sharedaccess",
+                "shellhwdetection", "sis", "slsvc", "snmptrap", "spooler", "ssdpsrv", "stisvc",
+                "swprv", "sysmain", "tabletpcinputservice", "tapisrv", "termdd", "termservice",
+                "themes", "threadorder", "tiledatamodelsvc", "tlntsvr", "tmgmta", "tpm", "tpmd",
+                "trkwks", "trustedinstaller", "tssdis", "tssdjet", "ui0detect", "umrdp", 
+                "upnphost", "upnp", "vaultsvc", "vds", "vmms", "vss", "w32time", "w3svc",
+                "w3wp", "wbengine", "wcspluginservice", "wcncsvc", "webclient", "wecsvc",
+                "wephostsvc", "wer", "wersvc", "wiaserv", "wlansvc", "wlidsvc", "wmi", 
+                "wmiapsrv", "wmic", "wmiprvse", "wmpnetworksvc", "wmsvc", "workfolderssvc",
+                "wpcsvc", "wpdbusenum", "wsd", "wsearch", "wuauserv", "wudfsvc", "wudf",
+                "wudfhost", "xmlprov", "zeroconf", "xbox", "xboxgamebar", "xboxgamebarwidgets"
+            };
+
+            // Use the working window enumeration pattern from the old service
+            EnumWindows((hWnd, lParam) =>
+            {
+                windowsChecked++;
+                try
+                {
+                    // Use the simpler, working fullscreen detection from the legacy method
+                    if (IsWindowFullscreen(hWnd))  // Use the legacy method that was working
+                    {
+                        fullscreenWindows++;
+                        User32.GetWindowThreadProcessId(hWnd, out uint pid);
+                        Console.WriteLine($"Enhanced detection - Found fullscreen window PID {pid}");
+                        
+                        if (pid != currentProcessId && !IsSimpleBlacklistedProcess(pid, enhancedBlacklist))
+                        {
+                            var processName = GetProcessName(pid);
+                            var windowTitle = GetWindowTitle(hWnd);
+                            
+                            if (detectedWindow == null)
+                            {
+                                Console.WriteLine($"Enhanced detection - Detected fullscreen window: {windowTitle} (PID: {pid}, Process: {processName})");
+                            }
+                            
+                            if (!string.IsNullOrEmpty(processName))
+                            {
+                                detectedWindow = new WindowInformation
+                                {
+                                    ProcessId = pid,
+                                    WindowTitle = windowTitle ?? processName,
+                                    WindowHandle = (IntPtr)hWnd,
+                                    IsFullscreen = true
+                                };
+                                return false; // Stop enumeration when we find a fullscreen window
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Enhanced detection - Fullscreen window PID {pid} was blacklisted or is current process");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Enhanced detection error: {ex.Message}");
+                }
+                return true; // Continue enumeration
+            }, IntPtr.Zero);
+
+            Console.WriteLine($"Enhanced detection - Checked {windowsChecked} windows, found {fullscreenWindows} fullscreen windows");
+            return detectedWindow;
+        }
+
+        /// <summary>
+        /// Simplified blacklist checking based on working old service.
+        /// </summary>
+        private bool IsSimpleBlacklistedProcess(uint pid, HashSet<string> blacklist)
+        {
+            try
+            {
+                using var process = Process.GetProcessById((int)pid);
+
+                if (process.HasExited)
+                {
+                    return true;
+                }
+
+                if (process.SessionId == 0) // System session
+                {
+                    return true;
+                }
+
+                var processName = process.ProcessName;
+                if (string.IsNullOrWhiteSpace(processName))
+                {
+                    return true;
+                }
+
+                if (blacklist.Contains(processName))
+                {
+                    return true;
+                }
+
+                // Check if it's in a system path (simplified from old service)
+                try
+                {
+                    var processPath = process.MainModule?.FileName;
+                    if (!string.IsNullOrWhiteSpace(processPath))
+                    {
+                        var windowsDir = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+                        var systemDir = Environment.SystemDirectory;
+                        var normalized = processPath.ToLowerInvariant();
+                        
+                        if (normalized.StartsWith(windowsDir.ToLowerInvariant()) || 
+                            normalized.StartsWith(systemDir.ToLowerInvariant()))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                catch { }
+
+                return false;
+            }
+            catch { return true; }
+        }
+
+        /// <summary>
+        /// Enhanced fullscreen window detection with improved tolerance and system path checks.
+        /// </summary>
+        private bool IsFullscreenWindowEnhanced(HWND hWnd)
+        {
+            const int FullscreenTolerance = 12;
+            
+            try
+            {
+                if (!User32.IsWindowVisible(hWnd) || User32.IsIconic(hWnd))
+                {
+                    return false;
+                }
+
+                if (!User32.GetWindowRect(hWnd, out RECT windowRect))
+                {
+                    return false;
+                }
+
+                var monitorHandle = User32.MonitorFromWindow(hWnd, User32.MonitorFlags.MONITOR_DEFAULTTONULL);
+                if (monitorHandle.IsNull)
+                {
+                    return false;
+                }
+
+                var monitorInfo = new User32.MONITORINFO
+                {
+                    cbSize = (uint)Marshal.SizeOf<User32.MONITORINFO>()
+                };
+
+                if (!User32.GetMonitorInfo(monitorHandle, ref monitorInfo))
+                {
+                    return false;
+                }
+
+                var monitorRect = monitorInfo.rcMonitor;
+
+                if (!IsWithinToleranceEnhanced(windowRect, monitorRect, FullscreenTolerance))
+                {
+                    return false;
+                }
+
+                uint style = GetWindowLong(hWnd, -16); // GWL_STYLE
+                bool hasBorder = (style & 0x00C00000) != 0 || (style & 0x00040000) != 0; // WS_CAPTION | WS_THICKFRAME
+
+                if (hasBorder && User32.GetClientRect(hWnd, out RECT clientRect))
+                {
+                    if (!IsSizeWithinToleranceEnhanced(clientRect, monitorRect, FullscreenTolerance * 2))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            catch { return false; }
+        }
+
+        /// <summary>
+        /// Enhanced blacklist checking with system path validation.
+        /// </summary>
+        private bool IsEnhancedBlacklistedProcess(uint pid, HashSet<string> blacklist)
+        {
+            try
+            {
+                using var process = Process.GetProcessById((int)pid);
+
+                if (process.HasExited)
+                {
+                    return true;
+                }
+
+                if (process.SessionId == 0)
+                {
+                    return true;
+                }
+
+                var processName = process.ProcessName;
+                if (string.IsNullOrWhiteSpace(processName))
+                {
+                    return true;
+                }
+
+                if (blacklist.Contains(processName))
+                {
+                    return true;
+                }
+
+                var processPath = TryGetProcessPath(process);
+                if (IsSystemPathEnhanced(processPath))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch { return true; }
+        }
+
+        /// <summary>
+        /// Enhanced system path checking.
+        /// </summary>
+        private bool IsSystemPathEnhanced(string? processPath)
+        {
+            if (string.IsNullOrWhiteSpace(processPath))
+            {
+                return false;
+            }
+
+            var normalized = NormalizePathEnhanced(processPath);
+            var systemPathPrefixes = BuildSystemPathPrefixes();
+            
+            foreach (var prefix in systemPathPrefixes)
+            {
+                if (normalized.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Helper methods from enhanced detection service.
+        /// </summary>
+        private static bool IsWithinToleranceEnhanced(RECT windowRect, RECT monitorRect, int tolerance)
+        {
+            int widthDifference = Math.Abs(windowRect.Width - monitorRect.Width);
+            int heightDifference = Math.Abs(windowRect.Height - monitorRect.Height);
+
+            if (widthDifference > tolerance || heightDifference > tolerance)
+            {
+                return false;
+            }
+
+            int leftDifference = Math.Abs(windowRect.left - monitorRect.left);
+            int topDifference = Math.Abs(windowRect.top - monitorRect.top);
+
+            return leftDifference <= tolerance && topDifference <= tolerance;
+        }
+
+        private static bool IsSizeWithinToleranceEnhanced(RECT rect, RECT referenceRect, int tolerance)
+        {
+            int widthDifference = Math.Abs(rect.Width - referenceRect.Width);
+            int heightDifference = Math.Abs(rect.Height - referenceRect.Height);
+            return widthDifference <= tolerance && heightDifference <= tolerance;
+        }
+
+        private static string? TryGetProcessPath(Process process)
+        {
+            try
+            {
+                return process.MainModule?.FileName;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static string[] BuildSystemPathPrefixes()
+        {
+            var prefixes = new List<string>();
+
+            void AddIfValid(string? path)
+            {
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    prefixes.Add(NormalizePathEnhanced(path));
+                }
+            }
+
+            var windowsDir = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+            AddIfValid(windowsDir);
+            AddIfValid(Environment.SystemDirectory);
+
+            if (!string.IsNullOrWhiteSpace(windowsDir))
+            {
+                AddIfValid(Path.Combine(windowsDir, "SystemApps"));
+                AddIfValid(Path.Combine(windowsDir, "WinSxS"));
+            }
+
+            return prefixes.Where(p => !string.IsNullOrEmpty(p)).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+        }
+
+        private static string NormalizePathEnhanced(string path)
+        {
+            try
+            {
+                return Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                    .ToLowerInvariant();
+            }
+            catch
+            {
+                return path.ToLowerInvariant();
+            }
+        }
+
+        private string? GetProcessName(uint pid)
+        {
+            try
+            {
+                using var process = Process.GetProcessById((int)pid);
+                return process.ProcessName;
+            }
+            catch { return null; }
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern uint GetWindowLong(HWND hWnd, int nIndex);
+
+        [DllImport("user32.dll")]
+        private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+        private delegate bool EnumWindowsProc(HWND hWnd, IntPtr lParam);
 
         /// <summary>
         /// Disposes the service and releases resources.

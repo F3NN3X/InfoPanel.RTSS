@@ -344,8 +344,8 @@ namespace InfoPanel.RTSS.Services
         {
             try
             {
-                // Try all RTSS shared memory versions
-                string[] memoryNames = { "RTSSSharedMemoryV3", "RTSSSharedMemoryV2", "RTSSSharedMemoryV1" };
+                // Try all RTSS shared memory versions (V3 doesn't exist, only V2 and V1)
+                string[] memoryNames = { "RTSSSharedMemoryV2", "RTSSSharedMemoryV1" };
                 const uint RTSS_SIGNATURE = 0x52545353; // "RTSS"
 
                 foreach (var memName in memoryNames)
@@ -394,12 +394,27 @@ namespace InfoPanel.RTSS.Services
                             
                             if (entryPid == processId)
                             {
-                                // Found matching entry - read Frames field directly as FPS
-                                // (RTSS updates this with current FPS value for display)
+                                // Try reading FrameTime field first (more accurate than Frames field)
+                                uint frameTimeMicroseconds = accessor.ReadUInt32(entryOffset + OFF_FRAMETIME);
+                                if (frameTimeMicroseconds > 0 && frameTimeMicroseconds < 100000) // 0.1ms to 100ms range
+                                {
+                                    // Calculate FPS from frame time (microseconds to seconds conversion)
+                                    double frameTimeSeconds = frameTimeMicroseconds / 1000000.0;
+                                    double calculatedFps = 1.0 / frameTimeSeconds;
+                                    
+                                    Console.WriteLine($"DXGIFrameMonitoringService: RTSS entry {i} PID {processId} - FrameTime={frameTimeMicroseconds}μs, Calculated FPS={calculatedFps:F1}");
+                                    
+                                    if (calculatedFps > 1.0 && calculatedFps < 1000.0)
+                                    {
+                                        return calculatedFps;
+                                    }
+                                }
+                                
+                                // Fallback: read Frames field directly (original method)
                                 uint framesValue = accessor.ReadUInt32(entryOffset + OFF_FRAMES);
                                 if (framesValue > 0 && framesValue < 1000)
                                 {
-                                    Console.WriteLine($"DXGIFrameMonitoringService: RTSS entry {i} PID {processId} matched, FPS={framesValue}");
+                                    Console.WriteLine($"DXGIFrameMonitoringService: RTSS entry {i} PID {processId} fallback - Frames field FPS={framesValue}");
                                     return (double)framesValue;
                                 }
                             }
@@ -757,13 +772,29 @@ namespace InfoPanel.RTSS.Services
                             uint entryPid = accessor.ReadUInt32(entryOffset + OFF_PID);
                             if (entryPid == 0 || entryPid != processId) continue;
                             
-                            uint framesValue = accessor.ReadUInt32(entryOffset + OFF_FRAMES);
+                            // Try reading FrameTime field first (more accurate than Frames field)
+                            uint frameTimeMicroseconds = accessor.ReadUInt32(entryOffset + OFF_FRAMETIME);
+                            if (frameTimeMicroseconds > 0 && frameTimeMicroseconds < 100000) // 0.1ms to 100ms range
+                            {
+                                // Calculate FPS from frame time (microseconds to seconds conversion)
+                                double frameTimeSeconds = frameTimeMicroseconds / 1000000.0;
+                                double calculatedFps = 1.0 / frameTimeSeconds;
+                                double frameTimeMs = frameTimeMicroseconds / 1000.0;
+                                
+                                Console.WriteLine($"DXGIFrameMonitoringService: RTSS PID {processId} - FrameTime={frameTimeMicroseconds}μs ({frameTimeMs:F2}ms), Calculated FPS={calculatedFps:F1}");
+                                
+                                if (calculatedFps > 1.0 && calculatedFps < 1000.0)
+                                {
+                                    return (calculatedFps, frameTimeMs);
+                                }
+                            }
                             
+                            // Fallback: read Frames field and calculate frame time
+                            uint framesValue = accessor.ReadUInt32(entryOffset + OFF_FRAMES);
                             if (framesValue > 0 && framesValue < 1000)
                             {
-                                // Calculate frame time from FPS (RTSS FrameTime field doesn't give accurate per-frame times)
                                 double frameTimeMs = 1000.0 / framesValue;
-                                Console.WriteLine($"DXGIFrameMonitoringService: RTSS PID {processId} - FPS={framesValue}, FrameTime={frameTimeMs:F2}ms");
+                                Console.WriteLine($"DXGIFrameMonitoringService: RTSS PID {processId} fallback - Frames field FPS={framesValue}, FrameTime={frameTimeMs:F2}ms");
                                 return (framesValue, frameTimeMs);
                             }
                         }

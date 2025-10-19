@@ -21,6 +21,21 @@ namespace InfoPanel.RTSS.Models
         public float OnePercentLowFps { get; set; }
 
         /// <summary>
+        /// Average FPS from RTSS built-in statistics.
+        /// </summary>
+        public float AverageFps { get; set; }
+
+        /// <summary>
+        /// Maximum FPS from RTSS built-in statistics.
+        /// </summary>
+        public float MaxFps { get; set; }
+
+        /// <summary>
+        /// Minimum FPS from RTSS built-in statistics (1% low equivalent).
+        /// </summary>
+        public float MinFps { get; set; }
+
+        /// <summary>
         /// Total number of frame time samples collected.
         /// </summary>
         public int FrameTimeCount { get; set; }

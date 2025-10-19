@@ -12,14 +12,20 @@ namespace InfoPanel.RTSS.Services
         private double _averageFrameTime;
         private uint _monitoredProcessId;
         private double _lastValidFps; // Hold last valid FPS to prevent flickering to 0
+        
+        // RTSS built-in statistics
+        private double _minFps;
+        private double _avgFps;
+        private double _maxFps;
 
         private CancellationTokenSource? _cts;
         private volatile bool _isMonitoring;
 
         /// <summary>
-        /// Event fired when FPS data is updated.
+        /// Event fired when FPS data is updated (includes statistics).
+        /// Parameters: (fps, frameTimeMs, minFps, avgFps, maxFps)
         /// </summary>
-        public event Action<double, double>? FpsUpdated;
+        public event Action<double, double, double, double, double>? FpsUpdated;
         
         /// <summary>
         /// Gets the process ID currently being monitored by RTSS.
@@ -36,6 +42,21 @@ namespace InfoPanel.RTSS.Services
         /// Gets the current average frame time in milliseconds.
         /// </summary>
         public double AverageFrameTime => _averageFrameTime;
+
+        /// <summary>
+        /// Gets the minimum FPS from RTSS statistics (1% low equivalent).
+        /// </summary>
+        public double MinFps => _minFps;
+
+        /// <summary>
+        /// Gets the average FPS from RTSS statistics.
+        /// </summary>
+        public double AvgFps => _avgFps;
+
+        /// <summary>
+        /// Gets the maximum FPS from RTSS statistics.
+        /// </summary>
+        public double MaxFps => _maxFps;
 
         /// <summary>
         /// Starts monitoring FPS for the specified process.
@@ -379,53 +400,44 @@ namespace InfoPanel.RTSS.Services
 
                         Console.WriteLine($"DXGIFrameMonitoringService: Using {memName}, entries={maxEntries}, entrySize={appEntrySize}, offset={appEntriesStart}");
 
-                        // Scan app entries using simple offsets from working implementation
-                        // AppEntry structure: PID(0), Name(4-263), Flags(264), Time0(268), Time1(272), Frames(276), FrameTime(280)
+                        // Scan app entries using RTSS shared memory structure
+                        // AppEntry structure (per documentation):
+                        // PID(0), Name(4-263), Flags(264), Time0(268), Time1(272), Frames(276), FrameTime(280)
+                        // Stats: StatMin(304), StatAvg(308), StatMax(312)
                         const int OFF_PID = 0;
-                        const int OFF_FRAMES = 276;
-                        const int OFF_FRAMETIME = 280; // microseconds
+                        const int OFF_FRAMETIME = 280; // Instantaneous frame time in microseconds
+                        const int OFF_STAT_MIN = 304;  // Min FPS (1% low) in millihertz
+                        const int OFF_STAT_AVG = 308;  // Average FPS in millihertz
+                        const int OFF_STAT_MAX = 312;  // Max FPS in millihertz
 
                         for (int i = 0; i < maxEntries; i++)
                         {
                             long entryOffset = appEntriesStart + (i * appEntrySize);
-                            if (entryOffset + OFF_FRAMETIME + 4 > accessor.Capacity) break;
+                            if (entryOffset + OFF_STAT_MAX + 4 > accessor.Capacity) break;
 
                             uint entryPid = accessor.ReadUInt32(entryOffset + OFF_PID);
                             if (entryPid == 0) continue;
                             
                             if (entryPid == processId)
                             {
-                                // Use Frames field with filtering and smoothing to match RTSS display behavior
-                                uint framesValue = accessor.ReadUInt32(entryOffset + OFF_FRAMES);
-                                
-                                // Filter out obviously invalid readings (startup artifacts, loading screens, etc.)
-                                if (framesValue >= 10 && framesValue < 1000)
-                                {
-                                    // Apply small correction to match RTSS display exactly
-                                    double correctedFps = framesValue - 1.0; // Correct for +1 FPS offset
-                                    _lastValidFps = correctedFps; // Store for persistence
-                                    
-                                    Console.WriteLine($"DXGIFrameMonitoringService: RTSS entry {i} PID {processId} - Raw FPS={framesValue}, Corrected FPS={correctedFps:F1}");
-                                    return correctedFps;
-                                }
-                                else if (framesValue > 0)
-                                {
-                                    // Log but hold last valid value instead of returning null
-                                    Console.WriteLine($"DXGIFrameMonitoringService: RTSS entry {i} PID {processId} - Ignoring invalid FPS={framesValue}, holding last valid FPS={_lastValidFps:F1}");
-                                    return _lastValidFps > 0 ? _lastValidFps : null;
-                                }
-                                
-                                // If Frames field seems unreliable, try frame time calculation as last resort
+                                // Use dwFrameTime for instantaneous FPS (matches RTSS display exactly)
+                                // Formula per documentation: 1000000.0 / dwFrameTime
                                 uint frameTimeMicroseconds = accessor.ReadUInt32(entryOffset + OFF_FRAMETIME);
-                                if (frameTimeMicroseconds > 10000 && frameTimeMicroseconds < 100000) // 10ms to 100ms
+                                
+                                // Validate frame time is in reasonable range (1ms to 1000ms = 1-1000 FPS)
+                                if (frameTimeMicroseconds >= 1000 && frameTimeMicroseconds <= 1000000)
                                 {
-                                    double frameTimeSeconds = frameTimeMicroseconds / 1000000.0;
-                                    double calculatedFps = 1.0 / frameTimeSeconds;
-                                    if (calculatedFps >= 10.0 && calculatedFps < 1000.0)
-                                    {
-                                        Console.WriteLine($"DXGIFrameMonitoringService: RTSS entry {i} PID {processId} frametime fallback - Calculated FPS={calculatedFps:F1}");
-                                        return calculatedFps;
-                                    }
+                                    double instantaneousFps = 1000000.0 / frameTimeMicroseconds;
+                                    _lastValidFps = instantaneousFps; // Store for persistence
+                                    
+                                    Console.WriteLine($"DXGIFrameMonitoringService: RTSS entry {i} PID {processId} - FrameTime={frameTimeMicroseconds}μs, FPS={instantaneousFps:F1}");
+                                    return instantaneousFps;
+                                }
+                                else if (frameTimeMicroseconds > 0)
+                                {
+                                    // Invalid frame time detected, hold last valid value
+                                    Console.WriteLine($"DXGIFrameMonitoringService: RTSS entry {i} PID {processId} - Invalid FrameTime={frameTimeMicroseconds}μs, holding last valid FPS={_lastValidFps:F1}");
+                                    return _lastValidFps > 0 ? _lastValidFps : null;
                                 }
                             }
                         }
@@ -445,6 +457,92 @@ namespace InfoPanel.RTSS.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"DXGIFrameMonitoringService: Error reading RTSS shared memory: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Reads comprehensive RTSS statistics including FPS, frame time, and built-in min/avg/max stats.
+        /// Returns a tuple with (instantaneousFPS, minFPS, avgFPS, maxFPS) or null if not available.
+        /// </summary>
+        public unsafe (double fps, double minFps, double avgFps, double maxFps)? TryReadRTSSStats(uint processId)
+        {
+            try
+            {
+                // Try all RTSS shared memory versions
+                string[] memoryNames = { "RTSSSharedMemoryV2", "RTSSSharedMemoryV1" };
+                const uint RTSS_SIGNATURE = 0x52545353; // "RTSS"
+
+                foreach (var memName in memoryNames)
+                {
+                    try
+                    {
+                        using var mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.OpenExisting(memName);
+                        using var accessor = mmf.CreateViewAccessor();
+
+                        uint signature = accessor.ReadUInt32(0);
+                        if (signature != RTSS_SIGNATURE) continue;
+
+                        uint appEntrySize = accessor.ReadUInt32(8);
+                        uint appArrOffset = accessor.ReadUInt32(12);
+                        uint appArrSize = accessor.ReadUInt32(16);
+                        long appEntriesStart = (appArrOffset > 0 && appArrOffset < accessor.Capacity) ? appArrOffset : 256;
+
+                        int maxEntries = 0;
+                        if (appEntrySize > 0)
+                        {
+                            maxEntries = (int)Math.Min(appArrSize, (accessor.Capacity - appEntriesStart) / appEntrySize);
+                        }
+
+                        // Offsets per RTSS shared memory documentation
+                        const int OFF_PID = 0;
+                        const int OFF_FRAMETIME = 280;  // Instantaneous frame time in microseconds
+                        const int OFF_STAT_MIN = 304;   // Min FPS (1% low) in millihertz
+                        const int OFF_STAT_AVG = 308;   // Average FPS in millihertz
+                        const int OFF_STAT_MAX = 312;   // Max FPS in millihertz
+
+                        for (int i = 0; i < maxEntries; i++)
+                        {
+                            long entryOffset = appEntriesStart + (i * appEntrySize);
+                            if (entryOffset + OFF_STAT_MAX + 4 > accessor.Capacity) break;
+
+                            uint entryPid = accessor.ReadUInt32(entryOffset + OFF_PID);
+                            if (entryPid == 0 || entryPid != processId) continue;
+
+                            // Read instantaneous FPS from frame time
+                            uint frameTimeMicroseconds = accessor.ReadUInt32(entryOffset + OFF_FRAMETIME);
+                            if (frameTimeMicroseconds < 1000 || frameTimeMicroseconds > 1000000) continue; // Invalid range
+
+                            double instantaneousFps = 1000000.0 / frameTimeMicroseconds;
+
+                            // Read RTSS built-in statistics (stored in millihertz, need to divide by 1000)
+                            uint statMinMillihertz = accessor.ReadUInt32(entryOffset + OFF_STAT_MIN);
+                            uint statAvgMillihertz = accessor.ReadUInt32(entryOffset + OFF_STAT_AVG);
+                            uint statMaxMillihertz = accessor.ReadUInt32(entryOffset + OFF_STAT_MAX);
+
+                            double minFps = statMinMillihertz / 1000.0;
+                            double avgFps = statAvgMillihertz / 1000.0;
+                            double maxFps = statMaxMillihertz / 1000.0;
+
+                            Console.WriteLine($"DXGIFrameMonitoringService: RTSS Stats PID {processId} - FPS={instantaneousFps:F1}, Min={minFps:F1}, Avg={avgFps:F1}, Max={maxFps:F1}");
+
+                            return (instantaneousFps, minFps, avgFps, maxFps);
+                        }
+
+                        Console.WriteLine($"DXGIFrameMonitoringService: PID {processId} not found in {memName}");
+                    }
+                    catch (System.IO.FileNotFoundException)
+                    {
+                        continue;
+                    }
+                }
+
+                Console.WriteLine("DXGIFrameMonitoringService: RTSS shared memory not available for stats");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"DXGIFrameMonitoringService: Error reading RTSS stats: {ex.Message}");
                 return null;
             }
         }
@@ -536,7 +634,8 @@ namespace InfoPanel.RTSS.Services
 
                             _currentFps = fps;
                             _averageFrameTime = 1000.0 / _currentFps;
-                            FpsUpdated?.Invoke(_currentFps, _averageFrameTime);
+                            // GPU counters don't provide statistics, use 0 for min/avg/max
+                            FpsUpdated?.Invoke(_currentFps, _averageFrameTime, 0, 0, 0);
                         }
                         lastValue = value;
                     }
@@ -585,7 +684,8 @@ namespace InfoPanel.RTSS.Services
 
                         Console.WriteLine($"DXGIFrameMonitoringService: Estimated FPS={_currentFps:F1} (timing-based, less accurate)");
 
-                        FpsUpdated?.Invoke(_currentFps, _averageFrameTime);
+                        // Timing estimation doesn't provide statistics, use 0 for min/avg/max
+                        FpsUpdated?.Invoke(_currentFps, _averageFrameTime, 0, 0, 0);
 
                         // Reset for next measurement
                         frameCount = 0;
@@ -740,13 +840,14 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
-        /// Reads both FPS and FrameTime from RTSS shared memory.
+        /// Reads FPS, FrameTime, and statistics from RTSS shared memory.
+        /// Returns tuple with (fps, frameTimeMs, minFps, avgFps, maxFps) or null if not available.
         /// </summary>
-        private (double fps, double frameTimeMs)? TryReadRTSSData(uint processId)
+        private (double fps, double frameTimeMs, double minFps, double avgFps, double maxFps)? TryReadRTSSData(uint processId)
         {
             try
             {
-                string[] memoryNames = { "RTSSSharedMemoryV3", "RTSSSharedMemoryV2", "RTSSSharedMemoryV1" };
+                string[] memoryNames = { "RTSSSharedMemoryV2", "RTSSSharedMemoryV1" };
                 const uint RTSS_SIGNATURE = 0x52545353; // "RTSS"
 
                 foreach (var memName in memoryNames)
@@ -770,56 +871,72 @@ namespace InfoPanel.RTSS.Services
                             maxEntries = (int)Math.Min(appArrSize, (accessor.Capacity - appEntriesStart) / appEntrySize);
                         }
 
+                        // Offsets per RTSS shared memory documentation
                         const int OFF_PID = 0;
-                        const int OFF_FRAMES = 276;
-                        const int OFF_FRAMETIME = 280; // microseconds
+                        const int OFF_TIME0 = 268;       // Period start time in milliseconds
+                        const int OFF_TIME1 = 272;       // Period end time in milliseconds
+                        const int OFF_FRAMES = 276;      // Frame count in period
+                        const int OFF_FRAMETIME = 280;   // Instantaneous frame time in microseconds
+                        const int OFF_STAT_MIN = 304;    // Min FPS (1% low) in millihertz
+                        const int OFF_STAT_AVG = 308;    // Average FPS in millihertz
+                        const int OFF_STAT_MAX = 312;    // Max FPS in millihertz
 
                         for (int i = 0; i < maxEntries; i++)
                         {
                             long entryOffset = appEntriesStart + (i * appEntrySize);
-                            if (entryOffset + OFF_FRAMETIME + 4 > accessor.Capacity) break;
+                            if (entryOffset + OFF_STAT_MAX + 4 > accessor.Capacity) break;
 
                             uint entryPid = accessor.ReadUInt32(entryOffset + OFF_PID);
                             if (entryPid == 0 || entryPid != processId) continue;
                             
-                            // Use Frames field with filtering and smoothing to match RTSS display behavior
-                            uint framesValue = accessor.ReadUInt32(entryOffset + OFF_FRAMES);
-                            
-                            // Filter out obviously invalid readings (startup artifacts, loading screens, etc.)
-                            if (framesValue >= 10 && framesValue < 1000)
-                            {
-                                // Apply small correction to match RTSS display exactly
-                                double correctedFps = framesValue - 1.0; // Correct for +1 FPS offset
-                                double frameTimeMs = 1000.0 / correctedFps;
-                                _lastValidFps = correctedFps; // Store for persistence
-                                
-                                Console.WriteLine($"DXGIFrameMonitoringService: RTSS PID {processId} - Raw FPS={framesValue}, Corrected FPS={correctedFps:F1}, FrameTime={frameTimeMs:F2}ms");
-                                return (correctedFps, frameTimeMs);
-                            }
-                            else if (framesValue > 0 && _lastValidFps > 0)
-                            {
-                                // Hold last valid value instead of returning null
-                                double frameTimeMs = 1000.0 / _lastValidFps;
-                                Console.WriteLine($"DXGIFrameMonitoringService: RTSS PID {processId} - Ignoring invalid FPS={framesValue}, holding last valid FPS={_lastValidFps:F1}");
-                                return (_lastValidFps, frameTimeMs);
-                            }
-                            else if (framesValue > 0)
-                            {
-                                // No valid FPS yet, log and continue
-                                Console.WriteLine($"DXGIFrameMonitoringService: RTSS PID {processId} - Ignoring invalid FPS={framesValue} (no valid FPS yet)");
-                            }
-                            
-                            // If Frames field seems unreliable, try frame time calculation as last resort
+                            // Use period-based FPS for smooth display (matches RTSS display)
+                            // Formula per documentation: 1000.0 * dwFrames / (dwTime1 - dwTime0)
+                            uint time0 = accessor.ReadUInt32(entryOffset + OFF_TIME0);
+                            uint time1 = accessor.ReadUInt32(entryOffset + OFF_TIME1);
+                            uint frameCount = accessor.ReadUInt32(entryOffset + OFF_FRAMES);
                             uint frameTimeMicroseconds = accessor.ReadUInt32(entryOffset + OFF_FRAMETIME);
-                            if (frameTimeMicroseconds > 10000 && frameTimeMicroseconds < 100000) // 10ms to 100ms
+                            
+                            // Calculate period-based FPS (averaged over time window)
+                            uint timeDeltaMs = time1 - time0;
+                            if (timeDeltaMs > 0 && frameCount > 0 && timeDeltaMs < 10000) // Max 10 second window
                             {
-                                double frameTimeSeconds = frameTimeMicroseconds / 1000000.0;
-                                double calculatedFps = 1.0 / frameTimeSeconds;
-                                if (calculatedFps >= 10.0 && calculatedFps < 1000.0)
+                                double periodFps = (1000.0 * frameCount) / timeDeltaMs;
+                                double frameTimeMs = frameTimeMicroseconds / 1000.0;
+                                
+                                // Validate FPS is in reasonable range
+                                if (periodFps >= 1.0 && periodFps < 1000.0)
                                 {
-                                    double frameTimeMs = frameTimeMicroseconds / 1000.0;
-                                    Console.WriteLine($"DXGIFrameMonitoringService: RTSS PID {processId} frametime fallback - Calculated FPS={calculatedFps:F1}");
-                                    return (calculatedFps, frameTimeMs);
+                                    _lastValidFps = periodFps; // Store for persistence
+
+                                    // Read RTSS built-in statistics (stored in millihertz, divide by 1000)
+                                    uint statMinMillihertz = accessor.ReadUInt32(entryOffset + OFF_STAT_MIN);
+                                    uint statAvgMillihertz = accessor.ReadUInt32(entryOffset + OFF_STAT_AVG);
+                                    uint statMaxMillihertz = accessor.ReadUInt32(entryOffset + OFF_STAT_MAX);
+
+                                    double minFps = statMinMillihertz / 1000.0;
+                                    double avgFps = statAvgMillihertz / 1000.0;
+                                    double maxFps = statMaxMillihertz / 1000.0;
+                                    
+                                    Console.WriteLine($"DXGIFrameMonitoringService: RTSS PID {processId} - PeriodFPS={periodFps:F1}, FrameTime={frameTimeMs:F2}ms, Min={minFps:F1}, Avg={avgFps:F1}, Max={maxFps:F1}");
+                                    return (periodFps, frameTimeMs, minFps, avgFps, maxFps);
+                                }
+                                else
+                                {
+                                    // Period FPS out of range, but we have last valid value
+                                    if (_lastValidFps > 0)
+                                    {
+                                        Console.WriteLine($"DXGIFrameMonitoringService: RTSS PID {processId} - Invalid PeriodFPS={periodFps:F1}, holding last valid FPS={_lastValidFps:F1}");
+                                        return (_lastValidFps, 1000.0 / _lastValidFps, 0, 0, 0);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // Invalid timing data
+                                if (_lastValidFps > 0)
+                                {
+                                    Console.WriteLine($"DXGIFrameMonitoringService: RTSS PID {processId} - Invalid timing data (delta={timeDeltaMs}ms, frames={frameCount}), holding last valid FPS={_lastValidFps:F1}");
+                                    return (_lastValidFps, 1000.0 / _lastValidFps, 0, 0, 0);
                                 }
                             }
                         }
@@ -859,7 +976,10 @@ namespace InfoPanel.RTSS.Services
                         consecutiveFailures = 0; // Reset failure counter on success
                         _currentFps = data.Value.fps;
                         _averageFrameTime = data.Value.frameTimeMs;
-                        FpsUpdated?.Invoke(_currentFps, _averageFrameTime);
+                        _minFps = data.Value.minFps;
+                        _avgFps = data.Value.avgFps;
+                        _maxFps = data.Value.maxFps;
+                        FpsUpdated?.Invoke(_currentFps, _averageFrameTime, _minFps, _avgFps, _maxFps);
                     }
                     else
                     {

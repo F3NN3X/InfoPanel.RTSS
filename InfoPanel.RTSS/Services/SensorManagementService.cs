@@ -14,6 +14,9 @@ namespace InfoPanel.RTSS.Services
         private readonly PluginSensor _fpsSensor;
         private readonly PluginSensor _onePercentLowFpsSensor;
         private readonly PluginSensor _currentFrameTimeSensor;
+        private readonly PluginSensor _avgFpsSensor;       // RTSS built-in average FPS
+        private readonly PluginSensor _minFpsSensor;       // RTSS built-in min FPS (1% low equivalent)
+        private readonly PluginSensor _maxFpsSensor;       // RTSS built-in max FPS
         private readonly PluginText _windowTitleSensor;
         private readonly PluginText _resolutionSensor;
         private readonly PluginSensor _refreshRateSensor;
@@ -60,6 +63,27 @@ namespace InfoPanel.RTSS.Services
                 SensorConstants.FrameTimeUnit
             );
 
+            _avgFpsSensor = new PluginSensor(
+                "avg-fps",
+                "Average FPS",
+                0,
+                SensorConstants.FpsUnit
+            );
+
+            _minFpsSensor = new PluginSensor(
+                "min-fps",
+                "Min FPS (1% Low)",
+                0,
+                SensorConstants.FpsUnit
+            );
+
+            _maxFpsSensor = new PluginSensor(
+                "max-fps",
+                "Max FPS",
+                0,
+                SensorConstants.FpsUnit
+            );
+
             // Initialize text sensors
             _windowTitleSensor = new PluginText(
                 SensorConstants.WindowTitleSensorId,
@@ -99,6 +123,9 @@ namespace InfoPanel.RTSS.Services
             
             // Add all sensors to the container
             container.Entries.Add(_fpsSensor);
+            container.Entries.Add(_avgFpsSensor);
+            container.Entries.Add(_minFpsSensor);
+            container.Entries.Add(_maxFpsSensor);
             container.Entries.Add(_onePercentLowFpsSensor);
             container.Entries.Add(_currentFrameTimeSensor);
             container.Entries.Add(_windowTitleSensor);
@@ -127,6 +154,11 @@ namespace InfoPanel.RTSS.Services
                     _fpsSensor.Value = state.Performance.Fps;
                     _currentFrameTimeSensor.Value = state.Performance.FrameTime;
                     _onePercentLowFpsSensor.Value = state.Performance.OnePercentLowFps;
+                    
+                    // Update RTSS built-in statistics sensors
+                    _avgFpsSensor.Value = state.Performance.AverageFps;
+                    _minFpsSensor.Value = state.Performance.MinFps;
+                    _maxFpsSensor.Value = state.Performance.MaxFps;
                 }
                 else
                 {
@@ -134,6 +166,9 @@ namespace InfoPanel.RTSS.Services
                     _fpsSensor.Value = 0;
                     _currentFrameTimeSensor.Value = 0;
                     _onePercentLowFpsSensor.Value = 0;
+                    _avgFpsSensor.Value = 0;
+                    _minFpsSensor.Value = 0;
+                    _maxFpsSensor.Value = 0;
                 }
 
                 // Update window information with caching to prevent flickering
@@ -201,6 +236,9 @@ namespace InfoPanel.RTSS.Services
                     _fpsSensor.Value = 0;
                     _onePercentLowFpsSensor.Value = 0;
                     _currentFrameTimeSensor.Value = 0;
+                    _avgFpsSensor.Value = 0;
+                    _minFpsSensor.Value = 0;
+                    _maxFpsSensor.Value = 0;
 
                     // Reset information sensors to defaults
                     _windowTitleSensor.Value = SensorConstants.DefaultWindowTitle;

@@ -40,9 +40,9 @@ namespace InfoPanel.RTSS.Services
         public event Action<PerformanceMetrics>? MetricsUpdated;
 
         /// <summary>
-        /// Handles FPS updates from DXGI service.
+        /// Handles FPS updates from DXGI service with RTSS statistics.
         /// </summary>
-        private void OnFpsUpdated(double fps, double frameTimeMs)
+        private void OnFpsUpdated(double fps, double frameTimeMs, double minFps, double avgFps, double maxFps)
         {
             if (!_isMonitoring || fps <= 0)
                 return;
@@ -60,13 +60,13 @@ namespace InfoPanel.RTSS.Services
             if (_frameTimeCount < MonitoringConstants.MaxFrameTimes)
                 _frameTimeCount++;
 
-            Console.WriteLine($"PerformanceMonitoringService.OnFpsUpdated: FPS={fps:F1}, FrameTime={frameTimeMs:F2}ms, BufferCount={_frameTimeCount}");
+            Console.WriteLine($"PerformanceMonitoringService.OnFpsUpdated: FPS={fps:F1}, FrameTime={frameTimeMs:F2}ms, BufferCount={_frameTimeCount}, RTSS Stats: Min={minFps:F1}, Avg={avgFps:F1}, Max={maxFps:F1}");
 
             // Update histogram for percentile calculations
             UpdateHistogram((float)frameTimeMs);
 
-            // Calculate metrics
-            var metrics = CalculateMetrics((float)fps, (float)frameTimeMs);
+            // Calculate metrics (include RTSS stats)
+            var metrics = CalculateMetrics((float)fps, (float)frameTimeMs, (float)minFps, (float)avgFps, (float)maxFps);
             Console.WriteLine($"PerformanceMonitoringService.OnFpsUpdated: Calculated 1% Low={metrics.OnePercentLowFps:F1}");
             MetricsUpdated?.Invoke(metrics);
 
@@ -83,15 +83,18 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
-        /// Calculates performance metrics from current FPS and frame time.
+        /// Calculates performance metrics from current FPS, frame time, and RTSS statistics.
         /// </summary>
-        private PerformanceMetrics CalculateMetrics(float fps, float frameTime)
+        private PerformanceMetrics CalculateMetrics(float fps, float frameTime, float minFps, float avgFps, float maxFps)
         {
             return new PerformanceMetrics
             {
                 Fps = fps,
                 FrameTime = frameTime,
                 OnePercentLowFps = CalculateOnePercentLowFps(),
+                MinFps = minFps,      // From RTSS built-in statistics
+                AverageFps = avgFps,  // From RTSS built-in statistics
+                MaxFps = maxFps,      // From RTSS built-in statistics
                 FrameTimeCount = _frameTimeCount,
                 MonitoredProcessId = _dxgiService.MonitoredProcessId
             };

@@ -6,7 +6,7 @@ A plugin for the InfoPanel app that reads FPS data directly from RivaTuner Stati
 
 InfoPanel.RTSS provides detailed performance statistics for running fullscreen applications, enabling users to monitor gaming performance in real-time through InfoPanel's interface. By leveraging RTSS's shared memory, the plugin achieves pixel-perfect FPS accuracy while remaining compatible with kernel-level anti-cheat systems. The plugin tracks FPS, frame times, and low percentile data, updating every second with efficient event-driven detection.
 
-![InfoPanel.RTSS Screenshot](https://i.imgur.com/VsyjMRh.png)
+![InfoPanel.RTSS Screenshot]([(https://i.imgur.com/shmb3rI.png)])
 
 **Version:** 1.0.0  
 **Author:** F3NN3X

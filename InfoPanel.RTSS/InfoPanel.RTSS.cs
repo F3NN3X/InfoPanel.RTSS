@@ -5,6 +5,7 @@ using InfoPanel.RTSS.Services;
 using InfoPanel.Plugins;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 /*
  * File: InfoPanel.RTSS.cs
@@ -34,7 +35,7 @@ namespace InfoPanel.RTSS
     public class RTSSPlugin : BasePlugin, IDisposable
     {
         private readonly IPerformanceMonitoringService _performanceService;
-        private readonly IWindowDetectionService _windowDetectionService;
+        private readonly StableFullscreenDetectionService _fullscreenDetectionService;
         private readonly ISystemInformationService _systemInfoService;
         private readonly ISensorManagementService _sensorService;
         private readonly FileLoggingService _fileLogger;
@@ -65,7 +66,7 @@ namespace InfoPanel.RTSS
             {
                 // Initialize services - in a real DI scenario, these would be injected
                 _performanceService = new PerformanceMonitoringService(_fileLogger);
-                _windowDetectionService = new WindowDetectionService();
+                _fullscreenDetectionService = new StableFullscreenDetectionService(_fileLogger);
                 _systemInfoService = new SystemInformationService();
                 _sensorService = new SensorManagementService();
 
@@ -73,7 +74,7 @@ namespace InfoPanel.RTSS
 
                 // Subscribe to service events
                 _performanceService.MetricsUpdated += OnPerformanceMetricsUpdated;
-                _windowDetectionService.WindowChanged += OnWindowChanged;
+                _performanceService.DXGIService.RTSSHooked += OnRTSSHooked;
 
                 _fileLogger.LogInfo("Event subscriptions completed");
                 Console.WriteLine("RTSS Plugin initialized with all services");
@@ -110,10 +111,6 @@ namespace InfoPanel.RTSS
                 // Initialize system information
                 _currentState.System = _systemInfoService.GetSystemInformation();
                 _fileLogger.LogSystemInfo("Information", $"GPU: {_currentState.System.GpuName}, Display: {_currentState.System.Resolution}@{_currentState.System.RefreshRate}Hz");
-
-                // Start window detection service
-                _windowDetectionService.StartMonitoring();
-                _fileLogger.LogInfo("Window detection service started");
 
                 // Start continuous monitoring loop (like the original implementation)
                 _ = Task.Run(async () => await StartContinuousMonitoringAsync(_cancellationTokenSource.Token).ConfigureAwait(false));
@@ -176,20 +173,35 @@ namespace InfoPanel.RTSS
                 uint rtssMonitoredPid = _performanceService.GetRTSSMonitoredProcessId();
                 
                 // Traditional window detection (fallback for games RTSS can't hook)
-                var currentWindow = _windowDetectionService.GetCurrentFullscreenWindow();
+                var currentWindow = await _fullscreenDetectionService.DetectFullscreenProcessAsync().ConfigureAwait(false);
                 uint windowPid = currentWindow?.ProcessId ?? 0;
                 
                 uint targetPid = 0;
                 string detectionMethod = "";
                 
-                // Priority 1: Use RTSS monitored PID if available
+                // Priority 1: Use RTSS monitored PID if available AND it passes blacklist check
                 if (rtssMonitoredPid > 0)
                 {
-                    targetPid = rtssMonitoredPid;
-                    detectionMethod = "RTSS";
+                    // CRITICAL FIX: Check if RTSS monitored process is blacklisted
+                    var isRtssProcessBlacklisted = await _fullscreenDetectionService.IsProcessBlacklistedAsync(rtssMonitoredPid).ConfigureAwait(false);
                     
-                    // Get window title for the RTSS monitored process
-                    string rtssWindowTitle = _windowDetectionService.GetWindowTitleByPID(rtssMonitoredPid);
+                    if (!isRtssProcessBlacklisted)
+                    {
+                        targetPid = rtssMonitoredPid;
+                        detectionMethod = "RTSS";
+                        
+                        // Get window title for the RTSS monitored process
+                        string rtssWindowTitle = "";
+                        try
+                        {
+                        using var process = System.Diagnostics.Process.GetProcessById((int)rtssMonitoredPid);
+                        rtssWindowTitle = GetProcessWindowTitle(process);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // Process not found
+                        rtssWindowTitle = "";
+                    }
                     if (!string.IsNullOrWhiteSpace(rtssWindowTitle))
                     {
                         // Create a WindowInformation object for the RTSS monitored process
@@ -205,6 +217,11 @@ namespace InfoPanel.RTSS
                     else
                     {
                         Console.WriteLine($"UpdateAsync: RTSS monitoring PID {rtssMonitoredPid} but no window title found");
+                    }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"UpdateAsync: RTSS monitoring blacklisted process {rtssMonitoredPid}, skipping");
                     }
                 }
                 // Priority 2: Fall back to traditional window detection if RTSS has no active monitoring
@@ -366,8 +383,8 @@ namespace InfoPanel.RTSS
             {
                 await Task.Delay(500).ConfigureAwait(false); // Small delay for stabilization
                 
-                var currentWindow = _windowDetectionService.GetCurrentFullscreenWindow();
-                if (currentWindow?.IsValid == true)
+                var currentWindow = await _fullscreenDetectionService.DetectFullscreenProcessAsync().ConfigureAwait(false);
+                if (currentWindow != null)
                 {
                     _currentState.Window = currentWindow;
                     await StartMonitoringAsync(currentWindow.ProcessId).ConfigureAwait(false);
@@ -380,163 +397,130 @@ namespace InfoPanel.RTSS
         }
 
         /// <summary>
-        /// Continuously monitors fullscreen apps and manages monitoring lifecycle.
-        /// This replicates the original StartFPSMonitoringAsync logic.
+        /// Continuously monitors fullscreen apps and only logs when RTSS successfully hooks.
+        /// Simplified approach: only monitor when RTSS successfully hooks processes.
         /// </summary>
         private async Task StartContinuousMonitoringAsync(CancellationToken cancellationToken)
         {
-            _fileLogger?.LogInfo("=== CONTINUOUS WINDOW MONITORING STARTED ===");
+            _fileLogger?.LogInfo("=== SIMPLIFIED CONTINUOUS MONITORING STARTED ===");
             
             try
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    var currentWindow = _windowDetectionService.GetCurrentFullscreenWindow();
-                    var systemInfo = _systemInfoService.GetSystemInformation();
+                    // Use stable fullscreen detection service
+                    var currentWindow = await _fullscreenDetectionService.DetectFullscreenProcessAsync().ConfigureAwait(false);
                     uint pid = currentWindow?.ProcessId ?? 0;
 
-                    if (pid != 0)
+                    if (pid > 0 && !_performanceService.IsMonitoring)
                     {
-                        var processInfo = GetDetailedProcessInfo(pid);
-                        
-                        if (_performanceService.IsMonitoring)
-                        {
-                            _fileLogger?.LogDebug($"✅ Monitoring active: {processInfo}");
-                        }
-                        else
-                        {
-                            _fileLogger?.LogInfo($"🎯 NEW FULLSCREEN APP DETECTED:");
-                            _fileLogger?.LogInfo($"   {processInfo}");
-                            _fileLogger?.LogInfo($"   Window Title: '{currentWindow?.WindowTitle ?? "None"}'");
-                            _fileLogger?.LogInfo($"   Window Handle: {currentWindow?.WindowHandle}");
-                            _fileLogger?.LogInfo($"   Is Fullscreen: {currentWindow?.IsFullscreen}");
-                            
-                            _fileLogger?.LogInfo($"   🎮 Starting RTSS monitoring...");
-                        }
-                    }
-
-                    Console.WriteLine($"Continuous monitoring check - PID: {pid}, " +
-                                    $"Title: {currentWindow?.WindowTitle ?? "None"}, " +
-                                    $"IsMonitoring: {_performanceService.IsMonitoring}, " +
-                                    $"CurrentWindowValid: {currentWindow?.IsValid}, " +
-                                    $"IsFullscreen: {currentWindow?.IsFullscreen}");
-
-                    if (pid != 0 && !_performanceService.IsMonitoring)
-                    {
-                        Console.WriteLine($"STARTING monitoring for new fullscreen app PID {pid}");
-                        // Start monitoring new fullscreen app
+                        // Found a fullscreen app - attempt RTSS monitoring
+                        _fileLogger?.LogInfo($"📱 New fullscreen app detected: PID {pid}");
                         _currentState.Window = currentWindow!;
-                        _currentState.System = systemInfo;
+                        _currentState.System = _systemInfoService.GetSystemInformation();
                         _currentState.IsMonitoring = true;
-                        
-                        // Reset performance metrics like the old version
                         _currentState.Performance = new PerformanceMetrics();
+                        
                         await StartMonitoringAsync(pid).ConfigureAwait(false);
                     }
                     else if (pid == 0 && _performanceService.IsMonitoring)
                     {
-                        // No fullscreen window detected, but check if RTSS monitored process still exists
-                        // (e.g., user alt-tabbed but RTSS still monitors the background process)
-                        // NOTE: Must check the PID that RTSS is monitoring, not the current window PID!
-                        uint monitoredPid = _currentState.Performance.MonitoredProcessId;
-                        bool monitoredProcessExists = false;
+                        // No fullscreen app detected - but check if current monitored process still exists
+                        uint currentMonitoredPid = _currentState.Performance.MonitoredProcessId;
+                        bool currentProcessStillExists = false;
                         
-                        if (monitoredPid > 0)
+                        if (currentMonitoredPid > 0)
                         {
                             try
                             {
-                                using var process = System.Diagnostics.Process.GetProcessById((int)monitoredPid);
-                                monitoredProcessExists = !process.HasExited;
+                                using var process = System.Diagnostics.Process.GetProcessById((int)currentMonitoredPid);
+                                currentProcessStillExists = !process.HasExited;
                             }
-                            catch (ArgumentException)
-                            {
-                                // Process not found
-                                monitoredProcessExists = false;
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Error checking if RTSS monitored process {monitoredPid} exists: {ex}");
-                                monitoredProcessExists = false;
-                            }
+                            catch { currentProcessStillExists = false; }
                         }
-
-                        if (monitoredProcessExists)
+                        
+                        if (!currentProcessStillExists)
                         {
-                            Console.WriteLine($"RTSS monitored process {monitoredPid} still exists (backgrounded/alt-tabbed), continuing monitoring");
-                            // Process still exists - keep monitoring even though it's not fullscreen
-                            // RTSS will continue to report FPS data
-                            _currentState.System = systemInfo;
+                            // Current monitored process is dead - stop monitoring
+                            _fileLogger?.LogInfo($"❌ Monitored process {currentMonitoredPid} no longer exists, stopping monitoring");
+                            await StopMonitoringAsync().ConfigureAwait(false);
                         }
                         else
                         {
-                            Console.WriteLine($"RTSS monitored process {monitoredPid} no longer exists, stopping monitoring");
-                            // Process actually closed - stop monitoring
-                            await StopMonitoringAsync().ConfigureAwait(false);
-                            _currentState.System = systemInfo; // Update system info even when not monitoring
+                            // Current process still exists, keep monitoring (probably just blacklisted processes detected)
+                            _fileLogger?.LogInfo($"⏸️ No new fullscreen apps but PID {currentMonitoredPid} still running, continuing monitoring");
                         }
                     }
-                    else if (pid != 0 && _performanceService.IsMonitoring)
+                    else if (pid > 0 && _performanceService.IsMonitoring && _currentState.Window.ProcessId != pid)
                     {
-                        Console.WriteLine($"App still fullscreen, checking if same process (Current: {_currentState.Window.ProcessId})");
+                        // Different fullscreen app detected - but check if current monitoring is working first
+                        var currentMonitoredPid = _currentState.Performance.MonitoredProcessId;
+                        bool currentProcessStillExists = false;
                         
-                        // Check if the currently monitored process still exists
-                        bool currentProcessExists = false;
-                        try
+                        if (currentMonitoredPid > 0)
                         {
-                            using var process = System.Diagnostics.Process.GetProcessById((int)_currentState.Window.ProcessId);
-                            currentProcessExists = !process.HasExited;
+                            try
+                            {
+                                using var process = System.Diagnostics.Process.GetProcessById((int)currentMonitoredPid);
+                                currentProcessStillExists = !process.HasExited;
+                            }
+                            catch { currentProcessStillExists = false; }
                         }
-                        catch (ArgumentException)
+                        
+                        // Only switch if current process is dead OR if we have a high-priority game process
+                        if (!currentProcessStillExists)
                         {
-                            // Process not found
-                            currentProcessExists = false;
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error checking if process {_currentState.Window.ProcessId} exists: {ex}");
-                            currentProcessExists = false;
-                        }
-
-                        if (!currentProcessExists)
-                        {
-                            Console.WriteLine($"Currently monitored process {_currentState.Window.ProcessId} no longer exists, stopping monitoring");
+                            _fileLogger?.LogInfo($"🔄 Current process dead, switching monitoring: {_currentState.Window.ProcessId} → {pid}");
                             await StopMonitoringAsync().ConfigureAwait(false);
-                            _currentState.System = systemInfo;
+                            _currentState.Window = currentWindow!;
+                            _currentState.Performance = new PerformanceMetrics();
+                            await StartMonitoringAsync(pid).ConfigureAwait(false);
                         }
-                        else if (_currentState.Window.ProcessId == currentWindow!.ProcessId && 
-                            _currentState.Window.WindowTitle != currentWindow.WindowTitle)
+                        else if (IsHigherPriorityProcess(currentWindow?.ProcessId ?? 0, _currentState.Window.ProcessId))
                         {
-                            Console.WriteLine($"Same process, updating window title from '{_currentState.Window.WindowTitle}' to '{currentWindow.WindowTitle}'");
-                            _currentState.Window.WindowTitle = currentWindow.WindowTitle;
-                        }
-                        else if (_currentState.Window.ProcessId != currentWindow.ProcessId)
-                        {
-                            Console.WriteLine($"DIFFERENT PROCESS DETECTED: Current={_currentState.Window.ProcessId}, New={currentWindow.ProcessId}. Switching monitoring.");
-                            // Different process - need to switch monitoring
+                            _fileLogger?.LogInfo($"🔄 Higher priority process detected, switching monitoring: {_currentState.Window.ProcessId} → {pid}");
                             await StopMonitoringAsync().ConfigureAwait(false);
-                            _currentState.Window = currentWindow;
-                            _currentState.IsMonitoring = true;
-                            await StartMonitoringAsync(currentWindow.ProcessId).ConfigureAwait(false);
+                            _currentState.Window = currentWindow!;
+                            _currentState.Performance = new PerformanceMetrics();
+                            await StartMonitoringAsync(pid).ConfigureAwait(false);
                         }
-                        _currentState.System = systemInfo;
+                        else
+                        {
+                            _fileLogger?.LogInfo($"⏸️ Different process detected but staying with current: {_currentState.Window.ProcessId} (ignoring {pid})");
+                        }
                     }
-                    else if (pid == 0 && !_performanceService.IsMonitoring)
+                    else if (pid > 0 && _performanceService.IsMonitoring && _currentState.Window.ProcessId == pid)
                     {
-                        // No fullscreen app detected, update system info but keep sensors clear
-                        _currentState.System = systemInfo;
-                        _currentState.Window = new WindowInformation { WindowTitle = "-" }; // Match old version
+                        // Same process is still fullscreen and we're already monitoring - update info but preserve title
+                        _currentState.System = _systemInfoService.GetSystemInformation();
+                        
+                        // Update window title if current detection has a better title
+                        if (!string.IsNullOrWhiteSpace(currentWindow?.WindowTitle) && 
+                            currentWindow.WindowTitle != "[No Window]" &&
+                            (string.IsNullOrWhiteSpace(_currentState.Window.WindowTitle) || 
+                             _currentState.Window.WindowTitle == "[No Window]"))
+                        {
+                            _currentState.Window.WindowTitle = currentWindow.WindowTitle;
+                            _fileLogger?.LogInfo($"📝 Updated window title: {currentWindow.WindowTitle}");
+                        }
+                        // Don't restart monitoring!
                     }
 
-                    await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken).ConfigureAwait(false);
+                    // Check every 3 seconds (reduced frequency for stability)
+                    await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken).ConfigureAwait(false);
                 }
             }
-            catch (TaskCanceledException) 
+            catch (OperationCanceledException)
             {
-                // Expected on cancellation
+                _fileLogger?.LogInfo("Continuous monitoring cancelled");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Continuous monitoring loop error: {ex}");
+                _fileLogger?.LogError("Error in continuous monitoring", ex);
+            }
+            finally
+            {
+                _fileLogger?.LogInfo("=== CONTINUOUS MONITORING STOPPED ===");
             }
         }
 
@@ -592,6 +576,7 @@ namespace InfoPanel.RTSS
 
                 // Update sensors immediately to show reset state
                 _sensorService.UpdateSensors(_currentState);
+                _fileLogger?.LogInfo("🔄 Sensors reset to zero values");
 
                 Console.WriteLine("Performance monitoring stopped and state reset");
             }
@@ -624,26 +609,41 @@ namespace InfoPanel.RTSS
         }
 
         /// <summary>
-        /// Handles window change events from the detection service.
+        /// Handles RTSS hook success events - updates window title for the hooked process.
+        /// This ensures we only show window titles for processes that RTSS is actually monitoring.
         /// </summary>
-        private void OnWindowChanged(WindowInformation windowInfo)
+        private void OnRTSSHooked(uint processId, string windowTitle)
         {
             try
             {
-                Console.WriteLine($"Window changed - PID: {windowInfo.ProcessId}, " +
-                                $"Title: {windowInfo.WindowTitle}, " +
-                                $"Fullscreen: {windowInfo.IsFullscreen}");
-
-                // Update sensor immediately
-                _sensorService.UpdateWindowSensor(windowInfo);
-
-                // The actual monitoring logic will be handled in UpdateAsync
+                Console.WriteLine($"[RTSS HOOKED] PID {processId} with title: '{windowTitle}'");
+                _fileLogger?.LogInfo($"RTSS successfully hooked PID {processId}, updating window title: '{windowTitle}'");
+                
+                // Update the current state with the RTSS-confirmed window title
+                _currentState.Window = new WindowInformation
+                {
+                    ProcessId = processId,
+                    WindowTitle = windowTitle,
+                    WindowHandle = IntPtr.Zero,
+                    IsFullscreen = true
+                };
+                
+                // Also ensure Performance.MonitoredProcessId matches for sensor logic
+                _currentState.Performance.MonitoredProcessId = processId;
+                
+                // Debug logging
+                Console.WriteLine($"[RTSS HOOKED DEBUG] Window PID: {_currentState.Window.ProcessId}, Performance PID: {_currentState.Performance.MonitoredProcessId}, Title: '{_currentState.Window.WindowTitle}'");
+                
+                // Force sensor update with the new title
+                _sensorService.UpdateSensors(_currentState);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error handling window change: {ex}");
+                Console.WriteLine($"Error handling RTSS hooked event: {ex}");
             }
         }
+
+
 
         /// <summary>
         /// Gets detailed information about a process for logging.
@@ -671,22 +671,99 @@ namespace InfoPanel.RTSS
         }
 
         /// <summary>
-        /// Gets the window title for a process.
+        /// Gets the window title for a process with fallback methods.
         /// </summary>
         private string GetProcessWindowTitle(Process process)
         {
             try
             {
+                // Method 1: Try MainWindowTitle first (with refresh for games that just started)
                 if (process.MainWindowHandle != IntPtr.Zero)
                 {
+                    process.Refresh(); // Refresh process info to get latest window state
                     var title = process.MainWindowTitle;
-                    return string.IsNullOrEmpty(title) ? "[No Title]" : title;
+                    if (!string.IsNullOrWhiteSpace(title) && title.Length > 1)
+                    {
+                        return title;
+                    }
                 }
-                return "[No Window]";
+                
+                // Method 2: For games, try to wait a bit for window to be created
+                var processName = process.ProcessName;
+                if (!string.IsNullOrWhiteSpace(processName) && IsLikelyGameProcess(processName))
+                {
+                    // Give games a brief moment to create their main window
+                    for (int retry = 0; retry < 3; retry++)
+                    {
+                        process.Refresh();
+                        if (process.MainWindowHandle != IntPtr.Zero)
+                        {
+                            var title = process.MainWindowTitle;
+                            if (!string.IsNullOrWhiteSpace(title) && title.Length > 1)
+                            {
+                                return title;
+                            }
+                        }
+                        if (retry < 2) Thread.Sleep(100); // Brief wait before retry
+                    }
+                    
+                    // Fall back to game process name
+                    return $"{processName} (Game)";
+                }
+                
+                return process.MainWindowHandle != IntPtr.Zero ? "[No Title]" : "[No Window]";
             }
             catch
             {
                 return "[Title Error]";
+            }
+        }
+        
+        /// <summary>
+        /// Determines if a process name looks like a game executable.
+        /// </summary>
+        private bool IsLikelyGameProcess(string processName)
+        {
+            if (string.IsNullOrWhiteSpace(processName)) return false;
+            
+            // Common game process patterns
+            var gameIndicators = new[] { "game", "bf", "cod", "cs", "apex", "valorant", "fortnite", "minecraft", "steam" };
+            var lowerName = processName.ToLowerInvariant();
+            
+            return gameIndicators.Any(indicator => lowerName.Contains(indicator)) ||
+                   processName.Length < 10; // Short names are often games (e.g., "bf6", "cod", "cs2")
+        }
+        
+        /// <summary>
+        /// Determines if the new process should take priority over the current one.
+        /// </summary>
+        private bool IsHigherPriorityProcess(uint newPid, uint currentPid)
+        {
+            try
+            {
+                using var newProcess = System.Diagnostics.Process.GetProcessById((int)newPid);
+                using var currentProcess = System.Diagnostics.Process.GetProcessById((int)currentPid);
+                
+                var newProcessName = newProcess.ProcessName.ToLowerInvariant();
+                var currentProcessName = currentProcess.ProcessName.ToLowerInvariant();
+                
+                // Steam overlay should never take priority over actual games
+                if (newProcessName.Contains("gameoverlayui") || newProcessName.Contains("steam"))
+                    return false;
+                
+                // If current is Steam overlay, any real game should take priority
+                if (currentProcessName.Contains("gameoverlayui") || currentProcessName.Contains("steam"))
+                    return true;
+                
+                // Prefer actual game processes over system processes
+                var newIsGame = IsLikelyGameProcess(newProcessName);
+                var currentIsGame = IsLikelyGameProcess(currentProcessName);
+                
+                return newIsGame && !currentIsGame;
+            }
+            catch
+            {
+                return false; // If we can't determine, don't switch
             }
         }
 
@@ -731,11 +808,11 @@ namespace InfoPanel.RTSS
                     {
                         // Unsubscribe from events
                         _performanceService.MetricsUpdated -= OnPerformanceMetricsUpdated;
-                        _windowDetectionService.WindowChanged -= OnWindowChanged;
+                        _performanceService.DXGIService.RTSSHooked -= OnRTSSHooked;
 
                         // Stop and dispose services
                         _performanceService?.Dispose();
-                        _windowDetectionService?.Dispose();
+                        _fullscreenDetectionService?.Dispose();
 
                         // Reset sensors
                         _sensorService?.ResetSensors();

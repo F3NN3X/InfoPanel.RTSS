@@ -1,4 +1,5 @@
 using InfoPanel.RTSS.Models;
+using InfoPanel.RTSS.Services;
 
 namespace InfoPanel.RTSS.Interfaces
 {
@@ -41,40 +42,11 @@ namespace InfoPanel.RTSS.Interfaces
         /// </summary>
         /// <returns>The monitored process ID, or 0 if no process is being monitored.</returns>
         uint GetRTSSMonitoredProcessId();
-    }
-
-    /// <summary>
-    /// Service responsible for detecting fullscreen windows and monitoring window changes.
-    /// </summary>
-    public interface IWindowDetectionService : IDisposable
-    {
-        /// <summary>
-        /// Event fired when a fullscreen window is detected or lost.
-        /// </summary>
-        event Action<WindowInformation>? WindowChanged;
 
         /// <summary>
-        /// Starts monitoring for fullscreen window changes.
+        /// Gets the underlying DXGI service for event subscriptions.
         /// </summary>
-        void StartMonitoring();
-
-        /// <summary>
-        /// Stops monitoring for window changes.
-        /// </summary>
-        void StopMonitoring();
-
-        /// <summary>
-        /// Gets information about the current fullscreen window.
-        /// </summary>
-        /// <returns>Window information or null if no fullscreen window is detected.</returns>
-        WindowInformation? GetCurrentFullscreenWindow();
-
-        /// <summary>
-        /// Gets the window title for a specific process ID.
-        /// </summary>
-        /// <param name="processId">The process ID to get the window title for.</param>
-        /// <returns>The window title, or empty string if not found.</returns>
-        string GetWindowTitleByPID(uint processId);
+        DXGIFrameMonitoringService DXGIService { get; }
     }
 
     /// <summary>

@@ -36,6 +36,11 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
+        /// Gets the underlying DXGI service for event subscriptions.
+        /// </summary>
+        public DXGIFrameMonitoringService DXGIService => _dxgiService;
+
+        /// <summary>
         /// Event fired when new performance metrics are available.
         /// </summary>
         public event Action<PerformanceMetrics>? MetricsUpdated;

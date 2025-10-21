@@ -7,23 +7,28 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using InfoPanel.RTSS.Models;
+using InfoPanel.RTSS.Services;
 using Vanara.PInvoke;
 
 namespace InfoPanel.RTSS.Services
 {
+    /// <summary>
+    /// Delegate for enumerating windows.
+    /// </summary>
     public delegate bool EnumWindowsProc(HWND hWnd, IntPtr lParam);
 
-    public class FullscreenDetectionService : IDisposable
+    public class StableFullscreenDetectionService : IDisposable
     {
         private const int GWL_STYLE = -16;
         private const uint WS_CAPTION = 0x00C00000;
         private const uint WS_THICKFRAME = 0x00040000;
         private const int FullscreenTolerance = 12;
 
+        private readonly FileLoggingService? _fileLogger;
         private readonly HashSet<string> _processNameBlacklist = new(StringComparer.OrdinalIgnoreCase)
         {
             "audiodg", "backgroundtaskhost", "csrss", "ctfmon", "dasHost", "dllhost", "dwm",
-            "explorer", "fontdrvhost", "gamebar", "gamebarftserver", "infopanel", "lsass",
+            "explorer", "fontdrvhost", "gamebar", "gamebarftserver", "gameoverlayui64", "infopanel", "lsass",
             "mobsync", "msedge", "onedrive", "runtimebroker", "searchapp", "searchui",
             "services", "shellexperiencehost", "sihost", "sppsvc", "spoolsv", "startmenuexperiencehost",
             "steam", "system", "systemsettings", "taskhostw", "taskmgr", "textinputhost", "wininit",
@@ -64,11 +69,13 @@ namespace InfoPanel.RTSS.Services
         [DllImport("user32.dll")]
         private static extern uint GetWindowThreadProcessId(HWND hWnd, out uint lpdwProcessId);
 
-        public FullscreenDetectionService()
+        public StableFullscreenDetectionService(FileLoggingService? fileLogger = null)
         {
+            _fileLogger = fileLogger;
             _selfPid = (uint)Process.GetCurrentProcess().Id;
             _selfSessionId = Process.GetCurrentProcess().SessionId;
             _systemPathPrefixes = BuildSystemPathPrefixes();
+            _fileLogger?.LogInfo("StableFullscreenDetectionService initialized");
         }
 
         public Task<WindowInformation?> DetectFullscreenProcessAsync()
@@ -87,18 +94,14 @@ namespace InfoPanel.RTSS.Services
                             {
                                 var processName = GetProcessName(pid);
                                 var windowTitle = GetWindowTitle(hWnd);
-                                // Only log when we actually detect a fullscreen game, not every window
-                                if (detectedWindow == null)
-                                {
-                                    Console.WriteLine($"Detected fullscreen window: {windowTitle} (PID: {pid}, Process: {processName})");
-                                }
+                                
                                 if (!string.IsNullOrEmpty(processName))
                                 {
                                     detectedWindow = new WindowInformation
                                     {
                                         ProcessId = pid,
                                         WindowTitle = windowTitle ?? processName,
-                                        WindowHandle = (IntPtr)hWnd,
+                                        WindowHandle = hWnd.DangerousGetHandle(),
                                         IsFullscreen = true
                                     };
                                     return false; // Stop enumeration when we find a fullscreen window
@@ -124,6 +127,14 @@ namespace InfoPanel.RTSS.Services
                 }
                 catch { return false; }
             });
+        }
+
+        /// <summary>
+        /// Checks if a process should be excluded from monitoring (blacklisted).
+        /// </summary>
+        public Task<bool> IsProcessBlacklistedAsync(uint pid)
+        {
+            return Task.Run(() => IsBlacklistedProcess(pid));
         }
 
         private bool IsFullscreenWindow(HWND hWnd)
@@ -201,8 +212,17 @@ namespace InfoPanel.RTSS.Services
                     return true;
                 }
 
+                // Enhanced logging for gameoverlayui64 debugging
+                if (processName.Equals("gameoverlayui64", StringComparison.OrdinalIgnoreCase))
+                {
+                    _fileLogger?.LogInfo($"🔍 DEBUG: gameoverlayui64 detected - checking blacklist...");
+                    _fileLogger?.LogInfo($"🔍 DEBUG: Blacklist contains '{processName}': {_processNameBlacklist.Contains(processName)}");
+                    _fileLogger?.LogInfo($"🔍 DEBUG: Blacklist entries: {string.Join(", ", _processNameBlacklist.Take(10))}...");
+                }
+
                 if (_processNameBlacklist.Contains(processName))
                 {
+                    _fileLogger?.LogInfo($"🚫 Blacklisted process detected: {processName} (PID: {pid})");
                     return true;
                 }
 
@@ -212,6 +232,7 @@ namespace InfoPanel.RTSS.Services
                     return true;
                 }
 
+                _fileLogger?.LogInfo($"✅ Process passed blacklist check: {processName} (PID: {pid})");
                 return false;
             }
             catch { return true; }
@@ -325,7 +346,18 @@ namespace InfoPanel.RTSS.Services
             {
                 var sb = new StringBuilder(256);
                 int length = GetWindowText(hWnd, sb, sb.Capacity);
-                return length > 0 ? sb.ToString() : null;
+                
+                if (length > 0)
+                {
+                    var title = sb.ToString();
+                    // Filter out empty or very short titles that are likely not useful
+                    if (!string.IsNullOrWhiteSpace(title) && title.Length > 1)
+                    {
+                        return title;
+                    }
+                }
+                
+                return null;
             }
             catch { return null; }
         }

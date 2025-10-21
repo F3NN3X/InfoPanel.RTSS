@@ -169,6 +169,8 @@ namespace InfoPanel.RTSS.Services
                     _avgFpsSensor.Value = 0;
                     _minFpsSensor.Value = 0;
                     _maxFpsSensor.Value = 0;
+                    // Add logging for debugging
+                    Console.WriteLine("SensorManagementService: Reset all FPS sensors to 0");
                 }
 
                 // Update window information with caching to prevent flickering

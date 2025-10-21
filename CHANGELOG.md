@@ -1,5 +1,35 @@
 # CHANGELOG
 
+## v1.1.2 (October 22, 2025)
+
+**🔧 Simplified Architecture & Stable Detection**
+
+### ✨ **New Features**
+- **Stable Fullscreen Detection**: Replaced complex window monitoring with proven stable detection service
+  - Uses comprehensive system process blacklisting for better reliability
+  - Improved tolerance-based fullscreen detection from stable version
+  - Reduced false positives from system windows and desktop applications
+
+### 🚀 **Performance Improvements**  
+- **Simplified Continuous Monitoring**: Streamlined monitoring loop focusing only on RTSS-successful hooks
+  - Removed complex state management and redundant process checking
+  - Eliminated excessive logging of every window change on the system
+  - Increased monitoring interval to 3 seconds for better stability
+  - **Key Change**: Only logs when RTSS successfully hooks a process (no more noise!)
+
+### 🏗️ **Architecture Cleanup**
+- **Service Consolidation**: Removed redundant WindowDetectionService, using single stable detection service
+- **RTSS-First Approach**: Prioritizes RTSS monitoring over traditional window detection
+- **Reduced Complexity**: Simplified async task management and error handling
+- **Better Logging**: Focused debug logging on RTSS success cases only
+
+### 🐞 **Bug Fixes**
+- **Compilation Issues**: Fixed service reference conflicts and async method calls
+- **Process Lifecycle**: Improved process existence validation for RTSS monitoring
+- **Memory Management**: Better disposal of detection services and background tasks
+
+---
+
 ## v1.1.1 (October 21, 2025)
 
 **🐞 Debug Logging for User Troubleshooting**

@@ -1,0 +1,104 @@
+[2025-10-21 23:30:16.599] [INFO] === InfoPanel.RTSS Debug Log Started ===
+[2025-10-21 23:30:16.600] [INFO] Plugin Directory: C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS
+[2025-10-21 23:30:16.600] [INFO] Assembly Location: C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS\InfoPanel.RTSS.dll
+[2025-10-21 23:30:16.600] [INFO] === InfoPanel.RTSS Constructor Called ===
+[2025-10-21 23:30:16.600] [INFO] DXGIFrameMonitoringService initialized
+[2025-10-21 23:30:16.600] [INFO] PerformanceMonitoringService initialized with DXGI frame monitoring
+[2025-10-21 23:30:16.609] [INFO] StableFullscreenDetectionService initialized
+[2025-10-21 23:30:16.609] [INFO] All services initialized successfully
+[2025-10-21 23:30:16.610] [INFO] Event subscriptions completed
+[2025-10-21 23:30:18.835] [INFO] === RTSS Plugin Initialize() called ===
+[2025-10-21 23:30:19.019] [INFO] System Information: GPU: NVIDIA GeForce RTX 5090, Display: 3840 x 2160@240Hz
+[2025-10-21 23:30:19.019] [INFO] Continuous monitoring task started
+[2025-10-21 23:30:19.019] [INFO] Initial window check task started
+[2025-10-21 23:30:19.020] [INFO] RTSS Plugin initialization completed successfully
+[2025-10-21 23:30:19.020] [INFO] === RTSS Plugin Load() called ===
+[2025-10-21 23:30:19.020] [INFO] Sensors created and registered with InfoPanel
+[2025-10-21 23:30:19.021] [INFO] System sensors updated with initial information
+[2025-10-21 23:30:19.021] [INFO] === SIMPLIFIED CONTINUOUS MONITORING STARTED ===
+[2025-10-21 23:30:19.041] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:19.337] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:19.529] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:20.349] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:21.360] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:22.050] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:22.370] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:23.381] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:24.390] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:25.060] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:25.396] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:26.408] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:27.416] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:28.069] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:28.427] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:29.439] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:30.449] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:31.077] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:31.467] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:31.476] [INFO] ✅ Process passed blacklist check: NMS (PID: 30548)
+[2025-10-21 23:30:31.902] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 23:30:31.902] [INFO] Target Process: PID:30548 | Name:'NMS' | Window:'NMS (Game)' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:167MB | Uptime:0.0min | Started:23:30:30
+[2025-10-21 23:30:31.902] [INFO] Starting RTSS monitoring for: PID:30548 | Name:'NMS' | Window:'NMS (Game)' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:167MB | Uptime:0.0min | Started:23:30:30
+[2025-10-21 23:30:31.911] [INFO] Monitoring STARTED PID 30548
+[2025-10-21 23:30:31.912] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 23:30:31.914] [INFO] 🎮 Window Title Debug: ProcessName='NMS', IsGameProcess=False
+[2025-10-21 23:30:31.924] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 23:30:31.924] [INFO] Searching for RTSS hook on: PID:30548 | Name:'NMS' | Window:'[No Window]' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:168MB | Uptime:0.0min | Started:23:30:30
+[2025-10-21 23:30:31.924] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 23:30:31.924] [INFO] Max retries: 60 seconds
+[2025-10-21 23:30:31.926] [INFO] 🎮 Window Title Debug: ProcessName='NMS', IsGameProcess=False
+[2025-10-21 23:30:31.936] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:30548 | Name:'NMS' | Window:'[No Window]' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:168MB | Uptime:0.0min | Started:23:30:30
+[2025-10-21 23:30:34.086] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:34.086] [INFO] ❌ Monitored process 0 no longer exists, stopping monitoring
+[2025-10-21 23:30:34.087] [INFO] 🔄 Sensors reset to zero values
+[2025-10-21 23:30:34.088] [INFO] Performance service monitoring state: False
+[2025-10-21 23:30:35.100] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:30:35.111] [INFO] ✅ Process passed blacklist check: NMS (PID: 30548)
+[2025-10-21 23:30:35.123] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 23:30:35.123] [INFO] Target Process: PID:30548 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:7460MB | Uptime:0.1min | Started:23:30:30
+[2025-10-21 23:30:35.123] [INFO] Starting RTSS monitoring for: PID:30548 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:7460MB | Uptime:0.1min | Started:23:30:30
+[2025-10-21 23:30:35.124] [INFO] Monitoring STARTED PID 30548
+[2025-10-21 23:30:35.124] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 23:30:35.135] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 23:30:35.135] [INFO] Searching for RTSS hook on: PID:30548 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:7529MB | Uptime:0.1min | Started:23:30:30
+[2025-10-21 23:30:35.135] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 23:30:35.135] [INFO] Max retries: 60 seconds
+[2025-10-21 23:30:35.147] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:30548 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:7593MB | Uptime:0.1min | Started:23:30:30
+[2025-10-21 23:30:37.098] [INFO] ✅ Process passed blacklist check: NMS (PID: 30548)
+[2025-10-21 23:30:38.150] [INFO] ✅ RTSS HOOK DETECTED after 3 seconds!
+[2025-10-21 23:30:38.160] [INFO] Hooked Process: PID:30548 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9562MB | Uptime:0.1min | Started:23:30:30
+[2025-10-21 23:30:38.160] [INFO] Initial FPS Reading: 30.3 FPS, Frame Time: 32.98ms
+[2025-10-21 23:30:38.161] [INFO] 🔍 RTSS Hook Debug: Process Name='NMS', MainWindowHandle=True
+[2025-10-21 23:30:38.161] [INFO] 🔍 RTSS Hook Debug: GetProcessWindowTitle returned='No Man's Sky'
+[2025-10-21 23:30:38.162] [INFO] RTSS successfully hooked PID 30548, updating window title: 'No Man's Sky'
+[2025-10-21 23:30:38.162] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 23:30:38.162] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:30:38.170] [INFO]    Process: PID:30548 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9562MB | Uptime:0.1min | Started:23:30:30
+[2025-10-21 23:30:38.171] [INFO]    Current FPS: 30.3, Frame Time: 32.98ms
+[2025-10-21 23:30:38.171] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:30:40.105] [INFO] ✅ Process passed blacklist check: NMS (PID: 30548)
+[2025-10-21 23:30:43.114] [INFO] ✅ Process passed blacklist check: NMS (PID: 30548)
+[2025-10-21 23:30:46.123] [INFO] ✅ Process passed blacklist check: NMS (PID: 30548)
+[2025-10-21 23:30:48.174] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:30:48.182] [INFO]    Process: PID:30548 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9618MB | Uptime:0.3min | Started:23:30:30
+[2025-10-21 23:30:48.182] [INFO]    Current FPS: 149.6, Frame Time: 6.68ms
+[2025-10-21 23:30:48.182] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:30:49.136] [INFO] ✅ Process passed blacklist check: NMS (PID: 30548)
+[2025-10-21 23:30:52.145] [INFO] ✅ Process passed blacklist check: NMS (PID: 30548)
+[2025-10-21 23:30:55.154] [INFO] ✅ Process passed blacklist check: NMS (PID: 30548)
+[2025-10-21 23:30:58.161] [INFO] ✅ Process passed blacklist check: NMS (PID: 30548)
+[2025-10-21 23:30:58.184] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:30:58.191] [INFO]    Process: PID:30548 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9621MB | Uptime:0.5min | Started:23:30:30
+[2025-10-21 23:30:58.192] [INFO]    Current FPS: 149.6, Frame Time: 6.68ms
+[2025-10-21 23:30:58.192] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:31:01.168] [INFO] ✅ Process passed blacklist check: NMS (PID: 30548)
+[2025-10-21 23:31:04.177] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:31:04.179] [INFO] ❌ Monitored process 30548 no longer exists, stopping monitoring
+[2025-10-21 23:31:04.179] [INFO] 🔄 Sensors reset to zero values
+[2025-10-21 23:31:04.179] [INFO] Performance service monitoring state: False
+[2025-10-21 23:31:05.187] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:31:06.196] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:31:07.189] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:31:07.205] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:31:08.214] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:31:09.225] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)

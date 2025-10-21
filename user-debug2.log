@@ -1,0 +1,998 @@
+[2025-10-21 21:31:26.811] [INFO] === InfoPanel.RTSS Debug Log Started ===
+[2025-10-21 21:31:26.813] [INFO] Plugin Directory: C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS
+[2025-10-21 21:31:26.813] [INFO] Assembly Location: C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS\InfoPanel.RTSS.dll
+[2025-10-21 21:31:26.813] [INFO] === InfoPanel.RTSS Constructor Called ===
+[2025-10-21 21:31:26.813] [INFO] DXGIFrameMonitoringService initialized
+[2025-10-21 21:31:26.814] [INFO] PerformanceMonitoringService initialized with DXGI frame monitoring
+[2025-10-21 21:31:26.815] [INFO] All services initialized successfully
+[2025-10-21 21:31:26.815] [INFO] Event subscriptions completed
+[2025-10-21 21:31:28.329] [INFO] === RTSS Plugin Initialize() called ===
+[2025-10-21 21:31:28.349] [INFO] System Information: GPU: NVIDIA GeForce RTX 4080, Display: 2560 x 1440@480Hz
+[2025-10-21 21:31:28.350] [INFO] Window detection service started
+[2025-10-21 21:31:28.350] [INFO] Continuous monitoring task started
+[2025-10-21 21:31:28.351] [INFO] Initial window check task started
+[2025-10-21 21:31:28.351] [INFO] RTSS Plugin initialization completed successfully
+[2025-10-21 21:31:28.351] [INFO] === RTSS Plugin Load() called ===
+[2025-10-21 21:31:28.351] [INFO] Sensors created and registered with InfoPanel
+[2025-10-21 21:31:28.351] [INFO] System sensors updated with initial information
+[2025-10-21 21:31:28.352] [INFO] === CONTINUOUS WINDOW MONITORING STARTED ===
+[2025-10-21 21:31:28.368] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:31:28.368] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:28.368] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:31:28.368] [INFO]    Window Handle: 66374
+[2025-10-21 21:31:28.368] [INFO]    Is Fullscreen: True
+[2025-10-21 21:31:28.368] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:31:28.371] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:28.371] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:28.371] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:28.372] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:31:28.372] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:28.375] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:28.375] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:28.376] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:28.376] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:28.379] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:28.659] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:28.664] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:28.664] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:28.664] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:28.665] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:28.665] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:28.668] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:28.669] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:28.669] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:28.669] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:28.669] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:31:28.672] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:28.672] [INFO] Initial FPS Reading: 30,1 FPS, Frame Time: 33,26ms
+[2025-10-21 21:31:28.672] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:31:28.672] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 21:31:28.674] [INFO]    Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:28.674] [INFO]    Current FPS: 30,1, Frame Time: 33,26ms
+[2025-10-21 21:31:28.675] [INFO]    Statistics: Min=0,0, Avg=0,6, Max=1,7
+[2025-10-21 21:31:28.858] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:28.858] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:28.858] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:28.858] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:31:28.858] [INFO] Performance service monitoring state: True
+[2025-10-21 21:31:28.959] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:31:28.959] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:28.964] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:28.964] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:28.964] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:28.964] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:28.968] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:29.668] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:30.677] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:30.677] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:30.680] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:30.680] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:30.680] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:30.680] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:31:30.681] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:30.682] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:30.683] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:30.683] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:30.683] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:30.685] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,1min | Started:16:00:22
+[2025-10-21 21:31:30.873] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:30.876] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:30.876] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:30.876] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:30.876] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:30.876] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:30.879] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:30.879] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:30.879] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:30.879] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:30.879] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:31:30.881] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:30.881] [INFO] Initial FPS Reading: 30,1 FPS, Frame Time: 33,26ms
+[2025-10-21 21:31:30.881] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:31:31.880] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,2min | Started:16:00:22
+[2025-10-21 21:31:31.880] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:32.888] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:31:32.889] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,2min | Started:16:00:22
+[2025-10-21 21:31:32.889] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:31:32.889] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:32.889] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:32.889] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:32.889] [INFO]    Window Handle: 66374
+[2025-10-21 21:31:32.889] [INFO]    Is Fullscreen: True
+[2025-10-21 21:31:32.889] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:31:32.890] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:32.890] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:32.891] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:32.891] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,2min | Started:16:00:22
+[2025-10-21 21:31:32.892] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,2min | Started:16:00:22
+[2025-10-21 21:31:32.892] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:32.892] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:32.892] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:32.892] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:32.892] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:31:32.892] [INFO] Performance service monitoring state: True
+[2025-10-21 21:31:32.992] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:31:32.992] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:32.999] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:32.999] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,2min | Started:16:00:22
+[2025-10-21 21:31:32.999] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:32.999] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:33.005] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,2min | Started:16:00:22
+[2025-10-21 21:31:33.901] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:33.904] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:33.904] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:33.904] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:33.904] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:33.904] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:33.907] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:33.907] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:33.907] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:33.907] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:33.908] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:31:33.910] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,8min | Started:18:20:42
+[2025-10-21 21:31:33.910] [INFO] Initial FPS Reading: 30,1 FPS, Frame Time: 33,26ms
+[2025-10-21 21:31:33.910] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:31:34.907] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,2min | Started:16:00:22
+[2025-10-21 21:31:35.101] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:36.110] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:36.110] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,9min | Started:18:20:42
+[2025-10-21 21:31:36.110] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,9min | Started:18:20:42
+[2025-10-21 21:31:36.111] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:31:36.111] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,2min | Started:16:00:22
+[2025-10-21 21:31:36.111] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:31:36.111] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:36.111] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:36.111] [INFO]    Window Handle: 66374
+[2025-10-21 21:31:36.112] [INFO]    Is Fullscreen: True
+[2025-10-21 21:31:36.112] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:31:36.114] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:36.114] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,9min | Started:18:20:42
+[2025-10-21 21:31:36.114] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:36.114] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:36.115] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:36.115] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,2min | Started:16:00:22
+[2025-10-21 21:31:36.115] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,2min | Started:16:00:22
+[2025-10-21 21:31:36.115] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:36.115] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:31:36.115] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:36.118] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:36.118] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,2min | Started:16:00:22
+[2025-10-21 21:31:36.118] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:36.118] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:36.121] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,2min | Started:16:00:22
+[2025-10-21 21:31:37.122] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:37.126] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:37.126] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,9min | Started:18:20:42
+[2025-10-21 21:31:37.127] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,9min | Started:18:20:42
+[2025-10-21 21:31:37.127] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:37.127] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:37.133] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:37.134] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,9min | Started:18:20:42
+[2025-10-21 21:31:37.134] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:37.134] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:37.134] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:31:37.138] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:190,9min | Started:18:20:42
+[2025-10-21 21:31:37.138] [INFO] Initial FPS Reading: 44,3 FPS, Frame Time: 22,56ms
+[2025-10-21 21:31:37.138] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:31:38.133] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,3min | Started:16:00:22
+[2025-10-21 21:31:38.134] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:39.142] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:39.143] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4396MB | Uptime:190,9min | Started:18:20:42
+[2025-10-21 21:31:39.143] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4396MB | Uptime:190,9min | Started:18:20:42
+[2025-10-21 21:31:39.143] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:31:39.143] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,3min | Started:16:00:22
+[2025-10-21 21:31:39.143] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:31:39.143] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:39.143] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:39.143] [INFO]    Window Handle: 66374
+[2025-10-21 21:31:39.143] [INFO]    Is Fullscreen: True
+[2025-10-21 21:31:39.143] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:31:39.146] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:39.146] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,3min | Started:16:00:22
+[2025-10-21 21:31:39.146] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,3min | Started:16:00:22
+[2025-10-21 21:31:39.146] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:39.147] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4396MB | Uptime:190,9min | Started:18:20:42
+[2025-10-21 21:31:39.147] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:39.147] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:39.147] [INFO] Performance service monitoring state: True
+[2025-10-21 21:31:39.147] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:31:39.247] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:31:39.247] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:39.252] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:39.252] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,3min | Started:16:00:22
+[2025-10-21 21:31:39.252] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:39.252] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:39.258] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,3min | Started:16:00:22
+[2025-10-21 21:31:40.153] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:40.157] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:40.157] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4397MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:40.157] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4397MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:40.158] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:40.158] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:40.162] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:40.162] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4397MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:40.162] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:40.162] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:40.162] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:31:40.165] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4397MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:40.166] [INFO] Initial FPS Reading: 164,4 FPS, Frame Time: 6,08ms
+[2025-10-21 21:31:40.166] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:31:40.166] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 21:31:40.169] [INFO]    Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4397MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:40.169] [INFO]    Current FPS: 164,4, Frame Time: 6,08ms
+[2025-10-21 21:31:40.169] [INFO]    Statistics: Min=0,0, Avg=0,6, Max=1,7
+[2025-10-21 21:31:41.163] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,3min | Started:16:00:22
+[2025-10-21 21:31:41.163] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:42.172] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:42.172] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4399MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:42.172] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4399MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:42.173] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:31:42.173] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,3min | Started:16:00:22
+[2025-10-21 21:31:42.173] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:31:42.173] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:42.173] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:42.173] [INFO]    Window Handle: 66374
+[2025-10-21 21:31:42.173] [INFO]    Is Fullscreen: True
+[2025-10-21 21:31:42.173] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:31:42.176] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:42.176] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,3min | Started:16:00:22
+[2025-10-21 21:31:42.176] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,3min | Started:16:00:22
+[2025-10-21 21:31:42.176] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:42.176] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4399MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:42.176] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:42.176] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:42.176] [INFO] Performance service monitoring state: True
+[2025-10-21 21:31:42.176] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:31:42.277] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:31:42.277] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:42.283] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:42.283] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,3min | Started:16:00:22
+[2025-10-21 21:31:42.283] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:42.283] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:42.290] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,3min | Started:16:00:22
+[2025-10-21 21:31:43.181] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:43.185] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:43.185] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4399MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:43.185] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4399MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:43.185] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:43.185] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:43.188] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:43.188] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4399MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:43.189] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:43.189] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:43.189] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:31:43.192] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4399MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:43.192] [INFO] Initial FPS Reading: 164,4 FPS, Frame Time: 6,08ms
+[2025-10-21 21:31:43.192] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:31:44.192] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,4min | Started:16:00:22
+[2025-10-21 21:31:44.192] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:45.200] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:45.200] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4399MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:45.201] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4399MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:45.201] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:31:45.201] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,4min | Started:16:00:22
+[2025-10-21 21:31:45.201] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:31:45.201] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:45.201] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:45.201] [INFO]    Window Handle: 66374
+[2025-10-21 21:31:45.201] [INFO]    Is Fullscreen: True
+[2025-10-21 21:31:45.201] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:31:45.204] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:45.204] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,4min | Started:16:00:22
+[2025-10-21 21:31:45.204] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,4min | Started:16:00:22
+[2025-10-21 21:31:45.204] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:45.204] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4399MB | Uptime:191,0min | Started:18:20:42
+[2025-10-21 21:31:45.204] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:45.205] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:45.205] [INFO] Performance service monitoring state: True
+[2025-10-21 21:31:45.205] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:31:45.305] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:31:45.305] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:45.312] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:45.312] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,4min | Started:16:00:22
+[2025-10-21 21:31:45.312] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:45.312] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:45.318] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,4min | Started:16:00:22
+[2025-10-21 21:31:46.212] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:46.216] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:46.216] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4398MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:46.216] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4398MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:46.216] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:46.216] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:46.220] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:46.220] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4398MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:46.220] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:46.220] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:46.220] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:31:46.223] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4398MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:46.223] [INFO] Initial FPS Reading: 164,4 FPS, Frame Time: 6,08ms
+[2025-10-21 21:31:46.223] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:31:47.222] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,4min | Started:16:00:22
+[2025-10-21 21:31:47.222] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:48.231] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:31:48.231] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,4min | Started:16:00:22
+[2025-10-21 21:31:48.232] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:31:48.232] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:48.232] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4398MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:48.232] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4398MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:48.232] [INFO]    Window Handle: 66374
+[2025-10-21 21:31:48.232] [INFO]    Is Fullscreen: True
+[2025-10-21 21:31:48.232] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:31:48.232] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:48.232] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:48.235] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:48.236] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,4min | Started:16:00:22
+[2025-10-21 21:31:48.236] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,4min | Started:16:00:22
+[2025-10-21 21:31:48.236] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:48.236] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4398MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:48.236] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:48.236] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:48.236] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:31:48.237] [INFO] Performance service monitoring state: True
+[2025-10-21 21:31:48.337] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:31:48.338] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:48.343] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:48.343] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,4min | Started:16:00:22
+[2025-10-21 21:31:48.343] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:48.343] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:48.347] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,4min | Started:16:00:22
+[2025-10-21 21:31:49.244] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:49.249] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:49.249] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4398MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:49.249] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4398MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:49.249] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:49.249] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:49.254] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:49.254] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4398MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:49.254] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:49.254] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:49.254] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:31:49.259] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4398MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:49.259] [INFO] Initial FPS Reading: 164,4 FPS, Frame Time: 6,08ms
+[2025-10-21 21:31:49.259] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:31:50.255] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,5min | Started:16:00:22
+[2025-10-21 21:31:50.255] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:51.265] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:51.266] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4396MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:51.266] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4396MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:51.266] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:51.266] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:51.266] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:31:51.267] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,5min | Started:16:00:22
+[2025-10-21 21:31:51.267] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:31:51.267] [INFO]    Window Handle: 66374
+[2025-10-21 21:31:51.267] [INFO]    Is Fullscreen: True
+[2025-10-21 21:31:51.267] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:31:51.271] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:51.271] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,5min | Started:16:00:22
+[2025-10-21 21:31:51.271] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,5min | Started:16:00:22
+[2025-10-21 21:31:51.271] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:51.271] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4396MB | Uptime:191,1min | Started:18:20:42
+[2025-10-21 21:31:51.271] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:51.271] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:51.271] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:31:51.272] [INFO] Performance service monitoring state: True
+[2025-10-21 21:31:51.373] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:31:51.373] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:51.379] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:51.379] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,5min | Started:16:00:22
+[2025-10-21 21:31:51.379] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:51.379] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:51.384] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,5min | Started:16:00:22
+[2025-10-21 21:31:52.277] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:52.282] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:52.282] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4396MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:52.282] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4396MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:52.282] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:52.282] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:52.287] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:52.287] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4396MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:52.287] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:52.288] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:52.288] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:31:52.293] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4396MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:52.293] [INFO] Initial FPS Reading: 164,4 FPS, Frame Time: 6,08ms
+[2025-10-21 21:31:52.293] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:31:52.294] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 21:31:52.297] [INFO]    Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4396MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:52.297] [INFO]    Current FPS: 164,4, Frame Time: 6,08ms
+[2025-10-21 21:31:52.297] [INFO]    Statistics: Min=0,0, Avg=0,6, Max=1,7
+[2025-10-21 21:31:53.287] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,5min | Started:16:00:22
+[2025-10-21 21:31:53.288] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:54.297] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:31:54.297] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,5min | Started:16:00:22
+[2025-10-21 21:31:54.297] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:31:54.297] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:54.297] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:54.297] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:54.298] [INFO]    Window Handle: 66374
+[2025-10-21 21:31:54.298] [INFO]    Is Fullscreen: True
+[2025-10-21 21:31:54.298] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:31:54.298] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:54.298] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:54.300] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:54.300] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,5min | Started:16:00:22
+[2025-10-21 21:31:54.300] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,5min | Started:16:00:22
+[2025-10-21 21:31:54.300] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:31:54.303] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:54.303] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:54.303] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:54.303] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:54.303] [INFO] Performance service monitoring state: True
+[2025-10-21 21:31:54.400] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:31:54.401] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:54.405] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:54.405] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,5min | Started:16:00:22
+[2025-10-21 21:31:54.405] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:54.405] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:54.409] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,5min | Started:16:00:22
+[2025-10-21 21:31:55.309] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:55.312] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:55.312] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:55.312] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:55.312] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:55.312] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:55.316] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:55.316] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:55.316] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:55.316] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:55.316] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:31:55.319] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:55.319] [INFO] Initial FPS Reading: 164,5 FPS, Frame Time: 6,08ms
+[2025-10-21 21:31:55.319] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:31:56.320] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,6min | Started:16:00:22
+[2025-10-21 21:31:56.320] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:57.329] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:57.329] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:57.329] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:57.329] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:31:57.330] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,6min | Started:16:00:22
+[2025-10-21 21:31:57.330] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:31:57.330] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:57.330] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:57.330] [INFO]    Window Handle: 66374
+[2025-10-21 21:31:57.330] [INFO]    Is Fullscreen: True
+[2025-10-21 21:31:57.330] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:31:57.333] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:57.333] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,6min | Started:16:00:22
+[2025-10-21 21:31:57.333] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,6min | Started:16:00:22
+[2025-10-21 21:31:57.333] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:57.334] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,2min | Started:18:20:42
+[2025-10-21 21:31:57.334] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:57.334] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:57.334] [INFO] Performance service monitoring state: True
+[2025-10-21 21:31:57.334] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:31:57.434] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:31:57.435] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:57.440] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:57.440] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,6min | Started:16:00:22
+[2025-10-21 21:31:57.441] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:57.441] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:57.445] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,6min | Started:16:00:22
+[2025-10-21 21:31:58.340] [INFO] Performance service monitoring state: False
+[2025-10-21 21:31:58.344] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:31:58.344] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:31:58.345] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:31:58.345] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:31:58.345] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:31:58.349] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:31:58.349] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:31:58.349] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:31:58.349] [INFO] Max retries: 60 seconds
+[2025-10-21 21:31:58.349] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:31:58.353] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:31:58.353] [INFO] Initial FPS Reading: 165,5 FPS, Frame Time: 6,04ms
+[2025-10-21 21:31:58.353] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:31:59.348] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,6min | Started:16:00:22
+[2025-10-21 21:31:59.348] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:00.357] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:00.357] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:32:00.358] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:32:00.358] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:32:00.358] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,6min | Started:16:00:22
+[2025-10-21 21:32:00.358] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:32:00.358] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:00.358] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:00.358] [INFO]    Window Handle: 66374
+[2025-10-21 21:32:00.358] [INFO]    Is Fullscreen: True
+[2025-10-21 21:32:00.358] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:32:00.360] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:00.360] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,6min | Started:16:00:22
+[2025-10-21 21:32:00.360] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,6min | Started:16:00:22
+[2025-10-21 21:32:00.361] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:00.361] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:32:00.361] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:00.361] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:00.361] [INFO] Performance service monitoring state: True
+[2025-10-21 21:32:00.361] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:32:00.461] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:32:00.461] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:00.466] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:00.467] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,6min | Started:16:00:22
+[2025-10-21 21:32:00.467] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:00.467] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:00.473] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,6min | Started:16:00:22
+[2025-10-21 21:32:01.366] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:01.369] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:01.369] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:32:01.369] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:32:01.369] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:01.369] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:01.373] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:01.373] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:32:01.373] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:01.373] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:01.373] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:32:01.376] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:32:01.376] [INFO] Initial FPS Reading: 164,5 FPS, Frame Time: 6,08ms
+[2025-10-21 21:32:01.377] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:32:02.374] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,7min | Started:16:00:22
+[2025-10-21 21:32:02.375] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:03.386] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:03.386] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:32:03.387] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:32:03.387] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:32:03.387] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,7min | Started:16:00:22
+[2025-10-21 21:32:03.387] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:32:03.387] [INFO]    Window Handle: 66374
+[2025-10-21 21:32:03.387] [INFO]    Is Fullscreen: True
+[2025-10-21 21:32:03.387] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:32:03.387] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:03.387] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:03.391] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:03.391] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,7min | Started:16:00:22
+[2025-10-21 21:32:03.392] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,7min | Started:16:00:22
+[2025-10-21 21:32:03.392] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:03.392] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,3min | Started:18:20:42
+[2025-10-21 21:32:03.392] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:03.392] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:03.392] [INFO] Performance service monitoring state: True
+[2025-10-21 21:32:03.392] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:32:03.493] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:32:03.493] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:03.500] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:03.500] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,7min | Started:16:00:22
+[2025-10-21 21:32:03.501] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:03.501] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:03.508] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,7min | Started:16:00:22
+[2025-10-21 21:32:04.397] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:04.401] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:04.401] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:04.401] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:04.401] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:04.401] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:04.404] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:04.405] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:04.405] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:04.405] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:04.405] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:32:04.408] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:04.408] [INFO] Initial FPS Reading: 165,4 FPS, Frame Time: 6,05ms
+[2025-10-21 21:32:04.408] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:32:04.408] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 21:32:04.411] [INFO]    Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:04.411] [INFO]    Current FPS: 165,4, Frame Time: 6,05ms
+[2025-10-21 21:32:04.411] [INFO]    Statistics: Min=0,0, Avg=0,6, Max=1,7
+[2025-10-21 21:32:05.408] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,7min | Started:16:00:22
+[2025-10-21 21:32:05.409] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:06.421] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:06.421] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:06.421] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:06.421] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:32:06.421] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,7min | Started:16:00:22
+[2025-10-21 21:32:06.422] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:32:06.422] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:06.422] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:06.422] [INFO]    Window Handle: 66374
+[2025-10-21 21:32:06.422] [INFO]    Is Fullscreen: True
+[2025-10-21 21:32:06.422] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:32:06.425] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:06.425] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,7min | Started:16:00:22
+[2025-10-21 21:32:06.425] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,7min | Started:16:00:22
+[2025-10-21 21:32:06.425] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:06.425] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:06.425] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:06.425] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:06.425] [INFO] Performance service monitoring state: True
+[2025-10-21 21:32:06.425] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:32:06.526] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:32:06.527] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:06.532] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:06.532] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,7min | Started:16:00:22
+[2025-10-21 21:32:06.532] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:06.532] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:06.537] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,7min | Started:16:00:22
+[2025-10-21 21:32:07.431] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:07.436] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:07.436] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:07.436] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:07.436] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:07.436] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:07.440] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:07.440] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:07.440] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:07.440] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:07.441] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:32:07.444] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:07.444] [INFO] Initial FPS Reading: 165,4 FPS, Frame Time: 6,05ms
+[2025-10-21 21:32:07.445] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:32:08.440] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,8min | Started:16:00:22
+[2025-10-21 21:32:08.440] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:09.449] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:32:09.449] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,8min | Started:16:00:22
+[2025-10-21 21:32:09.449] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:32:09.449] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:09.450] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:09.450] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:09.450] [INFO]    Window Handle: 66374
+[2025-10-21 21:32:09.450] [INFO]    Is Fullscreen: True
+[2025-10-21 21:32:09.450] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:32:09.450] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:09.450] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:09.452] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:09.452] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,8min | Started:16:00:22
+[2025-10-21 21:32:09.453] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,8min | Started:16:00:22
+[2025-10-21 21:32:09.453] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:32:09.453] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:09.453] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,4min | Started:18:20:42
+[2025-10-21 21:32:09.453] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:09.453] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:09.453] [INFO] Performance service monitoring state: True
+[2025-10-21 21:32:09.553] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:32:09.554] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:09.559] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:09.559] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,8min | Started:16:00:22
+[2025-10-21 21:32:09.559] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:09.559] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:09.563] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,8min | Started:16:00:22
+[2025-10-21 21:32:10.460] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:10.464] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:10.464] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:10.465] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:10.465] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:10.465] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:10.468] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:10.469] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:10.469] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:10.469] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:10.469] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:32:10.472] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:10.472] [INFO] Initial FPS Reading: 165,4 FPS, Frame Time: 6,05ms
+[2025-10-21 21:32:10.472] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:32:11.468] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,8min | Started:16:00:22
+[2025-10-21 21:32:11.469] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:12.475] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:12.475] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:12.475] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:12.475] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:12.475] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:12.475] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:32:12.476] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,8min | Started:16:00:22
+[2025-10-21 21:32:12.476] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:32:12.476] [INFO]    Window Handle: 66374
+[2025-10-21 21:32:12.476] [INFO]    Is Fullscreen: True
+[2025-10-21 21:32:12.476] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:32:12.477] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:12.477] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:12.478] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:12.478] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:12.478] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:12.478] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:12.478] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,8min | Started:16:00:22
+[2025-10-21 21:32:12.479] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,8min | Started:16:00:22
+[2025-10-21 21:32:12.479] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:32:12.479] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:12.482] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:12.482] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,8min | Started:16:00:22
+[2025-10-21 21:32:12.482] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:12.482] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:12.485] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,8min | Started:16:00:22
+[2025-10-21 21:32:13.485] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:13.489] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:13.489] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:13.489] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:13.489] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:13.489] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:13.493] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:13.493] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:13.493] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:13.493] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:13.493] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:32:13.496] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:13.496] [INFO] Initial FPS Reading: 165,4 FPS, Frame Time: 6,05ms
+[2025-10-21 21:32:13.496] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:32:14.494] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,9min | Started:16:00:22
+[2025-10-21 21:32:14.495] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:15.504] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:15.504] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:15.504] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:15.504] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:32:15.505] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,9min | Started:16:00:22
+[2025-10-21 21:32:15.505] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:32:15.505] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:15.505] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:15.505] [INFO]    Window Handle: 66374
+[2025-10-21 21:32:15.505] [INFO]    Is Fullscreen: True
+[2025-10-21 21:32:15.505] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:32:15.507] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:15.507] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,9min | Started:16:00:22
+[2025-10-21 21:32:15.508] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,9min | Started:16:00:22
+[2025-10-21 21:32:15.508] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:32:15.508] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:15.508] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,5min | Started:18:20:42
+[2025-10-21 21:32:15.508] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:15.508] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:15.508] [INFO] Performance service monitoring state: True
+[2025-10-21 21:32:15.607] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:32:15.607] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:15.613] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:15.613] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,9min | Started:16:00:22
+[2025-10-21 21:32:15.613] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:15.613] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:15.620] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,9min | Started:16:00:22
+[2025-10-21 21:32:16.512] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:16.514] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:16.514] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:16.514] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:16.514] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:16.514] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:16.517] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:16.517] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:16.517] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:16.517] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:16.517] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:32:16.520] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:16.520] [INFO] Initial FPS Reading: 164,4 FPS, Frame Time: 6,08ms
+[2025-10-21 21:32:16.520] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:32:16.520] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 21:32:16.522] [INFO]    Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:16.522] [INFO]    Current FPS: 164,4, Frame Time: 6,08ms
+[2025-10-21 21:32:16.523] [INFO]    Statistics: Min=0,0, Avg=0,6, Max=1,7
+[2025-10-21 21:32:17.522] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,9min | Started:16:00:22
+[2025-10-21 21:32:17.522] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:18.530] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:18.530] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:18.531] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:18.531] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:32:18.531] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,9min | Started:16:00:22
+[2025-10-21 21:32:18.531] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:32:18.531] [INFO]    Window Handle: 66374
+[2025-10-21 21:32:18.531] [INFO]    Is Fullscreen: True
+[2025-10-21 21:32:18.531] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:32:18.531] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:18.532] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:18.534] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:18.534] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,9min | Started:16:00:22
+[2025-10-21 21:32:18.534] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,9min | Started:16:00:22
+[2025-10-21 21:32:18.534] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:32:18.534] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:18.534] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:18.534] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:18.534] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:18.534] [INFO] Performance service monitoring state: True
+[2025-10-21 21:32:18.634] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:32:18.635] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:18.640] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:18.640] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,9min | Started:16:00:22
+[2025-10-21 21:32:18.640] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:18.640] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:18.645] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:331,9min | Started:16:00:22
+[2025-10-21 21:32:19.541] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:19.545] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:19.545] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:19.545] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:19.545] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:19.545] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:19.549] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:19.549] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:19.549] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:19.549] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:19.549] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:32:19.552] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:19.552] [INFO] Initial FPS Reading: 164,5 FPS, Frame Time: 6,08ms
+[2025-10-21 21:32:19.553] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:32:20.549] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,0min | Started:16:00:22
+[2025-10-21 21:32:20.550] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:21.561] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:21.561] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:21.561] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:21.561] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:32:21.561] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,0min | Started:16:00:22
+[2025-10-21 21:32:21.561] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:32:21.561] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:21.562] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:21.562] [INFO]    Window Handle: 66374
+[2025-10-21 21:32:21.562] [INFO]    Is Fullscreen: True
+[2025-10-21 21:32:21.562] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:32:21.565] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:21.565] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,0min | Started:16:00:22
+[2025-10-21 21:32:21.565] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,0min | Started:16:00:22
+[2025-10-21 21:32:21.565] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:32:21.565] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:21.565] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,6min | Started:18:20:42
+[2025-10-21 21:32:21.565] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:21.565] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:21.565] [INFO] Performance service monitoring state: True
+[2025-10-21 21:32:21.665] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:32:21.666] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:21.672] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:21.672] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,0min | Started:16:00:22
+[2025-10-21 21:32:21.672] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:21.672] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:21.678] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,0min | Started:16:00:22
+[2025-10-21 21:32:22.571] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:22.576] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:22.576] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:22.576] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:22.576] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:22.577] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:22.583] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:22.583] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:22.583] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:22.583] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:22.583] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:32:22.587] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:22.587] [INFO] Initial FPS Reading: 164,5 FPS, Frame Time: 6,08ms
+[2025-10-21 21:32:22.588] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:32:23.588] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,0min | Started:16:00:22
+[2025-10-21 21:32:23.589] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:24.599] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:24.600] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:24.600] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:24.600] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:24.600] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:24.600] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:32:24.600] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,0min | Started:16:00:22
+[2025-10-21 21:32:24.600] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:32:24.600] [INFO]    Window Handle: 66374
+[2025-10-21 21:32:24.600] [INFO]    Is Fullscreen: True
+[2025-10-21 21:32:24.601] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:32:24.603] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:24.603] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,0min | Started:16:00:22
+[2025-10-21 21:32:24.604] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,0min | Started:16:00:22
+[2025-10-21 21:32:24.604] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:32:24.604] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:24.604] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:24.604] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:24.604] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:24.604] [INFO] Performance service monitoring state: True
+[2025-10-21 21:32:24.703] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:32:24.703] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:24.708] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:24.708] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,0min | Started:16:00:22
+[2025-10-21 21:32:24.708] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:24.708] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:24.712] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,0min | Started:16:00:22
+[2025-10-21 21:32:25.609] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:25.612] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:25.612] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:25.612] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:25.612] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:25.612] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:25.614] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:25.614] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:25.614] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:25.614] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:25.615] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:32:25.617] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:25.617] [INFO] Initial FPS Reading: 30,1 FPS, Frame Time: 33,26ms
+[2025-10-21 21:32:25.617] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:32:26.616] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 21:32:26.618] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,1min | Started:16:00:22
+[2025-10-21 21:32:26.620] [INFO]    Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:26.620] [INFO]    Current FPS: 30,0, Frame Time: 33,29ms
+[2025-10-21 21:32:26.620] [INFO]    Statistics: Min=0,0, Avg=0,6, Max=1,7
+[2025-10-21 21:32:26.620] [INFO] Performance service monitoring state: False
+[2025-10-21 21:32:27.625] [INFO] 🎯 NEW FULLSCREEN APP DETECTED:
+[2025-10-21 21:32:27.625] [INFO]    PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,1min | Started:16:00:22
+[2025-10-21 21:32:27.625] [INFO]    Window Title: 'Shell Handwriting Canvas'
+[2025-10-21 21:32:27.625] [INFO]    Window Handle: 66374
+[2025-10-21 21:32:27.625] [INFO]    Is Fullscreen: True
+[2025-10-21 21:32:27.626] [INFO]    🎮 Starting RTSS monitoring...
+[2025-10-21 21:32:27.628] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:27.628] [INFO] Target Process: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,1min | Started:16:00:22
+[2025-10-21 21:32:27.628] [INFO] Starting RTSS monitoring for: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,1min | Started:16:00:22
+[2025-10-21 21:32:27.628] [INFO] Monitoring STARTED PID 1900
+[2025-10-21 21:32:27.628] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:27.628] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 21:32:27.628] [INFO] Target Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:27.629] [INFO] Starting RTSS monitoring for: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:27.629] [INFO] Already monitoring, stopping current monitoring first
+[2025-10-21 21:32:27.630] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:27.630] [INFO] Searching for RTSS hook on: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,1min | Started:16:00:22
+[2025-10-21 21:32:27.630] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:27.630] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:27.630] [INFO] Performance service monitoring state: True
+[2025-10-21 21:32:27.729] [INFO] Monitoring STARTED PID 30184
+[2025-10-21 21:32:27.729] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 21:32:27.734] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 21:32:27.734] [INFO] Searching for RTSS hook on: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:27.734] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 21:32:27.734] [INFO] Max retries: 60 seconds
+[2025-10-21 21:32:27.734] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 21:32:27.738] [INFO] Hooked Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:191,7min | Started:18:20:42
+[2025-10-21 21:32:27.739] [INFO] Initial FPS Reading: 29,6 FPS, Frame Time: 33,77ms
+[2025-10-21 21:32:27.739] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 21:32:28.637] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,1min | Started:16:00:22
+[2025-10-21 21:32:29.643] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,1min | Started:16:00:22
+[2025-10-21 21:32:30.649] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,1min | Started:16:00:22
+[2025-10-21 21:32:31.657] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,2min | Started:16:00:22
+[2025-10-21 21:32:32.666] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,2min | Started:16:00:22
+[2025-10-21 21:32:33.678] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,2min | Started:16:00:22
+[2025-10-21 21:32:34.687] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,2min | Started:16:00:22
+[2025-10-21 21:32:35.698] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,2min | Started:16:00:22
+[2025-10-21 21:32:36.708] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,2min | Started:16:00:22
+[2025-10-21 21:32:36.739] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 21:32:36.743] [INFO]    Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4395MB | Uptime:191,9min | Started:18:20:42
+[2025-10-21 21:32:36.744] [INFO]    Current FPS: 30,1, Frame Time: 33,26ms
+[2025-10-21 21:32:36.744] [INFO]    Statistics: Min=0,0, Avg=0,6, Max=1,7
+[2025-10-21 21:32:37.716] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,3min | Started:16:00:22
+[2025-10-21 21:32:38.721] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,3min | Started:16:00:22
+[2025-10-21 21:32:39.728] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,3min | Started:16:00:22
+[2025-10-21 21:32:40.736] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,3min | Started:16:00:22
+[2025-10-21 21:32:41.749] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,3min | Started:16:00:22
+[2025-10-21 21:32:42.757] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,3min | Started:16:00:22
+[2025-10-21 21:32:43.765] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,4min | Started:16:00:22
+[2025-10-21 21:32:44.771] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,4min | Started:16:00:22
+[2025-10-21 21:32:45.780] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,4min | Started:16:00:22
+[2025-10-21 21:32:46.745] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 21:32:46.750] [INFO]    Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:192,1min | Started:18:20:42
+[2025-10-21 21:32:46.750] [INFO]    Current FPS: 30,1, Frame Time: 33,26ms
+[2025-10-21 21:32:46.750] [INFO]    Statistics: Min=0,0, Avg=0,6, Max=1,7
+[2025-10-21 21:32:46.788] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,4min | Started:16:00:22
+[2025-10-21 21:32:47.800] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,4min | Started:16:00:22
+[2025-10-21 21:32:48.810] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,4min | Started:16:00:22
+[2025-10-21 21:32:49.817] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,5min | Started:16:00:22
+[2025-10-21 21:32:50.826] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,5min | Started:16:00:22
+[2025-10-21 21:32:51.836] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,5min | Started:16:00:22
+[2025-10-21 21:32:52.847] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,5min | Started:16:00:22
+[2025-10-21 21:32:53.857] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,5min | Started:16:00:22
+[2025-10-21 21:32:54.867] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,5min | Started:16:00:22
+[2025-10-21 21:32:55.879] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,6min | Started:16:00:22
+[2025-10-21 21:32:56.752] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 21:32:56.756] [INFO]    Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4394MB | Uptime:192,2min | Started:18:20:42
+[2025-10-21 21:32:56.756] [INFO]    Current FPS: 30,1, Frame Time: 33,26ms
+[2025-10-21 21:32:56.756] [INFO]    Statistics: Min=0,0, Avg=0,6, Max=1,7
+[2025-10-21 21:32:56.889] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,6min | Started:16:00:22
+[2025-10-21 21:32:57.898] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,6min | Started:16:00:22
+[2025-10-21 21:32:58.906] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,6min | Started:16:00:22
+[2025-10-21 21:32:59.915] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,6min | Started:16:00:22
+[2025-10-21 21:33:00.923] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,6min | Started:16:00:22
+[2025-10-21 21:33:01.933] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,7min | Started:16:00:22
+[2025-10-21 21:33:02.941] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,7min | Started:16:00:22
+[2025-10-21 21:33:03.950] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,7min | Started:16:00:22
+[2025-10-21 21:33:04.960] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,7min | Started:16:00:22
+[2025-10-21 21:33:05.970] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,7min | Started:16:00:22
+[2025-10-21 21:33:06.759] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 21:33:06.764] [INFO]    Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4395MB | Uptime:192,4min | Started:18:20:42
+[2025-10-21 21:33:06.764] [INFO]    Current FPS: 30,0, Frame Time: 33,29ms
+[2025-10-21 21:33:06.764] [INFO]    Statistics: Min=0,0, Avg=0,6, Max=1,7
+[2025-10-21 21:33:06.978] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,7min | Started:16:00:22
+[2025-10-21 21:33:07.987] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,8min | Started:16:00:22
+[2025-10-21 21:33:08.994] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,8min | Started:16:00:22
+[2025-10-21 21:33:10.002] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,8min | Started:16:00:22
+[2025-10-21 21:33:11.009] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,8min | Started:16:00:22
+[2025-10-21 21:33:12.020] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,8min | Started:16:00:22
+[2025-10-21 21:33:13.031] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,8min | Started:16:00:22
+[2025-10-21 21:33:14.037] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,9min | Started:16:00:22
+[2025-10-21 21:33:15.045] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,9min | Started:16:00:22
+[2025-10-21 21:33:16.054] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,9min | Started:16:00:22
+[2025-10-21 21:33:16.764] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 21:33:16.769] [INFO]    Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4395MB | Uptime:192,6min | Started:18:20:42
+[2025-10-21 21:33:16.769] [INFO]    Current FPS: 30,0, Frame Time: 33,29ms
+[2025-10-21 21:33:16.770] [INFO]    Statistics: Min=0,0, Avg=0,6, Max=1,7
+[2025-10-21 21:33:17.061] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,9min | Started:16:00:22
+[2025-10-21 21:33:18.070] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,9min | Started:16:00:22
+[2025-10-21 21:33:19.077] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:332,9min | Started:16:00:22
+[2025-10-21 21:33:20.081] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:333,0min | Started:16:00:22
+[2025-10-21 21:33:21.092] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:333,0min | Started:16:00:22
+[2025-10-21 21:33:22.100] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:333,0min | Started:16:00:22
+[2025-10-21 21:33:23.109] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:333,0min | Started:16:00:22
+[2025-10-21 21:33:24.119] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:333,0min | Started:16:00:22
+[2025-10-21 21:33:25.128] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:333,0min | Started:16:00:22
+[2025-10-21 21:33:26.139] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:333,1min | Started:16:00:22
+[2025-10-21 21:33:26.772] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 21:33:26.776] [INFO]    Process: PID:30184 | Name:'CoreKeeper' | Window:'Core Keeper' | Executable:'common\Core Keeper\CoreKeeper.exe' | Memory:4393MB | Uptime:192,7min | Started:18:20:42
+[2025-10-21 21:33:26.777] [INFO]    Current FPS: 30,0, Frame Time: 33,29ms
+[2025-10-21 21:33:26.777] [INFO]    Statistics: Min=0,0, Avg=0,6, Max=1,7
+[2025-10-21 21:33:27.145] [DEBUG] ✅ Monitoring active: PID:1900 | Name:'TabTip' | Window:'[No Window]' | Executable:'microsoft shared\ink\TabTip.exe' | Memory:75MB | Uptime:333,1min | Started:16:00:22

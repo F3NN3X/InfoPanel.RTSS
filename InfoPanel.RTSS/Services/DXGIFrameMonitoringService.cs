@@ -31,6 +31,12 @@ namespace InfoPanel.RTSS.Services
         public event Action<double, double, double, double, double>? FpsUpdated;
         
         /// <summary>
+        /// Event fired when RTSS successfully hooks a process.
+        /// Parameters: (processId, windowTitle)
+        /// </summary>
+        public event Action<uint, string>? RTSSHooked;
+        
+        /// <summary>
         /// Gets the process ID currently being monitored by RTSS.
         /// Returns 0 if not monitoring.
         /// </summary>
@@ -96,23 +102,87 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
-        /// Gets the window title for a process.
+        /// Gets the window title for a process with retry logic for games.
         /// </summary>
         private string GetProcessWindowTitle(System.Diagnostics.Process process)
         {
             try
             {
+                // Method 1: Try MainWindowTitle first (with refresh for games that just started)
                 if (process.MainWindowHandle != IntPtr.Zero)
                 {
+                    process.Refresh(); // Refresh process info to get latest window state
                     var title = process.MainWindowTitle;
-                    return string.IsNullOrEmpty(title) ? "[No Title]" : title;
+                    if (!string.IsNullOrWhiteSpace(title) && title.Length > 1)
+                    {
+                        return title;
+                    }
                 }
-                return "[No Window]";
+                
+                // Method 2: For games, try to wait a bit for window to be created
+                var processName = process.ProcessName;
+                var isGameProcess = IsLikelyGameProcess(processName);
+                _fileLogger?.LogInfo($"🎮 Window Title Debug: ProcessName='{processName}', IsGameProcess={isGameProcess}");
+                
+                if (!string.IsNullOrWhiteSpace(processName) && isGameProcess)
+                {
+                    // Give games a brief moment to create their main window
+                    for (int retry = 0; retry < 3; retry++)
+                    {
+                        process.Refresh();
+                        var hasWindow = process.MainWindowHandle != IntPtr.Zero;
+                        var windowTitle = hasWindow ? process.MainWindowTitle : "";
+                        _fileLogger?.LogInfo($"🎮 Window Title Debug: Retry {retry + 1}/3, HasWindow={hasWindow}, WindowTitle='{windowTitle}'");
+                        
+                        if (hasWindow)
+                        {
+                            var title = process.MainWindowTitle;
+                            if (!string.IsNullOrWhiteSpace(title) && title.Length > 1)
+                            {
+                                _fileLogger?.LogInfo($"🎮 Window Title Debug: Found valid title: '{title}'");
+                                return title;
+                            }
+                        }
+                        if (retry < 2) Thread.Sleep(100); // Brief wait before retry
+                    }
+                    
+                    // Fall back to game process name
+                    _fileLogger?.LogInfo($"🎮 Window Title Debug: Using fallback: '{processName} (Game)'");
+                    return $"{processName} (Game)";
+                }
+                
+                return process.MainWindowHandle != IntPtr.Zero ? "[No Title]" : "[No Window]";
             }
             catch
             {
                 return "[Title Error]";
             }
+        }
+        
+        /// <summary>
+        /// Determines if a process name likely represents a game executable.
+        /// </summary>
+        private static bool IsLikelyGameProcess(string processName)
+        {
+            var lowerName = processName.ToLowerInvariant();
+            
+            // Common game executables
+            return lowerName.Contains("game") || 
+                   lowerName.EndsWith(".exe") && (
+                       lowerName.Contains("bf") ||        // Battlefield series
+                       lowerName.Contains("nms") ||       // No Man's Sky
+                       lowerName.Contains("cod") ||       // Call of Duty
+                       lowerName.Contains("apex") ||      // Apex Legends
+                       lowerName.Contains("valorant") ||  // Valorant
+                       lowerName.Contains("csgo") ||      // CS:GO
+                       lowerName.Contains("dota") ||      // Dota 2
+                       lowerName.Contains("lol") ||       // League of Legends
+                       lowerName.Contains("wow") ||       // World of Warcraft
+                       lowerName.Contains("minecraft") || // Minecraft
+                       lowerName.Contains("fortnite") ||  // Fortnite
+                       lowerName.Contains("steam") ||     // Steam games
+                       lowerName.Length <= 5              // Short names often games
+                   );
         }
 
         /// <summary>
@@ -1121,6 +1191,23 @@ namespace InfoPanel.RTSS.Services
                             _fileLogger?.LogInfo($"Initial FPS Reading: {data.Value.fps:F1} FPS, Frame Time: {data.Value.frameTimeMs:F2}ms");
                             Console.WriteLine($"[SUCCESS] {hookMsg}");
                             rtssDetected = true;
+                            
+                            // Get window title for the successfully hooked process
+                            string windowTitle = "[No Window]";
+                            try
+                            {
+                                using var process = System.Diagnostics.Process.GetProcessById((int)processId);
+                                _fileLogger?.LogInfo($"🔍 RTSS Hook Debug: Process Name='{process.ProcessName}', MainWindowHandle={process.MainWindowHandle != IntPtr.Zero}");
+                                windowTitle = GetProcessWindowTitle(process);
+                                _fileLogger?.LogInfo($"🔍 RTSS Hook Debug: GetProcessWindowTitle returned='{windowTitle}'");
+                            }
+                            catch (Exception ex) 
+                            { 
+                                _fileLogger?.LogInfo($"⚠️ RTSS Hook Debug: Exception getting window title: {ex.Message}");
+                            }
+                            
+                            // Fire event to update main application state with RTSS-confirmed window title
+                            RTSSHooked?.Invoke(processId, windowTitle);
                             
                             // Start continuous monitoring phase
                             _fileLogger?.LogInfo($"=== CONTINUOUS MONITORING PHASE ===");

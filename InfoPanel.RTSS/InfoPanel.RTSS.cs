@@ -3,6 +3,8 @@ using InfoPanel.RTSS.Interfaces;
 using InfoPanel.RTSS.Models;
 using InfoPanel.RTSS.Services;
 using InfoPanel.Plugins;
+using System.Diagnostics;
+using System.IO;
 
 /*
  * File: InfoPanel.RTSS.cs
@@ -35,6 +37,7 @@ namespace InfoPanel.RTSS
         private readonly IWindowDetectionService _windowDetectionService;
         private readonly ISystemInformationService _systemInfoService;
         private readonly ISensorManagementService _sensorService;
+        private readonly FileLoggingService _fileLogger;
 
         private readonly MonitoringState _currentState = new();
         private CancellationTokenSource? _cancellationTokenSource;
@@ -50,21 +53,36 @@ namespace InfoPanel.RTSS
                 "Simple FPS plugin showing FPS, frame time, 1% low FPS, window title, resolution, and refresh rate using RTSS"
             )
         {
+            // Initialize file logging first for debugging
+            _fileLogger = new FileLoggingService();
+            _fileLogger.LogInfo("=== InfoPanel.RTSS Constructor Called ===");
+            
             // Critical: Add early logging for debugging
             System.Diagnostics.Debug.WriteLine("=== InfoPanel.RTSS Constructor Called ===");
             Console.WriteLine("=== InfoPanel.RTSS Constructor Called ===");
 
-            // Initialize services - in a real DI scenario, these would be injected
-            _performanceService = new PerformanceMonitoringService();
-            _windowDetectionService = new WindowDetectionService();
-            _systemInfoService = new SystemInformationService();
-            _sensorService = new SensorManagementService();
+            try
+            {
+                // Initialize services - in a real DI scenario, these would be injected
+                _performanceService = new PerformanceMonitoringService(_fileLogger);
+                _windowDetectionService = new WindowDetectionService();
+                _systemInfoService = new SystemInformationService();
+                _sensorService = new SensorManagementService();
 
-            // Subscribe to service events
-            _performanceService.MetricsUpdated += OnPerformanceMetricsUpdated;
-            _windowDetectionService.WindowChanged += OnWindowChanged;
+                _fileLogger.LogInfo("All services initialized successfully");
 
-            Console.WriteLine("RTSS Plugin initialized with all services");
+                // Subscribe to service events
+                _performanceService.MetricsUpdated += OnPerformanceMetricsUpdated;
+                _windowDetectionService.WindowChanged += OnWindowChanged;
+
+                _fileLogger.LogInfo("Event subscriptions completed");
+                Console.WriteLine("RTSS Plugin initialized with all services");
+            }
+            catch (Exception ex)
+            {
+                _fileLogger.LogError("Failed to initialize plugin services", ex);
+                throw;
+            }
         }
 
         /// <summary>
@@ -84,26 +102,33 @@ namespace InfoPanel.RTSS
         {
             try
             {
+                _fileLogger.LogInfo("=== RTSS Plugin Initialize() called ===");
                 Console.WriteLine("=== RTSS Plugin Initialize() called ===");
 
                 _cancellationTokenSource = new CancellationTokenSource();
 
                 // Initialize system information
                 _currentState.System = _systemInfoService.GetSystemInformation();
+                _fileLogger.LogSystemInfo("Information", $"GPU: {_currentState.System.GpuName}, Display: {_currentState.System.Resolution}@{_currentState.System.RefreshRate}Hz");
 
                 // Start window detection service
                 _windowDetectionService.StartMonitoring();
+                _fileLogger.LogInfo("Window detection service started");
 
                 // Start continuous monitoring loop (like the original implementation)
                 _ = Task.Run(async () => await StartContinuousMonitoringAsync(_cancellationTokenSource.Token).ConfigureAwait(false));
+                _fileLogger.LogInfo("Continuous monitoring task started");
 
                 // Perform initial window check
                 _ = Task.Run(async () => await PerformInitialWindowCheckAsync().ConfigureAwait(false));
+                _fileLogger.LogInfo("Initial window check task started");
 
+                _fileLogger.LogInfo("RTSS Plugin initialization completed successfully");
                 Console.WriteLine("RTSS Plugin initialization completed");
             }
             catch (Exception ex)
             {
+                _fileLogger.LogError("Error during plugin initialization", ex);
                 Console.WriteLine($"Error during plugin initialization: {ex}");
             }
         }
@@ -115,12 +140,15 @@ namespace InfoPanel.RTSS
         {
             try
             {
+                _fileLogger.LogInfo("=== RTSS Plugin Load() called ===");
                 Console.WriteLine("=== RTSS Plugin Load() called ===");
 
                 _sensorService.CreateAndRegisterSensors(containers);
+                _fileLogger.LogInfo("Sensors created and registered with InfoPanel");
                 
                 // Update sensors with initial system information
                 _sensorService.UpdateSystemSensors(_currentState.System);
+                _fileLogger.LogInfo("System sensors updated with initial information");
                 
                 Console.WriteLine("Sensors loaded and registered with InfoPanel");
 
@@ -357,6 +385,8 @@ namespace InfoPanel.RTSS
         /// </summary>
         private async Task StartContinuousMonitoringAsync(CancellationToken cancellationToken)
         {
+            _fileLogger?.LogInfo("=== CONTINUOUS WINDOW MONITORING STARTED ===");
+            
             try
             {
                 while (!cancellationToken.IsCancellationRequested)
@@ -364,6 +394,26 @@ namespace InfoPanel.RTSS
                     var currentWindow = _windowDetectionService.GetCurrentFullscreenWindow();
                     var systemInfo = _systemInfoService.GetSystemInformation();
                     uint pid = currentWindow?.ProcessId ?? 0;
+
+                    if (pid != 0)
+                    {
+                        var processInfo = GetDetailedProcessInfo(pid);
+                        
+                        if (_performanceService.IsMonitoring)
+                        {
+                            _fileLogger?.LogDebug($"✅ Monitoring active: {processInfo}");
+                        }
+                        else
+                        {
+                            _fileLogger?.LogInfo($"🎯 NEW FULLSCREEN APP DETECTED:");
+                            _fileLogger?.LogInfo($"   {processInfo}");
+                            _fileLogger?.LogInfo($"   Window Title: '{currentWindow?.WindowTitle ?? "None"}'");
+                            _fileLogger?.LogInfo($"   Window Handle: {currentWindow?.WindowHandle}");
+                            _fileLogger?.LogInfo($"   Is Fullscreen: {currentWindow?.IsFullscreen}");
+                            
+                            _fileLogger?.LogInfo($"   🎮 Starting RTSS monitoring...");
+                        }
+                    }
 
                     Console.WriteLine($"Continuous monitoring check - PID: {pid}, " +
                                     $"Title: {currentWindow?.WindowTitle ?? "None"}, " +
@@ -497,6 +547,10 @@ namespace InfoPanel.RTSS
         {
             try
             {
+                var processInfo = GetDetailedProcessInfo(processId);
+                _fileLogger?.LogInfo($"=== RTSS MONITORING START REQUEST ===");
+                _fileLogger?.LogInfo($"Target Process: {processInfo}");
+                
                 // Performance service has its own guard to prevent duplicate starts
                 // Don't stop/reset here as it clears the frame time buffer needed for 1% low calculation
                 Console.WriteLine($"StartMonitoringAsync: Starting monitoring for process ID: {processId}");
@@ -504,13 +558,17 @@ namespace InfoPanel.RTSS
                 // Start performance monitoring (service will skip if already monitoring same PID)
                 var cancellationToken = _cancellationTokenSource?.Token ?? CancellationToken.None;
                 
+                _fileLogger?.LogInfo($"Starting RTSS monitoring for: {processInfo}");
                 Console.WriteLine($"StartMonitoringAsync: Calling _performanceService.StartMonitoringAsync for PID: {processId}");
                 await _performanceService.StartMonitoringAsync(processId, cancellationToken).ConfigureAwait(false);
 
+                _fileLogger?.LogInfo($"Performance service monitoring state: {_performanceService.IsMonitoring}");
                 Console.WriteLine($"StartMonitoringAsync: Performance service IsMonitoring: {_performanceService.IsMonitoring}");
             }
             catch (Exception ex)
             {
+                var processInfo = GetDetailedProcessInfo(processId);
+                _fileLogger?.LogError($"Error starting monitoring for: {processInfo}", ex);
                 Console.WriteLine($"StartMonitoringAsync: Error starting monitoring for PID {processId}: {ex}");
                 _currentState.IsMonitoring = false;
             }
@@ -588,6 +646,79 @@ namespace InfoPanel.RTSS
         }
 
         /// <summary>
+        /// Gets detailed information about a process for logging.
+        /// </summary>
+        private string GetDetailedProcessInfo(uint pid)
+        {
+            try
+            {
+                var process = Process.GetProcessById((int)pid);
+                var windowTitle = GetProcessWindowTitle(process);
+                var executablePath = GetProcessExecutablePath(process);
+                var processName = process.ProcessName;
+                var workingSet = process.WorkingSet64 / (1024 * 1024); // MB
+                var startTime = process.StartTime;
+                var uptime = DateTime.Now - startTime;
+                
+                return $"PID:{pid} | Name:'{processName}' | Window:'{windowTitle}' | " +
+                       $"Executable:'{executablePath}' | Memory:{workingSet}MB | " +
+                       $"Uptime:{uptime.TotalMinutes:F1}min | Started:{startTime:HH:mm:ss}";
+            }
+            catch (Exception ex)
+            {
+                return $"PID:{pid} | ERROR: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Gets the window title for a process.
+        /// </summary>
+        private string GetProcessWindowTitle(Process process)
+        {
+            try
+            {
+                if (process.MainWindowHandle != IntPtr.Zero)
+                {
+                    var title = process.MainWindowTitle;
+                    return string.IsNullOrEmpty(title) ? "[No Title]" : title;
+                }
+                return "[No Window]";
+            }
+            catch
+            {
+                return "[Title Error]";
+            }
+        }
+
+        /// <summary>
+        /// Gets a shortened executable path for a process.
+        /// </summary>
+        private string GetProcessExecutablePath(Process process)
+        {
+            try
+            {
+                var fullPath = process.MainModule?.FileName ?? "[Unknown Path]";
+                var fileName = Path.GetFileName(fullPath);
+                var directory = Path.GetDirectoryName(fullPath);
+                
+                // Show last 2 directory levels for context
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    var parts = directory.Split(Path.DirectorySeparatorChar);
+                    var relevantParts = parts.Skip(Math.Max(0, parts.Length - 2)).ToArray();
+                    var shortPath = string.Join("\\", relevantParts);
+                    return $"{shortPath}\\{fileName}";
+                }
+                
+                return fileName;
+            }
+            catch
+            {
+                return "[Path Error]";
+            }
+        }
+
+        /// <summary>
         /// Disposes resources, both managed and unmanaged.
         /// </summary>
         protected virtual void Dispose(bool disposing)
@@ -612,6 +743,9 @@ namespace InfoPanel.RTSS
                         // Cancel any ongoing operations
                         _cancellationTokenSource?.Cancel();
                         _cancellationTokenSource?.Dispose();
+
+                        // Dispose file logger last
+                        _fileLogger?.Dispose();
 
                         Console.WriteLine("RTSSPlugin disposed successfully");
                     }

@@ -1,5 +1,45 @@
 # CHANGELOG
 
+## v1.1.1 (October 21, 2025)
+
+**🐞 Debug Logging for User Troubleshooting**
+
+### ✨ **New Features**
+- **File-Based Debug Logging**: Added comprehensive debug logging to `debug.log` in plugin directory
+  - **Purpose**: Help troubleshoot user issues where plugin shows no FPS
+  - **Location**: `C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS\debug.log`
+  - **Content**: Plugin initialization, RTSS detection attempts, FPS updates, system information, errors
+  - **Safety**: Thread-safe file writing with proper exception handling
+
+### 🔧 **Enhanced Debugging**
+- **Plugin Lifecycle Logging**: Tracks constructor, initialization, service startup, and disposal
+- **RTSS Detection Logging**: Detailed logs of RTSS shared memory attempts and hook detection
+  - Logs retry attempts (e.g., "Waiting for RTSS to hook game... (5/60s)")
+  - Records successful detection: "RTSS hook detected after X seconds"
+  - Reports failures: "RTSS not detected after 60 seconds, falling back to GPU counters"
+- **FPS Update Logging**: Records actual FPS values from RTSS with timestamps
+- **System Information Logging**: GPU name, display resolution, and refresh rate
+- **Error Logging**: Full exception details with stack traces for debugging
+
+### 🛠️ **Technical Implementation**
+- **FileLoggingService**: New service class for centralized file logging
+- **Automatic Cleanup**: Proper disposal with session end markers
+- **Log File Management**: Creates new session log on each plugin load
+- **Fallback Safety**: Falls back to console logging if file writing fails
+- **Integration**: Logging integrated into DXGIFrameMonitoringService and main plugin class
+
+### 📝 **For Users Experiencing Issues**
+When reporting "no FPS showing" problems, please share the `debug.log` file from:
+`C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS\debug.log`
+
+This will help identify:
+- Whether RTSS is installed and running
+- If RTSS successfully hooks the game
+- Any initialization or service startup failures
+- System configuration details
+
+---
+
 ## v1.1.0 (October 20, 2025)
 
 **🎯 Major FPS Accuracy & Consistency Improvements**

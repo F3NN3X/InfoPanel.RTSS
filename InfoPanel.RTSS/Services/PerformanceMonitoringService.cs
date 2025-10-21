@@ -25,11 +25,12 @@ namespace InfoPanel.RTSS.Services
         /// <summary>
         /// Initializes a new instance of the PerformanceMonitoringService with DXGI.
         /// </summary>
-        public PerformanceMonitoringService()
+        public PerformanceMonitoringService(FileLoggingService? fileLogger = null)
         {
-            _dxgiService = new DXGIFrameMonitoringService();
+            _dxgiService = new DXGIFrameMonitoringService(fileLogger);
             _dxgiService.FpsUpdated += OnFpsUpdated;
             
+            fileLogger?.LogInfo("PerformanceMonitoringService initialized with DXGI frame monitoring");
             Console.WriteLine("PerformanceMonitoringService: Initialized with DXGI frame monitoring");
             Console.WriteLine("DXGI provides anti-cheat compatible FPS monitoring using GPU performance counters");
         }

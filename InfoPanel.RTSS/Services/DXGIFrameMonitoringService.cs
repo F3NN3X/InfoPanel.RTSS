@@ -8,10 +8,13 @@ namespace InfoPanel.RTSS.Services
     /// </summary>
     public class DXGIFrameMonitoringService : IDisposable
     {
+        private readonly FileLoggingService? _fileLogger;
+        
         private double _currentFps;
         private double _averageFrameTime;
         private uint _monitoredProcessId;
         private double _lastValidFps; // Hold last valid FPS to prevent flickering to 0
+        private DateTime _lastDetailedLogTime = DateTime.MinValue;
         
         // RTSS built-in statistics
         private double _minFps;
@@ -59,12 +62,111 @@ namespace InfoPanel.RTSS.Services
         public double MaxFps => _maxFps;
 
         /// <summary>
+        /// Initializes the service with optional file logging.
+        /// </summary>
+        public DXGIFrameMonitoringService(FileLoggingService? fileLogger = null)
+        {
+            _fileLogger = fileLogger;
+            _fileLogger?.LogInfo("DXGIFrameMonitoringService initialized");
+        }
+
+        /// <summary>
+        /// Gets detailed information about a process for logging.
+        /// </summary>
+        private string GetDetailedProcessInfo(uint pid)
+        {
+            try
+            {
+                var process = System.Diagnostics.Process.GetProcessById((int)pid);
+                var windowTitle = GetProcessWindowTitle(process);
+                var executablePath = GetProcessExecutablePath(process);
+                var processName = process.ProcessName;
+                var workingSet = process.WorkingSet64 / (1024 * 1024); // MB
+                var startTime = process.StartTime;
+                var uptime = DateTime.Now - startTime;
+                
+                return $"PID:{pid} | Name:'{processName}' | Window:'{windowTitle}' | " +
+                       $"Executable:'{executablePath}' | Memory:{workingSet}MB | " +
+                       $"Uptime:{uptime.TotalMinutes:F1}min | Started:{startTime:HH:mm:ss}";
+            }
+            catch (Exception ex)
+            {
+                return $"PID:{pid} | ERROR: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Gets the window title for a process.
+        /// </summary>
+        private string GetProcessWindowTitle(System.Diagnostics.Process process)
+        {
+            try
+            {
+                if (process.MainWindowHandle != IntPtr.Zero)
+                {
+                    var title = process.MainWindowTitle;
+                    return string.IsNullOrEmpty(title) ? "[No Title]" : title;
+                }
+                return "[No Window]";
+            }
+            catch
+            {
+                return "[Title Error]";
+            }
+        }
+
+        /// <summary>
+        /// Gets a shortened executable path for a process.
+        /// </summary>
+        private string GetProcessExecutablePath(System.Diagnostics.Process process)
+        {
+            try
+            {
+                var fullPath = process.MainModule?.FileName ?? "[Unknown Path]";
+                var fileName = Path.GetFileName(fullPath);
+                var directory = Path.GetDirectoryName(fullPath);
+                
+                // Show last 2 directory levels for context
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    var parts = directory.Split(Path.DirectorySeparatorChar);
+                    var relevantParts = parts.Skip(Math.Max(0, parts.Length - 2)).ToArray();
+                    var shortPath = string.Join("\\", relevantParts);
+                    return $"{shortPath}\\{fileName}";
+                }
+                
+                return fileName;
+            }
+            catch
+            {
+                return "[Path Error]";
+            }
+        }
+
+        /// <summary>
+        /// Checks if a process is still running.
+        /// </summary>
+        private bool IsProcessRunning(uint pid)
+        {
+            try
+            {
+                var process = System.Diagnostics.Process.GetProcessById((int)pid);
+                return !process.HasExited;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Starts monitoring FPS for the specified process.
         /// </summary>
         public async Task StartMonitoringAsync(uint processId, CancellationToken cancellationToken = default)
         {
             if (_isMonitoring)
             {
+                _fileLogger?.LogInfo("Already monitoring, stopping current monitoring first");
                 Console.WriteLine("DXGIFrameMonitoringService: Already monitoring, stopping first");
                 await StopMonitoringAsync();
             }
@@ -73,11 +175,13 @@ namespace InfoPanel.RTSS.Services
             _isMonitoring = true;
             _monitoredProcessId = processId;
 
+            _fileLogger?.LogMonitoringState("STARTED", (int)processId);
             Console.WriteLine($"DXGIFrameMonitoringService: Starting frame monitoring for PID {processId}");
 
             try
             {
                 // Always try RTSS first (with retry logic for when game isn't hooked yet)
+                _fileLogger?.LogInfo("Attempting RTSS shared memory monitoring (will retry if not hooked yet)");
                 Console.WriteLine("DXGIFrameMonitoringService: Attempting RTSS shared memory monitoring (will retry if not hooked yet)");
                 await MonitorWithRTSSAsync(processId, _cts.Token);
                 
@@ -988,17 +1092,38 @@ namespace InfoPanel.RTSS.Services
             const int maxRetries = 60; // Try for up to 60 seconds before giving up
             const int maxConsecutiveFailures = 10; // If RTSS disappears for 10 seconds, exit
             
+            var processInfo = GetDetailedProcessInfo(processId);
+            _fileLogger?.LogInfo($"=== RTSS DETECTION PHASE ===");
+            _fileLogger?.LogInfo($"Searching for RTSS hook on: {processInfo}");
+            _fileLogger?.LogInfo($"Will check RTSS shared memory versions: V2, V1");
+            _fileLogger?.LogInfo($"Max retries: {maxRetries} seconds");
+            
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
+                    // Check if process still exists
+                    if (!IsProcessRunning(processId))
+                    {
+                        _fileLogger?.LogWarning($"Process no longer exists: {processInfo}");
+                        Console.WriteLine($"[WARNING] Process no longer exists: PID {processId}");
+                        return;
+                    }
+
                     var data = TryReadRTSSData(processId);
                     if (data.HasValue)
                     {
                         if (!rtssDetected)
                         {
-                            Console.WriteLine($"DXGIFrameMonitoringService: RTSS hook detected after {retryCount} seconds");
+                            var hookMsg = $"✅ RTSS HOOK DETECTED after {retryCount} seconds!";
+                            _fileLogger?.LogInfo(hookMsg);
+                            _fileLogger?.LogInfo($"Hooked Process: {GetDetailedProcessInfo(processId)}");
+                            _fileLogger?.LogInfo($"Initial FPS Reading: {data.Value.fps:F1} FPS, Frame Time: {data.Value.frameTimeMs:F2}ms");
+                            Console.WriteLine($"[SUCCESS] {hookMsg}");
                             rtssDetected = true;
+                            
+                            // Start continuous monitoring phase
+                            _fileLogger?.LogInfo($"=== CONTINUOUS MONITORING PHASE ===");
                         }
                         
                         consecutiveFailures = 0; // Reset failure counter on success
@@ -1007,6 +1132,18 @@ namespace InfoPanel.RTSS.Services
                         _minFps = data.Value.minFps;
                         _avgFps = data.Value.avgFps;
                         _maxFps = data.Value.maxFps;
+                        
+                        // Log detailed statistics every 10 seconds
+                        var now = DateTime.Now;
+                        if (rtssDetected && (now - _lastDetailedLogTime).TotalSeconds >= 10)
+                        {
+                            _fileLogger?.LogInfo($"📊 FPS Statistics (10s update):");
+                            _fileLogger?.LogInfo($"   Process: {GetDetailedProcessInfo(processId)}");
+                            _fileLogger?.LogInfo($"   Current FPS: {_currentFps:F1}, Frame Time: {_averageFrameTime:F2}ms");
+                            _fileLogger?.LogInfo($"   Statistics: Min={_minFps:F1}, Avg={_avgFps:F1}, Max={_maxFps:F1}");
+                            _lastDetailedLogTime = now;
+                        }
+                        
                         FpsUpdated?.Invoke(_currentFps, _averageFrameTime, _minFps, _avgFps, _maxFps);
                     }
                     else
@@ -1017,12 +1154,16 @@ namespace InfoPanel.RTSS.Services
                             retryCount++;
                             if (retryCount >= maxRetries)
                             {
-                                Console.WriteLine($"DXGIFrameMonitoringService: RTSS not detected after {maxRetries} seconds, falling back to GPU counters");
+                                var timeoutMsg = $"❌ RTSS hook timeout after {maxRetries} seconds for: {GetDetailedProcessInfo(processId)}";
+                                _fileLogger?.LogError(timeoutMsg);
+                                Console.WriteLine($"[ERROR] {timeoutMsg}");
                                 break;
                             }
                             if (retryCount == 1 || retryCount % 10 == 0)
                             {
-                                Console.WriteLine($"DXGIFrameMonitoringService: Waiting for RTSS to hook game... ({retryCount}/{maxRetries}s)");
+                                var waitMsg = $"⏳ Still waiting for RTSS hook... ({retryCount}/{maxRetries}s) - Target: {GetDetailedProcessInfo(processId)}";
+                                _fileLogger?.LogInfo(waitMsg);
+                                Console.WriteLine($"[INFO] {waitMsg}");
                             }
                         }
                         else
@@ -1031,6 +1172,7 @@ namespace InfoPanel.RTSS.Services
                             consecutiveFailures++;
                             if (consecutiveFailures >= maxConsecutiveFailures)
                             {
+                                _fileLogger?.LogWarning($"RTSS data lost for {maxConsecutiveFailures} seconds, exiting monitoring");
                                 Console.WriteLine($"DXGIFrameMonitoringService: RTSS data lost for {maxConsecutiveFailures} seconds, exiting");
                                 break;
                             }

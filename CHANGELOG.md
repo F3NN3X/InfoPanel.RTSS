@@ -2,15 +2,26 @@
 
 ## v1.1.2 (October 22, 2025)
 
-**🔧 Simplified Architecture & Stable Detection**
+**🎯 RTSS-First Title Detection & Improved Stability**
 
 ### ✨ **New Features**
+- **RTSS-First Window Title Detection**: Revolutionary approach that only displays window titles after RTSS successfully hooks a process
+  - Eliminates timing issues where titles showed as "-" or "[No Window]"
+  - Perfect PID matching between RTSS monitoring and window title display
+  - Event-driven architecture with `RTSSHooked` callback system
+  - Enhanced window title detection with retry logic and process refresh for games during startup
+
 - **Stable Fullscreen Detection**: Replaced complex window monitoring with proven stable detection service
   - Uses comprehensive system process blacklisting for better reliability
   - Improved tolerance-based fullscreen detection from stable version
   - Reduced false positives from system windows and desktop applications
 
 ### 🚀 **Performance Improvements**  
+- **Thread-Safe Sensor Updates**: Added lock synchronization to prevent collection modification exceptions
+  - All sensor update methods now use `lock(_sensorLock)` for thread safety
+  - Prevents crashes when UpdateAsync and StopMonitoringAsync run simultaneously
+  - Enhanced stability during rapid game launches and closures
+
 - **Simplified Continuous Monitoring**: Streamlined monitoring loop focusing only on RTSS-successful hooks
   - Removed complex state management and redundant process checking
   - Eliminated excessive logging of every window change on the system
@@ -18,15 +29,29 @@
   - **Key Change**: Only logs when RTSS successfully hooks a process (no more noise!)
 
 ### 🏗️ **Architecture Cleanup**
+- **Event-Driven Title Updates**: RTSS hook detection now fires events with PID and confirmed window title
+  - `OnRTSSHooked` event handler ensures proper state synchronization
+  - Performance.MonitoredProcessId automatically updated when RTSS hooks occur
+  - Clean event subscription/unsubscription lifecycle management
+
 - **Service Consolidation**: Removed redundant WindowDetectionService, using single stable detection service
 - **RTSS-First Approach**: Prioritizes RTSS monitoring over traditional window detection
 - **Reduced Complexity**: Simplified async task management and error handling
-- **Better Logging**: Focused debug logging on RTSS success cases only
+- **Enhanced Debug Logging**: Added comprehensive RTSS hook debugging and window title detection tracing
 
 ### 🐞 **Bug Fixes**
+- **Window Title Timing Issues**: Fixed critical bug where window titles appeared as "-" instead of game names
+  - Root cause: Missing synchronization between RTSS events and sensor update logic
+  - Solution: Ensure Performance.MonitoredProcessId matches Window.ProcessId in RTSS event handler
+
+- **Process Existence Validation**: Improved RTSS detection with proper process lifecycle checks
+  - Enhanced stale RTSS entry filtering and logging
+  - Eliminated infinite monitoring loops for dead processes
+  - Better process existence validation in RTSS detection
+
 - **Compilation Issues**: Fixed service reference conflicts and async method calls
-- **Process Lifecycle**: Improved process existence validation for RTSS monitoring
 - **Memory Management**: Better disposal of detection services and background tasks
+- **Interface Resolution**: Added missing using statements for DXGIFrameMonitoringService references
 
 ---
 

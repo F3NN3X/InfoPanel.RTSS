@@ -160,17 +160,26 @@ namespace InfoPanel.RTSS
                     OnePercentLowFps = (float)onePercentLow
                 };
 
-                // Create window information object using the actual RTSS-monitored process ID
-                var window = new WindowInformation
-                {
-                    ProcessId = (uint)Math.Max(0, processId), // Use actual process ID from RTSS
-                    WindowTitle = windowTitle,
-                    WindowHandle = processId > 0 ? new IntPtr(1) : IntPtr.Zero, // Valid when we have a PID
-                    IsFullscreen = processId > 0 // Valid when RTSS is monitoring a process
-                };
-
                 _sensorService.UpdatePerformanceSensors(performance);
-                _sensorService.UpdateWindowSensor(window);
+                
+                // Handle window title updates based on whether we have an active game
+                if (processId > 0)
+                {
+                    // Game is running - use normal window sensor update
+                    var window = new WindowInformation
+                    {
+                        ProcessId = (uint)processId,
+                        WindowTitle = windowTitle,
+                        WindowHandle = new IntPtr(1), // Valid when we have a PID
+                        IsFullscreen = true // Valid when RTSS is monitoring a process
+                    };
+                    _sensorService.UpdateWindowSensor(window);
+                }
+                else
+                {
+                    // No game running - directly set the configured default message
+                    _sensorService.UpdateWindowTitle(windowTitle);
+                }
                 
                 _fileLogger.LogInfo($"Metrics updated - FPS: {fps:F1}, 1% Low: {onePercentLow:F1}, Title: {windowTitle}");
             }

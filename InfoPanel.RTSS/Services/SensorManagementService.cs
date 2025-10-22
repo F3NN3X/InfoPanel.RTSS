@@ -374,6 +374,26 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
+        /// Updates only the window title sensor with a direct value.
+        /// </summary>
+        /// <param name="title">The title to set.</param>
+        public void UpdateWindowTitle(string title)
+        {
+            lock (_sensorLock)
+            {
+                try
+                {
+                    _windowTitleSensor.Value = title;
+                    Console.WriteLine($"Window title sensor updated to: '{title}'");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error updating window title sensor: {ex}");
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the current values of all sensors for debugging purposes.
         /// </summary>
         /// <returns>A dictionary containing sensor IDs and their current values.</returns>

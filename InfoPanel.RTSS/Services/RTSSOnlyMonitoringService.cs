@@ -33,6 +33,7 @@ namespace InfoPanel.RTSS.Services
         
         // Loop counter for periodic operations
         private int _loopCounter = 0;
+        private DateTime _lastDebugLog = DateTime.MinValue;
 
         // Events for sensor updates
         public event Action<double, double, double, string, int>? MetricsUpdated;
@@ -67,10 +68,12 @@ namespace InfoPanel.RTSS.Services
                         // Increment loop counter for periodic operations
                         _loopCounter++;
                         
-                        // Log every 5 seconds (5000ms / 16ms = ~312 loops) to show we're active
-                        if (_loopCounter % 312 == 0)
+                        // Debug logging every 500ms instead of every 16ms loop
+                        var now = DateTime.Now;
+                        if (now - _lastDebugLog >= TimeSpan.FromMilliseconds(500))
                         {
-                            _fileLogger?.LogDebug("RTSS monitoring loop active - scanning shared memory");
+                            _lastDebugLog = now;
+                            _fileLogger?.LogRTSSPolling("RTSS monitoring loop active - scanning shared memory");
                         }
                         
                         // Check every 16ms (~60Hz polling rate)
@@ -125,7 +128,7 @@ namespace InfoPanel.RTSS.Services
                     // Fire metrics update event
                     MetricsUpdated?.Invoke(_currentFps, _currentFrameTime, _current1PercentLow, _currentWindowTitle, _currentMonitoredPid);
                     
-                    _fileLogger?.LogDebug($"FPS Update: {_currentFps:F1} FPS, {_currentFrameTime:F2}ms, 1%Low: {_current1PercentLow:F1}");
+                    _fileLogger?.LogDebugThrottled($"FPS Update: {_currentFps:F1} FPS, {_currentFrameTime:F2}ms, 1%Low: {_current1PercentLow:F1}", "fps_update");
                 }
             }
             else
@@ -157,11 +160,11 @@ namespace InfoPanel.RTSS.Services
                         // This helps with InfoPanel UI caching issues
                         if (_loopCounter % 250 == 0) // Every ~4 seconds at 16ms intervals
                         {
-                            _fileLogger?.LogDebug("Sending periodic sensor clear to ensure UI consistency");
+                            _fileLogger?.LogDebugThrottled("Sending periodic sensor clear to ensure UI consistency", "periodic_clear");
                             MetricsUpdated?.Invoke(0.0, 0.0, 0.0, _configService.DefaultCaptureMessage, 0);
                         }
                         
-                        _fileLogger?.LogDebug("No RTSS shared memory found or no hooked processes");
+                        _fileLogger?.LogDebugThrottled("No RTSS shared memory found or no hooked processes", "no_rtss_processes");
                     }
                 }
             }
@@ -176,8 +179,8 @@ namespace InfoPanel.RTSS.Services
             {
                 try
                 {
-                    // Try RTSS shared memory V2 only
-                    _fileLogger?.LogDebug("Scanning for RTSS shared memory...");
+                    // Try RTSS shared memory V2 only - use throttled logging since this runs every 16ms
+                    _fileLogger?.LogRTSSPolling("Scanning for RTSS shared memory...");
                     
                     var result = TryReadRTSSSharedMemory("RTSSSharedMemoryV2");
                     if (result.HasValue) 
@@ -186,12 +189,12 @@ namespace InfoPanel.RTSS.Services
                         return result;
                     }
                     
-                    _fileLogger?.LogDebug("No RTSS shared memory found or no hooked processes");
+                    _fileLogger?.LogDebugThrottled("No RTSS shared memory found or no hooked processes", "no_rtss_data");
                     return null;
                 }
                 catch (Exception ex)
                 {
-                    _fileLogger?.LogDebug($"Error scanning RTSS shared memory: {ex.Message}");
+                    _fileLogger?.LogDebugThrottled($"Error scanning RTSS shared memory: {ex.Message}", "rtss_scan_error");
                     return null;
                 }
             }).ConfigureAwait(false);
@@ -204,11 +207,11 @@ namespace InfoPanel.RTSS.Services
         {
             try
             {
-                _fileLogger?.LogDebug($"Attempting to open RTSS shared memory: {memoryName}");
+                _fileLogger?.LogDebugThrottled($"Attempting to open RTSS shared memory: {memoryName}", "rtss_open_attempt");
                 var fileMapping = Kernel32.OpenFileMapping(Kernel32.FILE_MAP.FILE_MAP_READ, false, memoryName);
                 if (fileMapping.IsInvalid) 
                 {
-                    _fileLogger?.LogDebug($"Failed to open {memoryName} - shared memory not found");
+                    _fileLogger?.LogDebugThrottled($"Failed to open {memoryName} - shared memory not found", "rtss_not_found");
                     return null;
                 }
 
@@ -225,7 +228,7 @@ namespace InfoPanel.RTSS.Services
                     var signature = Marshal.ReadInt32(mapView, 0);
                     if (signature != 0x52545353) // "RTSS" in little-endian format
                     {
-                        _fileLogger?.LogDebug($"{memoryName} has invalid signature: 0x{signature:X8}, expected 0x52545353 (RTSS)");
+                        _fileLogger?.LogDebugThrottled($"{memoryName} has invalid signature: 0x{signature:X8}, expected 0x52545353 (RTSS)", "invalid_signature");
                         return null;
                     }
 
@@ -234,9 +237,10 @@ namespace InfoPanel.RTSS.Services
                     var appArrOffset = Marshal.ReadInt32(mapView, 12); // dwAppArrOffset
                     var appArrSize = Marshal.ReadInt32(mapView, 16);   // dwAppArrSize
                     
-                    _fileLogger?.LogDebug($"{memoryName} opened successfully - Version: 0x{version:X8}, AppEntrySize: {appEntrySize}, AppArrOffset: {appArrOffset}, AppArrSize: {appArrSize}");
+                    _fileLogger?.LogDebugThrottled($"{memoryName} opened successfully - Version: 0x{version:X8}, AppEntrySize: {appEntrySize}, AppArrOffset: {appArrOffset}, AppArrSize: {appArrSize}", "rtss_opened");
 
                     // Scan through app entries to find hooked processes
+                    int validEntries = 0;
                     for (int i = 0; i < appArrSize; i++)
                     {
                         int entryOffset = appArrOffset + (i * appEntrySize);
@@ -244,12 +248,12 @@ namespace InfoPanel.RTSS.Services
                         var processId = Marshal.ReadInt32(mapView, entryOffset + 0); // dwProcessID
                         if (processId <= 0) continue;
                         
-                        _fileLogger?.LogDebug($"Found RTSS entry {i}: PID {processId}");
+                        validEntries++;
                         
                         // Check if process still exists
                         if (!IsProcessRunning(processId)) 
                         {
-                            _fileLogger?.LogDebug($"PID {processId} is not running, skipping");
+                            _fileLogger?.LogDebugThrottled($"PID {processId} is not running, skipping", $"pid_not_running_{processId}");
                             continue;
                         }
                         
@@ -258,7 +262,15 @@ namespace InfoPanel.RTSS.Services
                         var time1 = Marshal.ReadInt32(mapView, entryOffset + 272); // dwTime1
                         var frames = Marshal.ReadInt32(mapView, entryOffset + 276); // dwFrames
                         
-                        _fileLogger?.LogDebug($"PID {processId} - Time0: {time0}, Time1: {time1}, Frames: {frames}");
+                        // Only log if there's actual FPS data, otherwise just count them
+                        if (time0 > 0 && time1 > 0 && frames > 0)
+                        {
+                            _fileLogger?.LogDebugThrottled($"Active RTSS entry {i}: PID {processId} - Time0: {time0}, Time1: {time1}, Frames: {frames}", $"active_entry_{processId}");
+                        }
+                        else
+                        {
+                            _fileLogger?.LogDebugThrottled($"Found inactive RTSS entry: PID {processId} (no FPS data)", "inactive_entries");
+                        }
                         
                         // Validate timing data
                         if (time0 <= 0 || time1 <= 0 || frames <= 0 || time1 <= time0) continue;
@@ -272,8 +284,14 @@ namespace InfoPanel.RTSS.Services
                         }
                         else
                         {
-                            _fileLogger?.LogDebug($"PID {processId} invalid FPS calculated: {fps:F1}");
+                            _fileLogger?.LogDebugThrottled($"PID {processId} invalid FPS calculated: {fps:F1}", $"invalid_fps_{processId}");
                         }
+                    }
+
+                    // Summary log instead of individual entry logs
+                    if (validEntries > 0)
+                    {
+                        _fileLogger?.LogDebugThrottled($"Scanned {validEntries} RTSS entries, no valid FPS data found", "rtss_scan_summary");
                     }
 
                     return null;
@@ -286,7 +304,7 @@ namespace InfoPanel.RTSS.Services
             }
             catch (Exception ex)
             {
-                _fileLogger?.LogDebug($"Error reading {memoryName}: {ex.Message}");
+                _fileLogger?.LogDebugThrottled($"Error reading {memoryName}: {ex.Message}", "rtss_read_error");
                 return null;
             }
         }
@@ -311,7 +329,7 @@ namespace InfoPanel.RTSS.Services
             }
             catch (Exception ex)
             {
-                _fileLogger?.LogDebug($"Error getting window title for PID {pid}: {ex.Message}");
+                _fileLogger?.LogDebugThrottled($"Error getting window title for PID {pid}: {ex.Message}", $"window_title_error_{pid}");
                 return "Unknown Process";
             }
         }

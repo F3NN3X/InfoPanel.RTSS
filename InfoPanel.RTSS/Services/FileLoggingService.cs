@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
@@ -7,6 +8,7 @@ namespace InfoPanel.RTSS.Services
     /// <summary>
     /// Provides file-based logging for debugging user issues.
     /// Writes to debug.log in the plugin directory when debug mode is enabled.
+    /// Includes message throttling and compression to keep log files manageable.
     /// </summary>
     public class FileLoggingService : IDisposable
     {
@@ -14,6 +16,12 @@ namespace InfoPanel.RTSS.Services
         private readonly object _lock = new object();
         private readonly ConfigurationService _configService;
         private bool _disposed = false;
+
+        // Message throttling to reduce repetitive logs
+        private readonly Dictionary<string, (DateTime lastLogged, int count)> _messageThrottle = new();
+        private readonly TimeSpan _throttleInterval = TimeSpan.FromSeconds(5); // Log similar messages max once per 5 seconds
+        private DateTime _lastRTSSPollLog = DateTime.MinValue;
+        private int _rtssPollingCount = 0;
 
         public FileLoggingService(ConfigurationService configService)
         {
@@ -65,6 +73,67 @@ namespace InfoPanel.RTSS.Services
         public void LogDebug(string message)
         {
             WriteLogEntry("DEBUG", message);
+        }
+
+        /// <summary>
+        /// Logs debug messages with throttling to prevent log spam from repetitive messages.
+        /// </summary>
+        public void LogDebugThrottled(string message, string? throttleKey = null)
+        {
+            throttleKey ??= message.Substring(0, Math.Min(50, message.Length)); // Use first 50 chars as key
+            
+            if (ShouldLogThrottledMessage(throttleKey))
+            {
+                WriteLogEntry("DEBUG", message);
+            }
+        }
+
+        /// <summary>
+        /// Logs RTSS polling activity with heavy throttling since it happens every 16ms.
+        /// </summary>
+        public void LogRTSSPolling(string message)
+        {
+            _rtssPollingCount++;
+            var now = DateTime.Now;
+            
+            // Log every 5 seconds with count summary
+            if (now - _lastRTSSPollLog >= TimeSpan.FromSeconds(5))
+            {
+                WriteLogEntry("DEBUG", $"RTSS Polling (x{_rtssPollingCount} in 5s): {message}");
+                _lastRTSSPollLog = now;
+                _rtssPollingCount = 0;
+            }
+        }
+
+        private bool ShouldLogThrottledMessage(string key)
+        {
+            lock (_lock)
+            {
+                var now = DateTime.Now;
+                
+                if (_messageThrottle.TryGetValue(key, out var existing))
+                {
+                    _messageThrottle[key] = (existing.lastLogged, existing.count + 1);
+                    
+                    // Only log if enough time has passed
+                    if (now - existing.lastLogged >= _throttleInterval)
+                    {
+                        // Include count if message was suppressed
+                        if (existing.count > 1)
+                        {
+                            // This will be handled by the caller
+                        }
+                        _messageThrottle[key] = (now, 0);
+                        return true;
+                    }
+                    return false;
+                }
+                else
+                {
+                    _messageThrottle[key] = (now, 0);
+                    return true;
+                }
+            }
         }
 
         private void WriteLogEntry(string level, string message)

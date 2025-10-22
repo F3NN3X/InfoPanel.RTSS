@@ -31,7 +31,7 @@ namespace InfoPanel.RTSS.Services
         private const int FrameBufferSize = 100;
 
         // Events for sensor updates
-        public event Action<double, double, double, string>? MetricsUpdated;
+        public event Action<double, double, double, string, int>? MetricsUpdated;
 
         public RTSSOnlyMonitoringService(FileLoggingService? fileLogger = null)
         {
@@ -111,7 +111,7 @@ namespace InfoPanel.RTSS.Services
                     _current1PercentLow = Calculate1PercentLow();
                     
                     // Fire metrics update event
-                    MetricsUpdated?.Invoke(_currentFps, _currentFrameTime, _current1PercentLow, _currentWindowTitle);
+                    MetricsUpdated?.Invoke(_currentFps, _currentFrameTime, _current1PercentLow, _currentWindowTitle, _currentMonitoredPid);
                     
                     _fileLogger?.LogDebug($"FPS Update: {_currentFps:F1} FPS, {_currentFrameTime:F2}ms, 1%Low: {_current1PercentLow:F1}");
                 }
@@ -132,7 +132,7 @@ namespace InfoPanel.RTSS.Services
                         _frameTimeBuffer.Clear();
                         
                         // Fire metrics update event to clear sensors
-                        MetricsUpdated?.Invoke(0.0, 0.0, 0.0, "Nothing to capture");
+                        MetricsUpdated?.Invoke(0.0, 0.0, 0.0, "Nothing to capture", 0);
                     }
                 }
             }

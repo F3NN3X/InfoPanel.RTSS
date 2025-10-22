@@ -294,21 +294,31 @@ namespace InfoPanel.RTSS.Services
             {
                 try
                 {
+                    Console.WriteLine($"[DEBUG] UpdateWindowSensor - IsValid: {windowInfo.IsValid}, PID: {windowInfo.ProcessId}, Handle: {windowInfo.WindowHandle}, Fullscreen: {windowInfo.IsFullscreen}, Title: '{windowInfo.WindowTitle}'");
+                    
                     if (windowInfo.IsValid)
                     {
                         var newTitle = !string.IsNullOrWhiteSpace(windowInfo.WindowTitle) 
                             ? windowInfo.WindowTitle 
                             : "Untitled";
                         
+                        Console.WriteLine($"[DEBUG] Setting title to: '{newTitle}' (from '{windowInfo.WindowTitle}')");
+                        
                         // Preserve existing good titles - don't overwrite with generic defaults
                         if (newTitle != "Untitled" || _windowTitleSensor.Value == SensorConstants.NoCapture || _windowTitleSensor.Value == SensorConstants.DefaultWindowTitle)
                         {
                             _windowTitleSensor.Value = newTitle;
+                            Console.WriteLine($"[DEBUG] Title sensor updated to: '{_windowTitleSensor.Value}'");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[DEBUG] Title NOT updated - preserving existing: '{_windowTitleSensor.Value}'");
                         }
                     }
                     else
                     {
                         // Reset to NoCapture when window becomes invalid
+                        Console.WriteLine($"[DEBUG] Window invalid - setting to NoCapture");
                         _windowTitleSensor.Value = SensorConstants.NoCapture;
                     }
                 }

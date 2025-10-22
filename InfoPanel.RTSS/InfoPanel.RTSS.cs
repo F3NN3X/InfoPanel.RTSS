@@ -148,7 +148,7 @@ namespace InfoPanel.RTSS
         /// <summary>
         /// Handles metrics updates from the RTSS monitoring service.
         /// </summary>
-        private void OnMetricsUpdated(double fps, double frameTime, double onePercentLow, string windowTitle)
+        private void OnMetricsUpdated(double fps, double frameTime, double onePercentLow, string windowTitle, int processId)
         {
             try
             {
@@ -160,10 +160,13 @@ namespace InfoPanel.RTSS
                     OnePercentLowFps = (float)onePercentLow
                 };
 
-                // Create window information object
+                // Create window information object using the actual RTSS-monitored process ID
                 var window = new WindowInformation
                 {
-                    WindowTitle = windowTitle
+                    ProcessId = (uint)Math.Max(0, processId), // Use actual process ID from RTSS
+                    WindowTitle = windowTitle,
+                    WindowHandle = processId > 0 ? new IntPtr(1) : IntPtr.Zero, // Valid when we have a PID
+                    IsFullscreen = processId > 0 // Valid when RTSS is monitoring a process
                 };
 
                 _sensorService.UpdatePerformanceSensors(performance);

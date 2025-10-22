@@ -30,6 +30,9 @@ namespace InfoPanel.RTSS.Services
         // Frame time tracking for 1% low calculation
         private readonly Queue<double> _frameTimeBuffer = new Queue<double>();
         private const int FrameBufferSize = 100;
+        
+        // Loop counter for periodic operations
+        private int _loopCounter = 0;
 
         // Events for sensor updates
         public event Action<double, double, double, string, int>? MetricsUpdated;
@@ -49,17 +52,23 @@ namespace InfoPanel.RTSS.Services
         {
             _fileLogger?.LogInfo("Starting continuous RTSS-only monitoring");
             
+            // Force initial sensor clearing to ensure UI shows clean state
+            _fileLogger?.LogInfo("Forcing initial sensor clear to ensure clean state");
+            MetricsUpdated?.Invoke(0.0, 0.0, 0.0, _configService.DefaultCaptureMessage, 0);
+            
             return Task.Run(async () =>
             {
-                int loopCounter = 0;
                 while (!cancellationToken.IsCancellationRequested && !_disposed)
                 {
                     try
                     {
                         await MonitorRTSSAsync(cancellationToken).ConfigureAwait(false);
                         
+                        // Increment loop counter for periodic operations
+                        _loopCounter++;
+                        
                         // Log every 5 seconds (5000ms / 16ms = ~312 loops) to show we're active
-                        if (++loopCounter % 312 == 0)
+                        if (_loopCounter % 312 == 0)
                         {
                             _fileLogger?.LogDebug("RTSS monitoring loop active - scanning shared memory");
                         }
@@ -126,22 +135,32 @@ namespace InfoPanel.RTSS.Services
                 {
                     bool hadData = _currentMonitoredPid > 0 || _currentFps > 0 || !string.Equals(_currentWindowTitle, _configService.DefaultCaptureMessage, StringComparison.Ordinal);
                     
-                    // Clear the state when no valid FPS data found
-                    _currentMonitoredPid = 0;
-                    _currentWindowTitle = _configService.DefaultCaptureMessage;
-                    _currentFps = 0.0;
-                    _currentFrameTime = 0.0;
-                    _current1PercentLow = 0.0;
-                    _frameTimeBuffer.Clear();
-                    
                     if (hadData)
                     {
                         _fileLogger?.LogInfo("No valid RTSS hooks found, clearing monitoring and updating sensors");
-                        // Fire metrics update event to clear sensors
+                        
+                        // Clear the state when no valid FPS data found
+                        _currentMonitoredPid = 0;
+                        _currentWindowTitle = _configService.DefaultCaptureMessage;
+                        _currentFps = 0.0;
+                        _currentFrameTime = 0.0;
+                        _current1PercentLow = 0.0;
+                        _frameTimeBuffer.Clear();
+                        
+                        // Fire event only when state actually changes
                         MetricsUpdated?.Invoke(0.0, 0.0, 0.0, _configService.DefaultCaptureMessage, 0);
+                        _fileLogger?.LogInfo($"Metrics cleared - FPS: 0.0, 1% Low: 0.0, Title: {_configService.DefaultCaptureMessage}");
                     }
                     else
                     {
+                        // State is already cleared, but still fire periodic clear events to ensure UI consistency
+                        // This helps with InfoPanel UI caching issues
+                        if (_loopCounter % 250 == 0) // Every ~4 seconds at 16ms intervals
+                        {
+                            _fileLogger?.LogDebug("Sending periodic sensor clear to ensure UI consistency");
+                            MetricsUpdated?.Invoke(0.0, 0.0, 0.0, _configService.DefaultCaptureMessage, 0);
+                        }
+                        
                         _fileLogger?.LogDebug("No RTSS shared memory found or no hooked processes");
                     }
                 }

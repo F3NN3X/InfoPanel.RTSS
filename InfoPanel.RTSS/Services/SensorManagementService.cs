@@ -274,12 +274,13 @@ namespace InfoPanel.RTSS.Services
             {
                 try
                 {
-                    if (metrics.IsValid)
-                    {
-                        _fpsSensor.Value = metrics.Fps;
-                        _currentFrameTimeSensor.Value = metrics.FrameTime;
-                        _onePercentLowFpsSensor.Value = metrics.OnePercentLowFps;
-                    }
+                    // Always update sensors regardless of IsValid to allow clearing to 0
+                    _fpsSensor.Value = metrics.Fps;
+                    _currentFrameTimeSensor.Value = metrics.FrameTime;
+                    _onePercentLowFpsSensor.Value = metrics.OnePercentLowFps;
+                    
+                    // Log sensor updates for debugging
+                    Console.WriteLine($"Performance sensors updated - FPS: {metrics.Fps}, FrameTime: {metrics.FrameTime:F2}ms, 1%Low: {metrics.OnePercentLowFps}");
                 }
                 catch (Exception ex)
                 {

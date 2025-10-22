@@ -44,10 +44,10 @@ namespace InfoPanel.RTSS
                 _configService.LogCurrentSettings(); // Log settings after config is loaded
                 _fileLogger = new FileLoggingService(_configService);
                 _systemInfoService = new SystemInformationService();
-                _sensorService = new SensorManagementService();
+                _sensorService = new SensorManagementService(_configService);
                 
                 // Initialize RTSS-only monitoring service with event handling
-                _rtssMonitoringService = new RTSSOnlyMonitoringService(_fileLogger);
+                _rtssMonitoringService = new RTSSOnlyMonitoringService(_configService, _fileLogger);
                 _rtssMonitoringService.MetricsUpdated += OnMetricsUpdated;
 
                 _fileLogger.LogInfo("InfoPanel.RTSS plugin constructed successfully");

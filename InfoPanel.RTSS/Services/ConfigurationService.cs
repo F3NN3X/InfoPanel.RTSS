@@ -68,6 +68,11 @@ namespace InfoPanel.RTSS.Services
         public bool IsDebugEnabled => GetBoolValue("Debug", "debug", false);
 
         /// <summary>
+        /// The default message to display when no game is being captured.
+        /// </summary>
+        public string DefaultCaptureMessage => GetStringValue("Display", "defaultCaptureMessage", "Nothing to capture");
+
+        /// <summary>
         /// Loads configuration from INI file.
         /// </summary>
         private Dictionary<string, Dictionary<string, string>> LoadConfiguration()
@@ -140,6 +145,7 @@ namespace InfoPanel.RTSS.Services
                 Console.WriteLine($"ConfigurationService: Debug enabled: {IsDebugEnabled}");
                 Console.WriteLine($"ConfigurationService: Update interval: {UpdateInterval}ms");
                 Console.WriteLine($"ConfigurationService: Smoothing frames: {SmoothingFrames}");
+                Console.WriteLine($"ConfigurationService: Default capture message: '{DefaultCaptureMessage}'");
             }
             catch (Exception ex)
             {
@@ -180,6 +186,19 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
+        /// Gets a string value from configuration.
+        /// </summary>
+        private string GetStringValue(string section, string key, string defaultValue)
+        {
+            if (_configData.TryGetValue(section, out var sectionData) && 
+                sectionData.TryGetValue(key, out var value))
+            {
+                return value;
+            }
+            return defaultValue;
+        }
+
+        /// <summary>
         /// Creates a default configuration file.
         /// </summary>
         private void CreateDefaultConfigFile()
@@ -203,7 +222,10 @@ debug=true
 updateInterval=1000
 
 # Number of frames to use for smoothing calculations (used for 1% low calculation)
-smoothingFrames=100";
+smoothingFrames=100
+
+# Default message to display when no game is being captured
+defaultCaptureMessage=Nothing to capture";
 
                 // Create directory if it doesn't exist
                 var directory = Path.GetDirectoryName(_configFilePath);

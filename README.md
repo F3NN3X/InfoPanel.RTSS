@@ -8,7 +8,7 @@ InfoPanel.RTSS provides detailed performance statistics for running fullscreen a
 
 ![InfoPanel.RTSS Screenshot](https://i.imgur.com/VsyjMRh.png)
 
-**Version:** 1.0.0  
+**Version:** 1.1.4  
 **Author:** F3NN3X
 
 ## Features
@@ -109,6 +109,47 @@ RivaTuner Statistics Server (RTSS) is a powerful overlay application that provid
 1. Clone or download this repository.
 2. Build the project in a .NET environment.
 3. Copy the compiled DLLs and dependencies to your InfoPanel plugins folder.
+
+## Configuration
+
+The plugin can be customized through the `InfoPanel.RTSS.ini` configuration file, which is created automatically in the plugin directory.
+
+### Available Settings
+
+#### Display Settings
+- **`defaultCaptureMessage`**: Customize the message displayed when no game is being monitored
+  - **Default**: `"Nothing to capture"`
+  - **Examples**: 
+    - `"Waiting for game..."`
+    - `"Ready to monitor"`
+    - `"No active monitoring"`
+    - `"Aucun jeu détecté"` (French)
+    - `"Kein Spiel erkannt"` (German)
+
+#### Debug Settings
+- **`debug`**: Enable/disable debug logging for troubleshooting
+  - **Default**: `false`
+  - **Set to `true`**: Enables detailed logging to debug.log file
+  - **Set to `false`**: Disables logging for production use
+
+#### Example Configuration File
+```ini
+[Display]
+# Default message to display when no game is being captured
+defaultCaptureMessage=Nothing to capture
+
+# Update interval in milliseconds for UI updates
+updateInterval=1000
+
+# Number of frames to use for smoothing calculations
+smoothingFrames=60
+
+[Debug]
+# Enable/disable debug logging to debug.log file and console debug output
+# Set to true to enable detailed logging for troubleshooting (RTSS, sensors, window capture)
+# Set to false to disable debug logging for production use
+debug=false
+```
 
 ## Usage
 

@@ -11,6 +11,7 @@ namespace InfoPanel.RTSS.Services
     /// </summary>
     public class SensorManagementService : ISensorManagementService
     {
+        private readonly ConfigurationService? _configService;
         private readonly PluginSensor _fpsSensor;
         private readonly PluginSensor _onePercentLowFpsSensor;
         private readonly PluginSensor _currentFrameTimeSensor;
@@ -39,8 +40,11 @@ namespace InfoPanel.RTSS.Services
         /// <summary>
         /// Initializes a new instance of the SensorManagementService.
         /// </summary>
-        public SensorManagementService()
+        /// <param name="configService">Configuration service for accessing debug settings.</param>
+        public SensorManagementService(ConfigurationService? configService = null)
         {
+            _configService = configService;
+            
             // Initialize performance sensors
             _fpsSensor = new PluginSensor(
                 SensorConstants.FpsSensorId,
@@ -294,7 +298,13 @@ namespace InfoPanel.RTSS.Services
             {
                 try
                 {
-                    Console.WriteLine($"[DEBUG] UpdateWindowSensor - IsValid: {windowInfo.IsValid}, PID: {windowInfo.ProcessId}, Handle: {windowInfo.WindowHandle}, Fullscreen: {windowInfo.IsFullscreen}, Title: '{windowInfo.WindowTitle}'");
+                    // Only show debug logs if debug is enabled in configuration
+                    bool debugEnabled = _configService?.IsDebugEnabled ?? false;
+                    
+                    if (debugEnabled)
+                    {
+                        Console.WriteLine($"[DEBUG] UpdateWindowSensor - IsValid: {windowInfo.IsValid}, PID: {windowInfo.ProcessId}, Handle: {windowInfo.WindowHandle}, Fullscreen: {windowInfo.IsFullscreen}, Title: '{windowInfo.WindowTitle}'");
+                    }
                     
                     if (windowInfo.IsValid)
                     {
@@ -302,23 +312,35 @@ namespace InfoPanel.RTSS.Services
                             ? windowInfo.WindowTitle 
                             : "Untitled";
                         
-                        Console.WriteLine($"[DEBUG] Setting title to: '{newTitle}' (from '{windowInfo.WindowTitle}')");
+                        if (debugEnabled)
+                        {
+                            Console.WriteLine($"[DEBUG] Setting title to: '{newTitle}' (from '{windowInfo.WindowTitle}')");
+                        }
                         
                         // Preserve existing good titles - don't overwrite with generic defaults
                         if (newTitle != "Untitled" || _windowTitleSensor.Value == SensorConstants.NoCapture || _windowTitleSensor.Value == SensorConstants.DefaultWindowTitle)
                         {
                             _windowTitleSensor.Value = newTitle;
-                            Console.WriteLine($"[DEBUG] Title sensor updated to: '{_windowTitleSensor.Value}'");
+                            if (debugEnabled)
+                            {
+                                Console.WriteLine($"[DEBUG] Title sensor updated to: '{_windowTitleSensor.Value}'");
+                            }
                         }
                         else
                         {
-                            Console.WriteLine($"[DEBUG] Title NOT updated - preserving existing: '{_windowTitleSensor.Value}'");
+                            if (debugEnabled)
+                            {
+                                Console.WriteLine($"[DEBUG] Title NOT updated - preserving existing: '{_windowTitleSensor.Value}'");
+                            }
                         }
                     }
                     else
                     {
                         // Reset to NoCapture when window becomes invalid
-                        Console.WriteLine($"[DEBUG] Window invalid - setting to NoCapture");
+                        if (debugEnabled)
+                        {
+                            Console.WriteLine($"[DEBUG] Window invalid - setting to NoCapture");
+                        }
                         _windowTitleSensor.Value = SensorConstants.NoCapture;
                     }
                 }

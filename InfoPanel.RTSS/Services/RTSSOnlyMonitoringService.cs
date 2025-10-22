@@ -16,12 +16,13 @@ namespace InfoPanel.RTSS.Services
     public class RTSSOnlyMonitoringService : IDisposable
     {
         private readonly FileLoggingService? _fileLogger;
+        private readonly ConfigurationService _configService;
         private readonly object _lock = new object();
         private bool _disposed = false;
         
         // Current monitoring state
         private int _currentMonitoredPid = 0;
-        private string _currentWindowTitle = "Nothing to capture";
+        private string _currentWindowTitle;
         private double _currentFps = 0.0;
         private double _currentFrameTime = 0.0;
         private double _current1PercentLow = 0.0;
@@ -33,9 +34,11 @@ namespace InfoPanel.RTSS.Services
         // Events for sensor updates
         public event Action<double, double, double, string, int>? MetricsUpdated;
 
-        public RTSSOnlyMonitoringService(FileLoggingService? fileLogger = null)
+        public RTSSOnlyMonitoringService(ConfigurationService configService, FileLoggingService? fileLogger = null)
         {
+            _configService = configService;
             _fileLogger = fileLogger;
+            _currentWindowTitle = _configService.DefaultCaptureMessage;
             _fileLogger?.LogInfo("RTSSOnlyMonitoringService initialized - RTSS-first approach");
         }
 
@@ -118,21 +121,28 @@ namespace InfoPanel.RTSS.Services
             }
             else
             {
-                // No RTSS hooks found - clear monitoring if we had something before
+                // No valid RTSS hooks found - clear monitoring state
                 lock (_lock)
                 {
-                    if (_currentMonitoredPid > 0)
+                    bool hadData = _currentMonitoredPid > 0 || _currentFps > 0 || !string.Equals(_currentWindowTitle, _configService.DefaultCaptureMessage, StringComparison.Ordinal);
+                    
+                    // Clear the state when no valid FPS data found
+                    _currentMonitoredPid = 0;
+                    _currentWindowTitle = _configService.DefaultCaptureMessage;
+                    _currentFps = 0.0;
+                    _currentFrameTime = 0.0;
+                    _current1PercentLow = 0.0;
+                    _frameTimeBuffer.Clear();
+                    
+                    if (hadData)
                     {
-                        _fileLogger?.LogInfo($"RTSS hook lost for PID {_currentMonitoredPid}, clearing monitoring");
-                        _currentMonitoredPid = 0;
-                        _currentWindowTitle = "Nothing to capture";
-                        _currentFps = 0.0;
-                        _currentFrameTime = 0.0;
-                        _current1PercentLow = 0.0;
-                        _frameTimeBuffer.Clear();
-                        
+                        _fileLogger?.LogInfo("No valid RTSS hooks found, clearing monitoring and updating sensors");
                         // Fire metrics update event to clear sensors
-                        MetricsUpdated?.Invoke(0.0, 0.0, 0.0, "Nothing to capture", 0);
+                        MetricsUpdated?.Invoke(0.0, 0.0, 0.0, _configService.DefaultCaptureMessage, 0);
+                    }
+                    else
+                    {
+                        _fileLogger?.LogDebug("No RTSS shared memory found or no hooked processes");
                     }
                 }
             }

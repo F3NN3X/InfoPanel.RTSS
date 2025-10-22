@@ -2,7 +2,7 @@
 
 ## v1.1.4 (October 22, 2025)
 
-**🧹 Legacy Code Cleanup & Dependency Optimization**
+**🧹 Legacy Code Cleanup & Enhanced User Experience**
 
 ### 🗑️ **Major Code Cleanup**
 - **Removed Legacy Services**: Eliminated unused `DXGIFrameMonitoringService` (1300+ lines of complex GPU performance counter code)
@@ -21,6 +21,29 @@
   - **Removed** `IDXGIFrameMonitoringService` references and related legacy interfaces
   - **Streamlined** service contracts to match RTSS-only architecture
   - **Maintained** essential interfaces: `ISensorManagementService`, `ISystemInformationService`, `IConfigurationService`
+
+### ✨ **New Features**
+- **Customizable Default Message**: User-configurable capture message via INI settings
+  - **Added** `[Display] defaultCaptureMessage` configuration option in InfoPanel.RTSS.ini
+  - **User Control**: Customize the "Nothing to capture" message to any preferred text
+  - **Localization Support**: Users can set messages in their preferred language
+  - **Default Value**: Maintains "Nothing to capture" if not configured for backwards compatibility
+
+### 🐛 **Critical Bug Fixes**
+- **Fixed Window Title Capture Issue**: Resolved blank title display despite RTSS detecting games
+  - **Root Cause**: `WindowInformation.IsValid` validation was failing due to missing required fields
+  - **Solution**: Properly populate ProcessId, WindowHandle, and IsFullscreen fields for validation
+  - **Impact**: Game window titles now display correctly when FPS monitoring is active
+
+- **Fixed Stale FPS Data After Game Exit**: Resolved persistent FPS display when games close
+  - **Root Cause**: Cleanup logic only triggered when no RTSS entries existed, but stale entries with zero FPS persisted
+  - **Solution**: Enhanced cleanup to trigger when no **valid FPS data** is found, regardless of RTSS entry existence
+  - **Impact**: FPS data and window titles now clear immediately (within 16ms) when games exit
+
+- **Unified Debug Logging Control**: Consolidated all debug output under single INI toggle
+  - **Enhancement**: Both RTSS monitoring and sensor window capture debug output now controlled by `[Debug] debug` setting
+  - **User Experience**: Single configuration point for all plugin debug logging
+  - **Performance**: No unwanted debug output when debugging is disabled
 
 ### 🔧 **Build System Updates**
 - **Updated Package Comments**: Refreshed project file comments to reflect current RTSS-only usage patterns

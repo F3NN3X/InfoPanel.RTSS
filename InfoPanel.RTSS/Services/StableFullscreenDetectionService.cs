@@ -28,11 +28,13 @@ namespace InfoPanel.RTSS.Services
         private readonly HashSet<string> _processNameBlacklist = new(StringComparer.OrdinalIgnoreCase)
         {
             "audiodg", "backgroundtaskhost", "csrss", "ctfmon", "dasHost", "dllhost", "dwm",
-            "explorer", "fontdrvhost", "gamebar", "gamebarftserver", "gameoverlayui64", "infopanel", "lsass",
+            "explorer", "fontdrvhost", "gamebar", "gamebarftserver", "gameoverlayui64", "icue", "infopanel", "lsass",
             "mobsync", "msedge", "onedrive", "runtimebroker", "searchapp", "searchui",
             "services", "shellexperiencehost", "sihost", "sppsvc", "spoolsv", "startmenuexperiencehost",
-            "steam", "system", "systemsettings", "taskhostw", "taskmgr", "textinputhost", "wininit",
+            "steam", "system", "systemsettings", "tabtip", "taskhostw", "taskmgr", "textinputhost", "wininit",
             "winlogon", "wmpnetwk", "wudfhost",
+            // Windows input and accessibility services
+            "magnify", "narrator", "osk", "sethc", "utilman", "inputpersonalization",
             // Additional system processes
             "svchost", "conhost", "smss", "csrss", "wininit", "services", "lsass", "winlogon",
             "fontdrvhost", "dwm", "spoolsv", "msdtc", "dfssvc", "dns", "eventlog", "eventcreate",

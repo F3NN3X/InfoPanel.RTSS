@@ -1,646 +1,338 @@
-[2025-10-21 23:36:30.844] [INFO] === InfoPanel.RTSS Debug Log Started ===
-[2025-10-21 23:36:30.845] [INFO] Plugin Directory: C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS
-[2025-10-21 23:36:30.845] [INFO] Assembly Location: C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS\InfoPanel.RTSS.dll
-[2025-10-21 23:36:30.845] [INFO] === InfoPanel.RTSS Constructor Called ===
-[2025-10-21 23:36:30.846] [INFO] DXGIFrameMonitoringService initialized
-[2025-10-21 23:36:30.846] [INFO] PerformanceMonitoringService initialized with DXGI frame monitoring
-[2025-10-21 23:36:30.855] [INFO] StableFullscreenDetectionService initialized
-[2025-10-21 23:36:30.856] [INFO] All services initialized successfully
-[2025-10-21 23:36:30.856] [INFO] Event subscriptions completed
-[2025-10-21 23:36:32.890] [INFO] === RTSS Plugin Initialize() called ===
-[2025-10-21 23:36:33.016] [INFO] System Information: GPU: NVIDIA GeForce RTX 5090, Display: 3840 x 2160@240Hz
-[2025-10-21 23:36:33.016] [INFO] Continuous monitoring task started
-[2025-10-21 23:36:33.016] [INFO] Initial window check task started
-[2025-10-21 23:36:33.016] [INFO] RTSS Plugin initialization completed successfully
-[2025-10-21 23:36:33.016] [INFO] === RTSS Plugin Load() called ===
-[2025-10-21 23:36:33.017] [INFO] Sensors created and registered with InfoPanel
-[2025-10-21 23:36:33.017] [INFO] System sensors updated with initial information
-[2025-10-21 23:36:33.017] [INFO] === SIMPLIFIED CONTINUOUS MONITORING STARTED ===
-[2025-10-21 23:36:33.034] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:33.331] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:33.525] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:34.342] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:35.353] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:36.043] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:36.364] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:37.375] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:38.386] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:39.051] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:39.397] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:40.406] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:41.415] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:42.060] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:42.424] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:43.437] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:44.449] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:45.067] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:45.459] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:46.470] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:47.481] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:48.077] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:48.491] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:49.500] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:50.508] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:51.085] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:51.521] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:52.531] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:53.543] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:54.091] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:54.552] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:55.560] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:56.571] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:57.100] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:57.581] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:58.592] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:36:59.602] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:00.108] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:00.612] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:01.621] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:02.634] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:03.278] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:03.645] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:04.655] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:05.666] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:06.290] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:06.678] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:07.688] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:08.697] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:09.300] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:09.706] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:10.717] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:11.728] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:12.310] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:12.740] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:37:13.857] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:13.874] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:37:13.875] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:37:13.875] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:37:13.876] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 62220)
-[2025-10-21 23:37:14.985] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:15.002] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:37:15.003] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:37:15.003] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:37:15.004] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 62220)
-[2025-10-21 23:37:15.429] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:15.435] [INFO] 📱 New fullscreen app detected: PID 61964
-[2025-10-21 23:37:15.539] [INFO] === RTSS MONITORING START REQUEST ===
-[2025-10-21 23:37:15.539] [INFO] Target Process: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:3684MB | Uptime:0.2min | Started:23:37:01
-[2025-10-21 23:37:15.540] [INFO] Starting RTSS monitoring for: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:3684MB | Uptime:0.2min | Started:23:37:01
-[2025-10-21 23:37:15.551] [INFO] Monitoring STARTED PID 61964
-[2025-10-21 23:37:15.551] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
-[2025-10-21 23:37:15.661] [INFO] === RTSS DETECTION PHASE ===
-[2025-10-21 23:37:15.661] [INFO] Searching for RTSS hook on: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:3725MB | Uptime:0.2min | Started:23:37:01
-[2025-10-21 23:37:15.661] [INFO] Will check RTSS shared memory versions: V2, V1
-[2025-10-21 23:37:15.662] [INFO] Max retries: 60 seconds
-[2025-10-21 23:37:15.771] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:3757MB | Uptime:0.2min | Started:23:37:01
-[2025-10-21 23:37:16.109] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:16.126] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:37:16.127] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:37:16.127] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:37:16.127] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 62220)
-[2025-10-21 23:37:16.128] [INFO] 🔄 Sensors reset to zero values
-[2025-10-21 23:37:16.130] [INFO] Performance service monitoring state: False
-[2025-10-21 23:37:17.235] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:17.251] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:37:17.251] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:37:17.252] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:37:17.252] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 62220)
-[2025-10-21 23:37:18.358] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:18.372] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:37:18.372] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:37:18.373] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:37:18.373] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 62220)
-[2025-10-21 23:37:19.235] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:19.239] [INFO] 📱 New fullscreen app detected: PID 61964
-[2025-10-21 23:37:19.344] [INFO] === RTSS MONITORING START REQUEST ===
-[2025-10-21 23:37:19.345] [INFO] Target Process: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4111MB | Uptime:0.3min | Started:23:37:01
-[2025-10-21 23:37:19.345] [INFO] Starting RTSS monitoring for: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4111MB | Uptime:0.3min | Started:23:37:01
-[2025-10-21 23:37:19.345] [INFO] Monitoring STARTED PID 61964
-[2025-10-21 23:37:19.345] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
-[2025-10-21 23:37:19.448] [INFO] === RTSS DETECTION PHASE ===
-[2025-10-21 23:37:19.448] [INFO] Searching for RTSS hook on: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4111MB | Uptime:0.3min | Started:23:37:01
-[2025-10-21 23:37:19.449] [INFO] Will check RTSS shared memory versions: V2, V1
-[2025-10-21 23:37:19.449] [INFO] Max retries: 60 seconds
-[2025-10-21 23:37:19.475] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:19.556] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4112MB | Uptime:0.3min | Started:23:37:01
-[2025-10-21 23:37:19.584] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:19.587] [INFO] 🔄 Sensors reset to zero values
-[2025-10-21 23:37:19.588] [INFO] Performance service monitoring state: False
-[2025-10-21 23:37:19.684] [INFO] === RTSS MONITORING START REQUEST ===
-[2025-10-21 23:37:19.684] [INFO] Target Process: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4122MB | Uptime:0.3min | Started:23:37:01
-[2025-10-21 23:37:19.685] [INFO] Starting RTSS monitoring for: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4122MB | Uptime:0.3min | Started:23:37:01
-[2025-10-21 23:37:19.685] [INFO] Monitoring STARTED PID 61964
-[2025-10-21 23:37:19.685] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
-[2025-10-21 23:37:19.788] [INFO] === RTSS DETECTION PHASE ===
-[2025-10-21 23:37:19.788] [INFO] Searching for RTSS hook on: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4123MB | Uptime:0.3min | Started:23:37:01
-[2025-10-21 23:37:19.788] [INFO] Will check RTSS shared memory versions: V2, V1
-[2025-10-21 23:37:19.789] [INFO] Max retries: 60 seconds
-[2025-10-21 23:37:19.910] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4123MB | Uptime:0.3min | Started:23:37:01
-[2025-10-21 23:37:20.917] [INFO] ✅ RTSS HOOK DETECTED after 1 seconds!
-[2025-10-21 23:37:21.024] [INFO] Hooked Process: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4128MB | Uptime:0.3min | Started:23:37:01
-[2025-10-21 23:37:21.025] [INFO] Initial FPS Reading: 129.1 FPS, Frame Time: 7.75ms
-[2025-10-21 23:37:21.029] [INFO] 🔍 RTSS Hook Debug: Process Name='bf6', MainWindowHandle=True
-[2025-10-21 23:37:21.030] [INFO] 🔍 RTSS Hook Debug: GetProcessWindowTitle returned='Battlefield™ 6'
-[2025-10-21 23:37:21.031] [INFO] RTSS successfully hooked PID 61964, updating window title: 'Battlefield™ 6'
-[2025-10-21 23:37:21.032] [INFO] === CONTINUOUS MONITORING PHASE ===
-[2025-10-21 23:37:21.032] [INFO] 📊 FPS Statistics (10s update):
-[2025-10-21 23:37:21.136] [INFO]    Process: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4129MB | Uptime:0.3min | Started:23:37:01
-[2025-10-21 23:37:21.137] [INFO]    Current FPS: 129.1, Frame Time: 7.75ms
-[2025-10-21 23:37:21.137] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
-[2025-10-21 23:37:22.690] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:25.798] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:28.901] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:31.207] [INFO] 📊 FPS Statistics (10s update):
-[2025-10-21 23:37:31.308] [INFO]    Process: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4146MB | Uptime:0.5min | Started:23:37:01
-[2025-10-21 23:37:31.309] [INFO]    Current FPS: 124.0, Frame Time: 8.06ms
-[2025-10-21 23:37:31.309] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
-[2025-10-21 23:37:32.011] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:35.122] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:38.225] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:41.327] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:41.367] [INFO] 📊 FPS Statistics (10s update):
-[2025-10-21 23:37:41.466] [INFO]    Process: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4164MB | Uptime:0.7min | Started:23:37:01
-[2025-10-21 23:37:41.467] [INFO]    Current FPS: 125.0, Frame Time: 8.00ms
-[2025-10-21 23:37:41.467] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
-[2025-10-21 23:37:44.434] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:47.555] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:50.660] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:51.515] [INFO] 📊 FPS Statistics (10s update):
-[2025-10-21 23:37:51.619] [INFO]    Process: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4110MB | Uptime:0.8min | Started:23:37:01
-[2025-10-21 23:37:51.619] [INFO]    Current FPS: 124.1, Frame Time: 8.06ms
-[2025-10-21 23:37:51.620] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
-[2025-10-21 23:37:53.764] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:56.865] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:37:59.967] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:01.670] [INFO] 📊 FPS Statistics (10s update):
-[2025-10-21 23:38:01.771] [INFO]    Process: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4117MB | Uptime:1.0min | Started:23:37:01
-[2025-10-21 23:38:01.772] [INFO]    Current FPS: 120.2, Frame Time: 8.32ms
-[2025-10-21 23:38:01.772] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
-[2025-10-21 23:38:03.075] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:06.183] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:10.696] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:11.825] [INFO] 📊 FPS Statistics (10s update):
-[2025-10-21 23:38:11.927] [INFO]    Process: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4122MB | Uptime:1.2min | Started:23:37:01
-[2025-10-21 23:38:11.928] [INFO]    Current FPS: 120.1, Frame Time: 8.33ms
-[2025-10-21 23:38:11.928] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
-[2025-10-21 23:38:13.821] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:16.929] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:20.031] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:21.987] [INFO] 📊 FPS Statistics (10s update):
-[2025-10-21 23:38:22.092] [INFO]    Process: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4127MB | Uptime:1.4min | Started:23:37:01
-[2025-10-21 23:38:22.092] [INFO]    Current FPS: 123.0, Frame Time: 8.13ms
-[2025-10-21 23:38:22.092] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
-[2025-10-21 23:38:23.140] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:26.247] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:29.355] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:32.147] [INFO] 📊 FPS Statistics (10s update):
-[2025-10-21 23:38:32.249] [INFO]    Process: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4131MB | Uptime:1.5min | Started:23:37:01
-[2025-10-21 23:38:32.249] [INFO]    Current FPS: 124.1, Frame Time: 8.06ms
-[2025-10-21 23:38:32.250] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
-[2025-10-21 23:38:32.468] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:35.575] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:38.682] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:41.802] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:42.302] [INFO] 📊 FPS Statistics (10s update):
-[2025-10-21 23:38:42.404] [INFO]    Process: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4425MB | Uptime:1.7min | Started:23:37:01
-[2025-10-21 23:38:42.405] [INFO]    Current FPS: 122.2, Frame Time: 8.19ms
-[2025-10-21 23:38:42.405] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
-[2025-10-21 23:38:44.909] [INFO] ✅ Process passed blacklist check: bf6 (PID: 61964)
-[2025-10-21 23:38:46.423] [WARN] Process no longer exists: PID:61964 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4123MB | Uptime:0.3min | Started:23:37:01
-[2025-10-21 23:38:47.922] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:38:47.922] [INFO] ❌ Monitored process 61964 no longer exists, stopping monitoring
-[2025-10-21 23:38:47.923] [INFO] 🔄 Sensors reset to zero values
-[2025-10-21 23:38:50.931] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:38:51.959] [INFO] Performance service monitoring state: False
-[2025-10-21 23:38:52.969] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:38:53.940] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:38:53.979] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:38:54.989] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:38:55.999] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:38:56.949] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:38:57.009] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:38:58.018] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:38:59.026] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:38:59.957] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:00.037] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:01.043] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:02.054] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:02.966] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:03.063] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:04.073] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:05.083] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:05.974] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:06.092] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:07.103] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:08.114] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:08.983] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:09.125] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:10.134] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:11.144] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:11.989] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:12.152] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:13.163] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:14.170] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:14.998] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:15.180] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:16.190] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:17.200] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:18.006] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:18.211] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:19.221] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:20.230] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:21.015] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:21.240] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:22.249] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:23.261] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:24.024] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:24.270] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:25.280] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:26.289] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:27.033] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:27.296] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:28.303] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:29.312] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:30.042] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:30.323] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:31.333] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:32.343] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:33.049] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:33.360] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:34.370] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:35.380] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:36.055] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:36.389] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:37.399] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:38.409] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:39.063] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:39.418] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:40.428] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:41.439] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:42.073] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:42.447] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:43.458] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:44.466] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:45.081] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:45.476] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:46.485] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:47.503] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:48.087] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:48.512] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:49.522] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:50.531] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:51.096] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:51.542] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:52.553] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:53.563] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:54.104] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:54.571] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:55.578] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:56.589] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:57.111] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:57.598] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:58.608] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:39:59.617] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:00.120] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:00.634] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:01.644] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:02.653] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:03.129] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:03.663] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:04.673] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:05.681] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:06.136] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:06.692] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:07.701] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:08.711] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:09.144] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:09.721] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:10.730] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:11.741] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:12.152] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:12.750] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:13.760] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:14.770] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:15.160] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:15.780] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:16.791] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:17.802] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:18.169] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:18.815] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:19.824] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:20.834] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:21.177] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:21.844] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:22.853] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:23.862] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:24.186] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:24.873] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:25.882] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:26.892] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:27.194] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:27.902] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:28.912] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:29.923] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:30.203] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:30.933] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:31.943] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:32.953] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:33.211] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:33.963] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:34.973] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:35.983] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:36.220] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:36.992] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:38.002] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:39.010] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:39.228] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:40.019] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:41.029] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:42.039] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:42.235] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:43.049] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:44.059] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:45.069] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:45.244] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:46.079] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:47.088] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:48.098] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:48.254] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:49.104] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:50.114] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:51.126] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:51.265] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:52.137] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:53.146] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:54.155] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:54.273] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:55.165] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:56.175] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:57.185] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:57.281] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:58.194] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:40:59.204] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:00.213] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:00.288] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:01.223] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:02.232] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:03.243] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:03.298] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:04.251] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:05.261] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:06.271] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:06.306] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:07.280] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:08.289] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:09.299] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:09.316] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:10.309] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:11.318] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:12.324] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:12.327] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:13.337] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:14.345] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:15.330] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:15.355] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:16.365] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:17.375] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:18.340] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:18.384] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:19.394] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:20.404] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:21.349] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:21.415] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:22.426] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:23.437] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:24.358] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:24.446] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:25.456] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:26.465] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:27.362] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:27.474] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:28.480] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:29.492] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:30.375] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:30.376] [INFO] 📱 New fullscreen app detected: PID 68988
-[2025-10-21 23:41:30.390] [INFO] === RTSS MONITORING START REQUEST ===
-[2025-10-21 23:41:30.390] [INFO] Target Process: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'[No Title]' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:982MB | Uptime:0.1min | Started:23:41:23
-[2025-10-21 23:41:30.391] [INFO] Starting RTSS monitoring for: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'[No Title]' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:982MB | Uptime:0.1min | Started:23:41:23
-[2025-10-21 23:41:30.391] [INFO] Monitoring STARTED PID 68988
-[2025-10-21 23:41:30.391] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
-[2025-10-21 23:41:30.393] [INFO] 🎮 Window Title Debug: ProcessName='ForeverWinter-Win64-Shipping', IsGameProcess=False
-[2025-10-21 23:41:30.405] [INFO] === RTSS DETECTION PHASE ===
-[2025-10-21 23:41:30.405] [INFO] Searching for RTSS hook on: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'[No Title]' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:1001MB | Uptime:0.1min | Started:23:41:23
-[2025-10-21 23:41:30.405] [INFO] Will check RTSS shared memory versions: V2, V1
-[2025-10-21 23:41:30.405] [INFO] Max retries: 60 seconds
-[2025-10-21 23:41:30.406] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
-[2025-10-21 23:41:30.407] [INFO] 🎮 Window Title Debug: ProcessName='ForeverWinter-Win64-Shipping', IsGameProcess=False
-[2025-10-21 23:41:30.420] [INFO] Hooked Process: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'[No Title]' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:1012MB | Uptime:0.1min | Started:23:41:23
-[2025-10-21 23:41:30.420] [INFO] Initial FPS Reading: 120.1 FPS, Frame Time: 8.33ms
-[2025-10-21 23:41:30.421] [INFO] 🔍 RTSS Hook Debug: Process Name='ForeverWinter-Win64-Shipping', MainWindowHandle=True
-[2025-10-21 23:41:30.422] [INFO] 🎮 Window Title Debug: ProcessName='ForeverWinter-Win64-Shipping', IsGameProcess=False
-[2025-10-21 23:41:30.422] [INFO] 🔍 RTSS Hook Debug: GetProcessWindowTitle returned='[No Title]'
-[2025-10-21 23:41:30.423] [INFO] RTSS successfully hooked PID 68988, updating window title: '[No Title]'
-[2025-10-21 23:41:30.423] [INFO] === CONTINUOUS MONITORING PHASE ===
-[2025-10-21 23:41:30.423] [INFO] 📊 FPS Statistics (10s update):
-[2025-10-21 23:41:30.424] [INFO] 🎮 Window Title Debug: ProcessName='ForeverWinter-Win64-Shipping', IsGameProcess=False
-[2025-10-21 23:41:30.436] [INFO]    Process: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'[No Title]' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:1033MB | Uptime:0.1min | Started:23:41:23
-[2025-10-21 23:41:30.436] [INFO]    Current FPS: 120.1, Frame Time: 8.33ms
-[2025-10-21 23:41:30.436] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
-[2025-10-21 23:41:30.498] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:30.506] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:41:30.507] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:41:30.507] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:41:30.507] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 9728)
-[2025-10-21 23:41:30.508] [INFO] 🔄 Sensors reset to zero values
-[2025-10-21 23:41:30.508] [INFO] Performance service monitoring state: False
-[2025-10-21 23:41:31.519] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:31.529] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:41:31.529] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:41:31.529] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:41:31.529] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 9728)
-[2025-10-21 23:41:32.542] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:32.552] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:41:32.553] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:41:32.553] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:41:32.553] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 9728)
-[2025-10-21 23:41:33.518] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:33.518] [INFO] 📱 New fullscreen app detected: PID 68988
-[2025-10-21 23:41:33.542] [INFO] === RTSS MONITORING START REQUEST ===
-[2025-10-21 23:41:33.543] [INFO] Target Process: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2218MB | Uptime:0.2min | Started:23:41:23
-[2025-10-21 23:41:33.543] [INFO] Starting RTSS monitoring for: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2218MB | Uptime:0.2min | Started:23:41:23
-[2025-10-21 23:41:33.543] [INFO] Monitoring STARTED PID 68988
-[2025-10-21 23:41:33.543] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
-[2025-10-21 23:41:33.554] [INFO] === RTSS DETECTION PHASE ===
-[2025-10-21 23:41:33.555] [INFO] Searching for RTSS hook on: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2218MB | Uptime:0.2min | Started:23:41:23
-[2025-10-21 23:41:33.555] [INFO] Will check RTSS shared memory versions: V2, V1
-[2025-10-21 23:41:33.555] [INFO] Max retries: 60 seconds
-[2025-10-21 23:41:33.556] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
-[2025-10-21 23:41:33.565] [INFO] Hooked Process: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2218MB | Uptime:0.2min | Started:23:41:23
-[2025-10-21 23:41:33.565] [INFO] Initial FPS Reading: 120.1 FPS, Frame Time: 8.33ms
-[2025-10-21 23:41:33.565] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:33.566] [INFO] 🔍 RTSS Hook Debug: Process Name='ForeverWinter-Win64-Shipping', MainWindowHandle=True
-[2025-10-21 23:41:33.566] [INFO] 🔍 RTSS Hook Debug: GetProcessWindowTitle returned='Forever Winter  '
-[2025-10-21 23:41:33.566] [INFO] RTSS successfully hooked PID 68988, updating window title: 'Forever Winter  '
-[2025-10-21 23:41:33.567] [INFO] === CONTINUOUS MONITORING PHASE ===
-[2025-10-21 23:41:33.574] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:41:33.574] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:41:33.574] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:41:33.574] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 9728)
-[2025-10-21 23:41:33.575] [INFO] 🔄 Sensors reset to zero values
-[2025-10-21 23:41:33.575] [INFO] Performance service monitoring state: False
-[2025-10-21 23:41:34.589] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:34.602] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:41:34.603] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:41:34.603] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:41:34.603] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 9728)
-[2025-10-21 23:41:35.623] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:35.632] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:41:35.632] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:41:35.632] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:41:35.633] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 9728)
-[2025-10-21 23:41:36.584] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:36.585] [INFO] 📱 New fullscreen app detected: PID 68988
-[2025-10-21 23:41:36.591] [INFO] === RTSS MONITORING START REQUEST ===
-[2025-10-21 23:41:36.591] [INFO] Target Process: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2209MB | Uptime:0.2min | Started:23:41:23
-[2025-10-21 23:41:36.592] [INFO] Starting RTSS monitoring for: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2209MB | Uptime:0.2min | Started:23:41:23
-[2025-10-21 23:41:36.592] [INFO] Monitoring STARTED PID 68988
-[2025-10-21 23:41:36.592] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
-[2025-10-21 23:41:36.600] [INFO] === RTSS DETECTION PHASE ===
-[2025-10-21 23:41:36.600] [INFO] Searching for RTSS hook on: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2209MB | Uptime:0.2min | Started:23:41:23
-[2025-10-21 23:41:36.601] [INFO] Will check RTSS shared memory versions: V2, V1
-[2025-10-21 23:41:36.601] [INFO] Max retries: 60 seconds
-[2025-10-21 23:41:36.601] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
-[2025-10-21 23:41:36.609] [INFO] Hooked Process: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2209MB | Uptime:0.2min | Started:23:41:23
-[2025-10-21 23:41:36.609] [INFO] Initial FPS Reading: 120.1 FPS, Frame Time: 8.33ms
-[2025-10-21 23:41:36.610] [INFO] 🔍 RTSS Hook Debug: Process Name='ForeverWinter-Win64-Shipping', MainWindowHandle=True
-[2025-10-21 23:41:36.610] [INFO] 🔍 RTSS Hook Debug: GetProcessWindowTitle returned='Forever Winter  '
-[2025-10-21 23:41:36.610] [INFO] RTSS successfully hooked PID 68988, updating window title: 'Forever Winter  '
-[2025-10-21 23:41:36.611] [INFO] === CONTINUOUS MONITORING PHASE ===
-[2025-10-21 23:41:36.644] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:36.652] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:41:36.653] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:41:36.653] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:41:36.653] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 9728)
-[2025-10-21 23:41:36.653] [INFO] 🔄 Sensors reset to zero values
-[2025-10-21 23:41:36.653] [INFO] Performance service monitoring state: False
-[2025-10-21 23:41:37.658] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:37.661] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:41:37.662] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:41:37.662] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:41:37.662] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 9728)
-[2025-10-21 23:41:38.672] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:38.679] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:41:38.680] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:41:38.680] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:41:38.680] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 9728)
-[2025-10-21 23:41:39.663] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:39.663] [INFO] 📱 New fullscreen app detected: PID 68988
-[2025-10-21 23:41:39.672] [INFO] === RTSS MONITORING START REQUEST ===
-[2025-10-21 23:41:39.672] [INFO] Target Process: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2232MB | Uptime:0.3min | Started:23:41:23
-[2025-10-21 23:41:39.672] [INFO] Starting RTSS monitoring for: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2232MB | Uptime:0.3min | Started:23:41:23
-[2025-10-21 23:41:39.672] [INFO] Monitoring STARTED PID 68988
-[2025-10-21 23:41:39.672] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
-[2025-10-21 23:41:39.681] [INFO] === RTSS DETECTION PHASE ===
-[2025-10-21 23:41:39.681] [INFO] Searching for RTSS hook on: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2232MB | Uptime:0.3min | Started:23:41:23
-[2025-10-21 23:41:39.681] [INFO] Will check RTSS shared memory versions: V2, V1
-[2025-10-21 23:41:39.681] [INFO] Max retries: 60 seconds
-[2025-10-21 23:41:39.682] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
-[2025-10-21 23:41:39.689] [INFO] Hooked Process: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2232MB | Uptime:0.3min | Started:23:41:23
-[2025-10-21 23:41:39.689] [INFO] Initial FPS Reading: 120.1 FPS, Frame Time: 8.33ms
-[2025-10-21 23:41:39.689] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:39.690] [INFO] 🔍 RTSS Hook Debug: Process Name='ForeverWinter-Win64-Shipping', MainWindowHandle=True
-[2025-10-21 23:41:39.690] [INFO] 🔍 RTSS Hook Debug: GetProcessWindowTitle returned='Forever Winter  '
-[2025-10-21 23:41:39.690] [INFO] RTSS successfully hooked PID 68988, updating window title: 'Forever Winter  '
-[2025-10-21 23:41:39.690] [INFO] === CONTINUOUS MONITORING PHASE ===
-[2025-10-21 23:41:39.696] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:41:39.696] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:41:39.697] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:41:39.697] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 9728)
-[2025-10-21 23:41:39.697] [INFO] 🔄 Sensors reset to zero values
-[2025-10-21 23:41:39.697] [INFO] Performance service monitoring state: False
-[2025-10-21 23:41:40.708] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:40.716] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:40.724] [INFO] === RTSS MONITORING START REQUEST ===
-[2025-10-21 23:41:40.724] [INFO] Target Process: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2233MB | Uptime:0.3min | Started:23:41:23
-[2025-10-21 23:41:40.724] [INFO] Starting RTSS monitoring for: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2233MB | Uptime:0.3min | Started:23:41:23
-[2025-10-21 23:41:40.725] [INFO] Monitoring STARTED PID 68988
-[2025-10-21 23:41:40.725] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
-[2025-10-21 23:41:40.732] [INFO] === RTSS DETECTION PHASE ===
-[2025-10-21 23:41:40.733] [INFO] Searching for RTSS hook on: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2233MB | Uptime:0.3min | Started:23:41:23
-[2025-10-21 23:41:40.733] [INFO] Will check RTSS shared memory versions: V2, V1
-[2025-10-21 23:41:40.733] [INFO] Max retries: 60 seconds
-[2025-10-21 23:41:40.733] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
-[2025-10-21 23:41:40.741] [INFO] Hooked Process: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2233MB | Uptime:0.3min | Started:23:41:23
-[2025-10-21 23:41:40.741] [INFO] Initial FPS Reading: 120.1 FPS, Frame Time: 8.33ms
-[2025-10-21 23:41:40.741] [INFO] 🔍 RTSS Hook Debug: Process Name='ForeverWinter-Win64-Shipping', MainWindowHandle=True
-[2025-10-21 23:41:40.742] [INFO] 🔍 RTSS Hook Debug: GetProcessWindowTitle returned='Forever Winter  '
-[2025-10-21 23:41:40.742] [INFO] RTSS successfully hooked PID 68988, updating window title: 'Forever Winter  '
-[2025-10-21 23:41:40.742] [INFO] === CONTINUOUS MONITORING PHASE ===
-[2025-10-21 23:41:40.742] [INFO] 📊 FPS Statistics (10s update):
-[2025-10-21 23:41:40.751] [INFO]    Process: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2233MB | Uptime:0.3min | Started:23:41:23
-[2025-10-21 23:41:40.751] [INFO]    Current FPS: 120.1, Frame Time: 8.33ms
-[2025-10-21 23:41:40.751] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
-[2025-10-21 23:41:42.708] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:45.718] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:48.726] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:50.752] [INFO] 📊 FPS Statistics (10s update):
-[2025-10-21 23:41:50.762] [INFO]    Process: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2818MB | Uptime:0.5min | Started:23:41:23
-[2025-10-21 23:41:50.762] [INFO]    Current FPS: 376.0, Frame Time: 2.66ms
-[2025-10-21 23:41:50.762] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
-[2025-10-21 23:41:51.736] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:54.745] [INFO] ✅ Process passed blacklist check: ForeverWinter-Win64-Shipping (PID: 68988)
-[2025-10-21 23:41:57.758] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:41:57.758] [INFO] ⏸️ No new fullscreen apps but PID 68988 still running, continuing monitoring
-[2025-10-21 23:41:58.764] [WARN] Process no longer exists: PID:68988 | Name:'ForeverWinter-Win64-Shipping' | Window:'Forever Winter  ' | Executable:'Binaries\Win64\ForeverWinter-Win64-Shipping.exe' | Memory:2233MB | Uptime:0.3min | Started:23:41:23
-[2025-10-21 23:42:00.765] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:00.765] [INFO] ❌ Monitored process 68988 no longer exists, stopping monitoring
-[2025-10-21 23:42:00.766] [INFO] 🔄 Sensors reset to zero values
-[2025-10-21 23:42:00.766] [INFO] Performance service monitoring state: False
-[2025-10-21 23:42:01.777] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:01.785] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:42:01.785] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:42:01.785] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:42:01.786] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 50376)
-[2025-10-21 23:42:02.795] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:02.803] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:42:02.804] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:42:02.804] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:42:02.804] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 50376)
-[2025-10-21 23:42:03.775] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:03.814] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:03.822] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:42:03.822] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:42:03.823] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:42:03.823] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 50376)
-[2025-10-21 23:42:04.832] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:04.840] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:42:04.841] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:42:04.841] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:42:04.841] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 50376)
-[2025-10-21 23:42:05.850] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:05.859] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
-[2025-10-21 23:42:05.859] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
-[2025-10-21 23:42:05.859] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
-[2025-10-21 23:42:05.860] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 50376)
-[2025-10-21 23:42:06.785] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:06.869] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:07.878] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:08.885] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:09.794] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:09.893] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:10.903] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:11.911] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:12.804] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:12.921] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:13.927] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:14.939] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:15.814] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:15.948] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:16.958] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:17.968] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:18.823] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:18.977] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:19.986] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:20.995] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:21.834] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
-[2025-10-21 23:42:22.004] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:49:52.042] [INFO] === InfoPanel.RTSS Debug Log Started ===
+[2025-10-21 23:49:52.042] [INFO] Plugin Directory: C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS
+[2025-10-21 23:49:52.042] [INFO] Assembly Location: C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS\InfoPanel.RTSS.dll
+[2025-10-21 23:49:52.042] [INFO] === InfoPanel.RTSS Constructor Called ===
+[2025-10-21 23:49:52.043] [INFO] DXGIFrameMonitoringService initialized
+[2025-10-21 23:49:52.043] [INFO] PerformanceMonitoringService initialized with DXGI frame monitoring
+[2025-10-21 23:49:52.052] [INFO] StableFullscreenDetectionService initialized
+[2025-10-21 23:49:52.053] [INFO] All services initialized successfully
+[2025-10-21 23:49:52.053] [INFO] Event subscriptions completed
+[2025-10-21 23:49:54.123] [INFO] === RTSS Plugin Initialize() called ===
+[2025-10-21 23:49:54.294] [INFO] System Information: GPU: NVIDIA GeForce RTX 5090, Display: 3840 x 2160@240Hz
+[2025-10-21 23:49:54.294] [INFO] Continuous monitoring task started
+[2025-10-21 23:49:54.294] [INFO] Initial window check task started
+[2025-10-21 23:49:54.294] [INFO] RTSS Plugin initialization completed successfully
+[2025-10-21 23:49:54.294] [INFO] === RTSS Plugin Load() called ===
+[2025-10-21 23:49:54.295] [INFO] Sensors created and registered with InfoPanel
+[2025-10-21 23:49:54.295] [INFO] System sensors updated with initial information
+[2025-10-21 23:49:54.296] [INFO] === SIMPLIFIED CONTINUOUS MONITORING STARTED ===
+[2025-10-21 23:49:54.313] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:49:54.610] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:49:54.803] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:49:55.620] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:49:56.630] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:49:57.320] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:49:57.640] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:49:58.650] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:49:59.659] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:00.328] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:00.668] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:01.677] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:02.687] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:03.337] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:03.698] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:04.708] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:05.714] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:06.346] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:06.723] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:07.740] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:07.750] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:08.165] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 23:50:08.166] [INFO] Target Process: PID:64428 | Name:'NMS' | Window:'NMS (Game)' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:169MB | Uptime:0.0min | Started:23:50:06
+[2025-10-21 23:50:08.166] [INFO] Starting RTSS monitoring for: PID:64428 | Name:'NMS' | Window:'NMS (Game)' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:169MB | Uptime:0.0min | Started:23:50:06
+[2025-10-21 23:50:08.175] [INFO] Monitoring STARTED PID 64428
+[2025-10-21 23:50:08.175] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 23:50:08.178] [INFO] 🎮 Window Title Debug: ProcessName='NMS', IsGameProcess=False
+[2025-10-21 23:50:08.189] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 23:50:08.189] [INFO] Searching for RTSS hook on: PID:64428 | Name:'NMS' | Window:'[No Window]' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:161MB | Uptime:0.0min | Started:23:50:06
+[2025-10-21 23:50:08.190] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 23:50:08.190] [INFO] Max retries: 60 seconds
+[2025-10-21 23:50:08.192] [INFO] 🎮 Window Title Debug: ProcessName='NMS', IsGameProcess=False
+[2025-10-21 23:50:08.203] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:64428 | Name:'NMS' | Window:'[No Window]' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:142MB | Uptime:0.0min | Started:23:50:06
+[2025-10-21 23:50:09.354] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:09.355] [INFO] ❌ Monitored process 0 no longer exists, stopping monitoring
+[2025-10-21 23:50:09.355] [INFO] 🔄 Sensors reset to zero values
+[2025-10-21 23:50:09.357] [INFO] Performance service monitoring state: False
+[2025-10-21 23:50:10.368] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:50:10.378] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:10.386] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 23:50:10.386] [INFO] Target Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:1310MB | Uptime:0.1min | Started:23:50:06
+[2025-10-21 23:50:10.387] [INFO] Starting RTSS monitoring for: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:1310MB | Uptime:0.1min | Started:23:50:06
+[2025-10-21 23:50:10.387] [INFO] Monitoring STARTED PID 64428
+[2025-10-21 23:50:10.387] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 23:50:10.394] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 23:50:10.395] [INFO] Searching for RTSS hook on: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:1310MB | Uptime:0.1min | Started:23:50:06
+[2025-10-21 23:50:10.395] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 23:50:10.395] [INFO] Max retries: 60 seconds
+[2025-10-21 23:50:10.404] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:1310MB | Uptime:0.1min | Started:23:50:06
+[2025-10-21 23:50:12.367] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:14.406] [INFO] ✅ RTSS HOOK DETECTED after 4 seconds!
+[2025-10-21 23:50:14.417] [INFO] Hooked Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9522MB | Uptime:0.1min | Started:23:50:06
+[2025-10-21 23:50:14.417] [INFO] Initial FPS Reading: 28.7 FPS, Frame Time: 34.80ms
+[2025-10-21 23:50:14.418] [INFO] 🔍 RTSS Hook Debug: Process Name='NMS', MainWindowHandle=True
+[2025-10-21 23:50:14.419] [INFO] 🔍 RTSS Hook Debug: GetProcessWindowTitle returned='No Man's Sky'
+[2025-10-21 23:50:14.419] [INFO] RTSS successfully hooked PID 64428, updating window title: 'No Man's Sky'
+[2025-10-21 23:50:14.420] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 23:50:14.420] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:50:14.432] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9524MB | Uptime:0.1min | Started:23:50:06
+[2025-10-21 23:50:14.432] [INFO]    Current FPS: 28.7, Frame Time: 34.80ms
+[2025-10-21 23:50:14.433] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:50:15.375] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:18.384] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:21.393] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:24.401] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:24.438] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:50:24.446] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9601MB | Uptime:0.3min | Started:23:50:06
+[2025-10-21 23:50:24.446] [INFO]    Current FPS: 149.8, Frame Time: 6.68ms
+[2025-10-21 23:50:24.446] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:50:27.410] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:30.419] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:33.428] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:34.451] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:50:34.459] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:0.5min | Started:23:50:06
+[2025-10-21 23:50:34.460] [INFO]    Current FPS: 149.6, Frame Time: 6.68ms
+[2025-10-21 23:50:34.460] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:50:36.438] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:39.447] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:42.455] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:44.465] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:50:44.474] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:0.6min | Started:23:50:06
+[2025-10-21 23:50:44.475] [INFO]    Current FPS: 149.8, Frame Time: 6.68ms
+[2025-10-21 23:50:44.475] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:50:45.463] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:48.471] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:51.481] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:54.477] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:50:54.486] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:0.8min | Started:23:50:06
+[2025-10-21 23:50:54.487] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:50:54.487] [INFO]    Current FPS: 150.6, Frame Time: 6.64ms
+[2025-10-21 23:50:54.487] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:50:57.496] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:00.506] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:03.514] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:04.488] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:51:04.498] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:1.0min | Started:23:50:06
+[2025-10-21 23:51:04.499] [INFO]    Current FPS: 149.6, Frame Time: 6.68ms
+[2025-10-21 23:51:04.499] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:51:06.519] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:09.528] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:12.536] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:14.502] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:51:14.511] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:1.1min | Started:23:50:06
+[2025-10-21 23:51:14.511] [INFO]    Current FPS: 150.6, Frame Time: 6.64ms
+[2025-10-21 23:51:14.511] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:51:15.545] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:18.550] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:21.560] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:24.524] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:51:24.533] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:1.3min | Started:23:50:06
+[2025-10-21 23:51:24.533] [INFO]    Current FPS: 149.8, Frame Time: 6.68ms
+[2025-10-21 23:51:24.533] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:51:24.565] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:27.573] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:30.583] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:33.590] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:34.534] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:51:34.543] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:1.5min | Started:23:50:06
+[2025-10-21 23:51:34.544] [INFO]    Current FPS: 149.6, Frame Time: 6.68ms
+[2025-10-21 23:51:34.544] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:51:36.599] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:39.609] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:42.618] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:44.544] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:51:44.553] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:1.6min | Started:23:50:06
+[2025-10-21 23:51:44.554] [INFO]    Current FPS: 150.6, Frame Time: 6.64ms
+[2025-10-21 23:51:44.554] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:51:45.629] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:48.636] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:51.645] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:54.555] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:51:54.564] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:1.8min | Started:23:50:06
+[2025-10-21 23:51:54.565] [INFO]    Current FPS: 149.8, Frame Time: 6.68ms
+[2025-10-21 23:51:54.565] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:51:54.653] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:51:57.662] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:00.670] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:03.678] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:04.568] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:52:04.576] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:2.0min | Started:23:50:06
+[2025-10-21 23:52:04.576] [INFO]    Current FPS: 149.6, Frame Time: 6.68ms
+[2025-10-21 23:52:04.577] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:52:06.687] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:09.696] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:12.705] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:14.580] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:52:14.588] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:2.1min | Started:23:50:06
+[2025-10-21 23:52:14.589] [INFO]    Current FPS: 150.6, Frame Time: 6.64ms
+[2025-10-21 23:52:14.589] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:52:15.714] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:18.723] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:21.733] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:24.590] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:52:24.596] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:2.3min | Started:23:50:06
+[2025-10-21 23:52:24.596] [INFO]    Current FPS: 149.8, Frame Time: 6.68ms
+[2025-10-21 23:52:24.596] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:52:24.742] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:27.751] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:30.760] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:33.766] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:34.599] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:52:34.609] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:2.5min | Started:23:50:06
+[2025-10-21 23:52:34.609] [INFO]    Current FPS: 150.7, Frame Time: 6.63ms
+[2025-10-21 23:52:34.609] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:52:36.772] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:39.780] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:42.788] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:44.610] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:52:44.619] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:2.6min | Started:23:50:06
+[2025-10-21 23:52:44.619] [INFO]    Current FPS: 149.6, Frame Time: 6.68ms
+[2025-10-21 23:52:44.619] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:52:45.796] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:48.805] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:51.814] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:54.621] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:52:54.630] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:2.8min | Started:23:50:06
+[2025-10-21 23:52:54.631] [INFO]    Current FPS: 150.6, Frame Time: 6.64ms
+[2025-10-21 23:52:54.631] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:52:54.823] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:52:57.844] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:53:00.852] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:53:03.861] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:53:04.636] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:53:04.644] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:3.0min | Started:23:50:06
+[2025-10-21 23:53:04.645] [INFO]    Current FPS: 150.6, Frame Time: 6.64ms
+[2025-10-21 23:53:04.645] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:53:06.869] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:53:09.878] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:53:12.889] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:53:14.649] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:53:14.657] [INFO]    Process: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:9603MB | Uptime:3.1min | Started:23:50:06
+[2025-10-21 23:53:14.658] [INFO]    Current FPS: 149.6, Frame Time: 6.68ms
+[2025-10-21 23:53:14.658] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:53:15.896] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:53:18.905] [INFO] ✅ Process passed blacklist check: NMS (PID: 64428)
+[2025-10-21 23:53:20.660] [WARN] Process no longer exists: PID:64428 | Name:'NMS' | Window:'No Man's Sky' | Executable:'No Man's Sky\Binaries\NMS.exe' | Memory:1310MB | Uptime:0.1min | Started:23:50:06
+[2025-10-21 23:53:21.915] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:21.916] [INFO] ❌ Monitored process 64428 no longer exists, stopping monitoring
+[2025-10-21 23:53:21.916] [INFO] 🔄 Sensors reset to zero values
+[2025-10-21 23:53:24.925] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:26.394] [INFO] Performance service monitoring state: False
+[2025-10-21 23:53:27.405] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:27.934] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:28.414] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:29.421] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:30.432] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:30.941] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:31.442] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:32.453] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:33.460] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:33.951] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:34.470] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:35.480] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:36.491] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:36.958] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:37.500] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:38.510] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:39.521] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:39.966] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:40.531] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:41.541] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:42.553] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:42.974] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:43.564] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:44.571] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:45.580] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:45.982] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:46.590] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:47.603] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:48.616] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:49.004] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:49.626] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:50.638] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:51.650] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:52.014] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:52.661] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:53.671] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:54.680] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:55.024] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:55.691] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:56.703] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:57.716] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:58.033] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:53:58.822] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:53:58.837] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
+[2025-10-21 23:53:58.837] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
+[2025-10-21 23:53:58.838] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
+[2025-10-21 23:53:58.838] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 63200)
+[2025-10-21 23:53:59.945] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:53:59.963] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
+[2025-10-21 23:53:59.964] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
+[2025-10-21 23:53:59.964] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
+[2025-10-21 23:53:59.964] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 63200)
+[2025-10-21 23:54:01.066] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:54:01.083] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
+[2025-10-21 23:54:01.083] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
+[2025-10-21 23:54:01.083] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
+[2025-10-21 23:54:01.083] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 63200)
+[2025-10-21 23:54:01.141] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:54:01.146] [INFO] 📱 New fullscreen app detected: PID 38804
+[2025-10-21 23:54:01.261] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 23:54:01.261] [INFO] Target Process: PID:38804 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:3901MB | Uptime:0.3min | Started:23:53:45
+[2025-10-21 23:54:01.261] [INFO] Starting RTSS monitoring for: PID:38804 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:3901MB | Uptime:0.3min | Started:23:53:45
+[2025-10-21 23:54:01.261] [INFO] Monitoring STARTED PID 38804
+[2025-10-21 23:54:01.262] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 23:54:01.368] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 23:54:01.368] [INFO] Searching for RTSS hook on: PID:38804 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:3907MB | Uptime:0.3min | Started:23:53:45
+[2025-10-21 23:54:01.368] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 23:54:01.368] [INFO] Max retries: 60 seconds
+[2025-10-21 23:54:01.484] [INFO] ⏳ Still waiting for RTSS hook... (1/60s) - Target: PID:38804 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:3909MB | Uptime:0.3min | Started:23:53:45
+[2025-10-21 23:54:02.193] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:54:02.211] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
+[2025-10-21 23:54:02.211] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
+[2025-10-21 23:54:02.212] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
+[2025-10-21 23:54:02.212] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 63200)
+[2025-10-21 23:54:02.212] [INFO] 🔄 Sensors reset to zero values
+[2025-10-21 23:54:02.213] [INFO] Performance service monitoring state: False
+[2025-10-21 23:54:03.334] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:54:03.348] [INFO] 🔍 DEBUG: gameoverlayui64 detected - checking blacklist...
+[2025-10-21 23:54:03.348] [INFO] 🔍 DEBUG: Blacklist contains 'gameoverlayui64': True
+[2025-10-21 23:54:03.348] [INFO] 🔍 DEBUG: Blacklist entries: audiodg, backgroundtaskhost, csrss, ctfmon, dasHost, dllhost, dwm, explorer, fontdrvhost, gamebar...
+[2025-10-21 23:54:03.348] [INFO] 🚫 Blacklisted process detected: gameoverlayui64 (PID: 63200)
+[2025-10-21 23:54:04.454] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:54:04.559] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:54:04.665] [INFO] === RTSS MONITORING START REQUEST ===
+[2025-10-21 23:54:04.665] [INFO] Target Process: PID:38804 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4093MB | Uptime:0.3min | Started:23:53:45
+[2025-10-21 23:54:04.665] [INFO] Starting RTSS monitoring for: PID:38804 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4093MB | Uptime:0.3min | Started:23:53:45
+[2025-10-21 23:54:04.666] [INFO] Monitoring STARTED PID 38804
+[2025-10-21 23:54:04.666] [INFO] Attempting RTSS shared memory monitoring (will retry if not hooked yet)
+[2025-10-21 23:54:04.769] [INFO] === RTSS DETECTION PHASE ===
+[2025-10-21 23:54:04.770] [INFO] Searching for RTSS hook on: PID:38804 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4099MB | Uptime:0.3min | Started:23:53:45
+[2025-10-21 23:54:04.770] [INFO] Will check RTSS shared memory versions: V2, V1
+[2025-10-21 23:54:04.771] [INFO] Max retries: 60 seconds
+[2025-10-21 23:54:04.776] [INFO] ✅ RTSS HOOK DETECTED after 0 seconds!
+[2025-10-21 23:54:04.876] [INFO] Hooked Process: PID:38804 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4108MB | Uptime:0.3min | Started:23:53:45
+[2025-10-21 23:54:04.876] [INFO] Initial FPS Reading: 149.6 FPS, Frame Time: 6.68ms
+[2025-10-21 23:54:04.881] [INFO] 🔍 RTSS Hook Debug: Process Name='bf6', MainWindowHandle=True
+[2025-10-21 23:54:04.882] [INFO] 🔍 RTSS Hook Debug: GetProcessWindowTitle returned='Battlefield™ 6'
+[2025-10-21 23:54:04.882] [INFO] RTSS successfully hooked PID 38804, updating window title: 'Battlefield™ 6'
+[2025-10-21 23:54:04.882] [INFO] === CONTINUOUS MONITORING PHASE ===
+[2025-10-21 23:54:04.883] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:54:04.988] [INFO]    Process: PID:38804 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4109MB | Uptime:0.3min | Started:23:53:45
+[2025-10-21 23:54:04.989] [INFO]    Current FPS: 149.6, Frame Time: 6.68ms
+[2025-10-21 23:54:04.990] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:54:05.313] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:54:08.430] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:54:11.538] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:54:14.646] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:54:15.052] [INFO] 📊 FPS Statistics (10s update):
+[2025-10-21 23:54:15.158] [INFO]    Process: PID:38804 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4227MB | Uptime:0.5min | Started:23:53:45
+[2025-10-21 23:54:15.158] [INFO]    Current FPS: 124.1, Frame Time: 8.06ms
+[2025-10-21 23:54:15.158] [INFO]    Statistics: Min=0.0, Avg=0.0, Max=0.0
+[2025-10-21 23:54:17.762] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:54:20.870] [INFO] ✅ Process passed blacklist check: bf6 (PID: 38804)
+[2025-10-21 23:54:22.189] [WARN] Process no longer exists: PID:38804 | Name:'bf6' | Window:'Battlefield™ 6' | Executable:'[Path Error]' | Memory:4099MB | Uptime:0.3min | Started:23:53:45
+[2025-10-21 23:54:23.884] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)
+[2025-10-21 23:54:23.884] [INFO] ❌ Monitored process 38804 no longer exists, stopping monitoring
+[2025-10-21 23:54:23.885] [INFO] 🔄 Sensors reset to zero values
+[2025-10-21 23:54:23.885] [INFO] Performance service monitoring state: False
+[2025-10-21 23:54:24.894] [INFO] 🚫 Blacklisted process detected: TextInputHost (PID: 22340)

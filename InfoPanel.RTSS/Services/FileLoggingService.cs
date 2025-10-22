@@ -6,16 +6,18 @@ namespace InfoPanel.RTSS.Services
 {
     /// <summary>
     /// Provides file-based logging for debugging user issues.
-    /// Writes to debug.log in the plugin directory.
+    /// Writes to debug.log in the plugin directory when debug mode is enabled.
     /// </summary>
     public class FileLoggingService : IDisposable
     {
         private readonly string _logFilePath;
         private readonly object _lock = new object();
+        private readonly ConfigurationService _configService;
         private bool _disposed = false;
 
-        public FileLoggingService()
+        public FileLoggingService(ConfigurationService configService)
         {
+            _configService = configService;
             try
             {
                 // Get the directory where the DLL is located
@@ -23,10 +25,13 @@ namespace InfoPanel.RTSS.Services
                 string pluginDirectory = Path.GetDirectoryName(assemblyLocation) ?? Environment.CurrentDirectory;
                 _logFilePath = Path.Combine(pluginDirectory, "debug.log");
 
-                // Initialize log file with session start
-                WriteLogEntry("INFO", "=== InfoPanel.RTSS Debug Log Started ===");
-                WriteLogEntry("INFO", $"Plugin Directory: {pluginDirectory}");
-                WriteLogEntry("INFO", $"Assembly Location: {assemblyLocation}");
+                // Only initialize log file if debug mode is enabled
+                if (_configService.IsDebugEnabled)
+                {
+                    WriteLogEntry("INFO", "=== InfoPanel.RTSS Debug Log Started ===");
+                    WriteLogEntry("INFO", $"Plugin Directory: {pluginDirectory}");
+                    WriteLogEntry("INFO", $"Assembly Location: {assemblyLocation}");
+                }
             }
             catch (Exception ex)
             {
@@ -64,7 +69,8 @@ namespace InfoPanel.RTSS.Services
 
         private void WriteLogEntry(string level, string message)
         {
-            if (string.IsNullOrEmpty(_logFilePath) || _disposed)
+            // Only log to file if debug mode is enabled
+            if (!_configService.IsDebugEnabled || string.IsNullOrEmpty(_logFilePath) || _disposed)
                 return;
 
             try

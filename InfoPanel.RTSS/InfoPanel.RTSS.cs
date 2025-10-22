@@ -34,6 +34,7 @@ namespace InfoPanel.RTSS
     /// </summary>
     public class RTSSPlugin : BasePlugin, IDisposable
     {
+        private readonly ConfigurationService _configService;
         private readonly IPerformanceMonitoringService _performanceService;
         private readonly StableFullscreenDetectionService _fullscreenDetectionService;
         private readonly ISystemInformationService _systemInfoService;
@@ -54,13 +55,17 @@ namespace InfoPanel.RTSS
                 "Simple FPS plugin showing FPS, frame time, 1% low FPS, window title, resolution, and refresh rate using RTSS"
             )
         {
-            // Initialize file logging first for debugging
-            _fileLogger = new FileLoggingService();
+            // Initialize configuration service first
+            _configService = new ConfigurationService();
+            
+            // Initialize file logging with configuration
+            _fileLogger = new FileLoggingService(_configService);
             _fileLogger.LogInfo("=== InfoPanel.RTSS Constructor Called ===");
             
             // Critical: Add early logging for debugging
             System.Diagnostics.Debug.WriteLine("=== InfoPanel.RTSS Constructor Called ===");
             Console.WriteLine("=== InfoPanel.RTSS Constructor Called ===");
+            Console.WriteLine($"Debug logging: {(_configService.IsDebugEnabled ? "ENABLED" : "DISABLED")} (check InfoPanel.RTSS.ini to change)");
 
             try
             {

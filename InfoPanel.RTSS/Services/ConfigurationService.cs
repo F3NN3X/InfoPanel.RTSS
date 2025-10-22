@@ -63,6 +63,11 @@ namespace InfoPanel.RTSS.Services
         public int SmoothingFrames => GetIntValue("Display", "smoothingFrames", 120);
 
         /// <summary>
+        /// Whether debug logging to debug.log file is enabled.
+        /// </summary>
+        public bool IsDebugEnabled => GetBoolValue("Debug", "debug", false);
+
+        /// <summary>
         /// Loads configuration from INI file.
         /// </summary>
         private Dictionary<string, Dictionary<string, string>> LoadConfiguration()
@@ -179,6 +184,12 @@ namespace InfoPanel.RTSS.Services
 # RTSS must be running for FPS monitoring to work
 # Download RTSS: https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html
 # Or install MSI Afterburner (includes RTSS): https://www.msi.com/Landing/afterburner
+
+[Debug]
+# Enable/disable debug logging to debug.log file
+# Set to true to enable detailed logging for troubleshooting
+# Set to false to disable logging for production use
+debug=false
 
 [Display]
 # Update interval in milliseconds (1000 = 1 second)

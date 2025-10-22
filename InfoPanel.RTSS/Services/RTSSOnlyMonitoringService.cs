@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +9,18 @@ using Vanara.PInvoke;
 
 namespace InfoPanel.RTSS.Services
 {
+    /// <summary>
+    /// Represents a candidate process detected by RTSS with gaming characteristics
+    /// </summary>
+    internal class RTSSCandidate
+    {
+        public int ProcessId { get; set; }
+        public double Fps { get; set; }
+        public bool IsFullscreen { get; set; }
+        public bool IsForeground { get; set; }
+        public string ProcessName { get; set; } = string.Empty;
+    }
+
     /// <summary>
     /// Simplified RTSS-only monitoring service that continuously scans RTSS shared memory
     /// and only monitors processes that RTSS has successfully hooked.
@@ -34,6 +47,8 @@ namespace InfoPanel.RTSS.Services
         // Loop counter for periodic operations
         private int _loopCounter = 0;
         private DateTime _lastDebugLog = DateTime.MinValue;
+
+
 
         // Events for sensor updates
         public event Action<double, double, double, string, int>? MetricsUpdated;
@@ -201,7 +216,7 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
-        /// Attempts to read RTSS shared memory for a specific version
+        /// Attempts to read RTSS shared memory and find the best gaming application
         /// </summary>
         private (int pid, double fps)? TryReadRTSSSharedMemory(string memoryName)
         {
@@ -239,6 +254,9 @@ namespace InfoPanel.RTSS.Services
                     
                     _fileLogger?.LogDebugThrottled($"{memoryName} opened successfully - Version: 0x{version:X8}, AppEntrySize: {appEntrySize}, AppArrOffset: {appArrOffset}, AppArrSize: {appArrSize}", "rtss_opened");
 
+                    // Collect all valid RTSS candidates for smart prioritization
+                    var candidates = new List<RTSSCandidate>();
+                    
                     // Scan through app entries to find hooked processes
                     int validEntries = 0;
                     for (int i = 0; i < appArrSize; i++)
@@ -256,11 +274,35 @@ namespace InfoPanel.RTSS.Services
                             _fileLogger?.LogDebugThrottled($"PID {processId} is not running, skipping", $"pid_not_running_{processId}");
                             continue;
                         }
+
+                        // Apply ignored processes filter early
+                        var processName = GetSafeProcessName(processId);
+                        var ignoredProcesses = _configService.IgnoredProcesses
+                            .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(p => p.Trim().ToLowerInvariant())
+                            .ToHashSet();
+                        
+                        if (ignoredProcesses.Contains(processName.ToLowerInvariant()))
+                        {
+                            _fileLogger?.LogDebugThrottled($"PID {processId} ({processName}) is in ignored list - skipping", $"ignored_{processId}");
+                            continue;
+                        }
                         
                         // Read timing data for proper FPS calculation
                         var time0 = Marshal.ReadInt32(mapView, entryOffset + 268); // dwTime0
                         var time1 = Marshal.ReadInt32(mapView, entryOffset + 272); // dwTime1
                         var frames = Marshal.ReadInt32(mapView, entryOffset + 276); // dwFrames
+                        
+                        // Apply configuration-based FPS filtering early
+                        if (time0 > 0 && time1 > 0 && frames > 0 && time1 > time0)
+                        {
+                            double preliminaryFps = 1000.0 * frames / (time1 - time0);
+                            if (preliminaryFps < _configService.MinimumFpsThreshold)
+                            {
+                                _fileLogger?.LogDebugThrottled($"PID {processId} has FPS ({preliminaryFps:F1}) below threshold ({_configService.MinimumFpsThreshold}) - skipping", $"low_fps_{processId}");
+                                continue;
+                            }
+                        }
                         
                         // Only log if there's actual FPS data, otherwise just count them
                         if (time0 > 0 && time1 > 0 && frames > 0)
@@ -279,8 +321,18 @@ namespace InfoPanel.RTSS.Services
                         double fps = 1000.0 * frames / (time1 - time0);
                         if (fps > 0 && fps < 1000) // Sanity check
                         {
-                            _fileLogger?.LogInfo($"RTSS hook found: PID {processId}, FPS {fps:F1}");
-                            return (processId, fps);
+                            // Collect all valid candidates instead of returning the first one
+                            var candidate = new RTSSCandidate 
+                            { 
+                                ProcessId = processId, 
+                                Fps = fps,
+                                IsFullscreen = _configService.PreferFullscreen && IsProcessFullscreen(processId),
+                                IsForeground = IsProcessForeground(processId),
+                                ProcessName = processName // Use already retrieved process name
+                            };
+                            
+                            candidates.Add(candidate);
+                            _fileLogger?.LogDebugThrottled($"RTSS candidate: PID {processId} ({candidate.ProcessName}) - FPS: {fps:F1}, Fullscreen: {candidate.IsFullscreen}, Foreground: {candidate.IsForeground}", $"candidate_{processId}");
                         }
                         else
                         {
@@ -288,10 +340,18 @@ namespace InfoPanel.RTSS.Services
                         }
                     }
 
+                    // Now select the best candidate using smart prioritization
+                    var bestCandidate = SelectBestGamingCandidate(candidates);
+                    if (bestCandidate != null)
+                    {
+                        _fileLogger?.LogInfo($"Selected best gaming candidate: PID {bestCandidate.ProcessId} ({bestCandidate.ProcessName}) - FPS: {bestCandidate.Fps:F1}");
+                        return (bestCandidate.ProcessId, bestCandidate.Fps);
+                    }
+
                     // Summary log instead of individual entry logs
                     if (validEntries > 0)
                     {
-                        _fileLogger?.LogDebugThrottled($"Scanned {validEntries} RTSS entries, no valid FPS data found", "rtss_scan_summary");
+                        _fileLogger?.LogDebugThrottled($"Scanned {validEntries} RTSS entries, no suitable gaming candidates found", "rtss_scan_summary");
                     }
 
                     return null;
@@ -382,6 +442,134 @@ namespace InfoPanel.RTSS.Services
             
             double worstFrameTime = frameTimes[index];
             return worstFrameTime > 0 ? 1000.0 / worstFrameTime : 0.0;
+        }
+
+        /// <summary>
+        /// Selects the best gaming candidate using simple configuration-based filtering.
+        /// </summary>
+        private RTSSCandidate? SelectBestGamingCandidate(List<RTSSCandidate> candidates)
+        {
+            if (!candidates.Any()) return null;
+
+            // Get configuration settings
+            var ignoredProcesses = _configService.IgnoredProcesses
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.Trim().ToLowerInvariant())
+                .ToHashSet();
+            var minFpsThreshold = _configService.MinimumFpsThreshold;
+            var preferFullscreen = _configService.PreferFullscreen;
+
+            // Apply configuration-based filtering
+            var filteredCandidates = candidates.Where(c => 
+            {
+                // Skip ignored processes
+                if (ignoredProcesses.Contains(c.ProcessName.ToLowerInvariant()))
+                {
+                    _fileLogger?.LogDebugThrottled($"Filtering out ignored process: {c.ProcessName}", $"ignored_{c.ProcessId}");
+                    return false;
+                }
+
+                // Apply minimum FPS threshold
+                if (c.Fps < minFpsThreshold)
+                {
+                    _fileLogger?.LogDebugThrottled($"Filtering out low FPS process: {c.ProcessName} ({c.Fps:F1} FPS < {minFpsThreshold})", $"low_fps_{c.ProcessId}");
+                    return false;
+                }
+
+                return true;
+            }).ToList();
+
+            if (!filteredCandidates.Any())
+            {
+                _fileLogger?.LogDebugThrottled("All candidates filtered out by configuration", "all_filtered");
+                return null;
+            }
+
+            // Simple selection logic
+            RTSSCandidate? selected;
+
+            if (preferFullscreen)
+            {
+                // Prefer fullscreen applications, then highest FPS
+                selected = filteredCandidates
+                    .OrderByDescending(c => c.IsFullscreen)
+                    .ThenByDescending(c => c.Fps)
+                    .First();
+            }
+            else
+            {
+                // Just select highest FPS
+                selected = filteredCandidates
+                    .OrderByDescending(c => c.Fps)
+                    .First();
+            }
+
+            _fileLogger?.LogInfo($"Selected candidate: {selected.ProcessName} (PID {selected.ProcessId}) with {selected.Fps:F1} FPS" +
+                               (selected.IsFullscreen ? " [Fullscreen]" : ""));
+            return selected;
+        }
+
+        /// <summary>
+        /// Checks if a process is running in fullscreen mode
+        /// </summary>
+        private bool IsProcessFullscreen(int processId)
+        {
+            try
+            {
+                var process = Process.GetProcessById(processId);
+                var handle = process.MainWindowHandle;
+                if (handle == IntPtr.Zero) return false;
+
+                // Get window rectangle and screen rectangle
+                if (User32.GetWindowRect(handle, out var windowRect))
+                {
+                    var monitor = User32.MonitorFromWindow(handle, User32.MonitorFlags.MONITOR_DEFAULTTONEAREST);
+                    var monitorInfo = new User32.MONITORINFO();
+                    if (User32.GetMonitorInfo(monitor, ref monitorInfo))
+                    {
+                        var screenRect = monitorInfo.rcMonitor;
+                        return windowRect.left <= screenRect.left && 
+                               windowRect.top <= screenRect.top &&
+                               windowRect.right >= screenRect.right && 
+                               windowRect.bottom >= screenRect.bottom;
+                    }
+                }
+            }
+            catch { }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if a process is the foreground window
+        /// </summary>
+        private bool IsProcessForeground(int processId)
+        {
+            try
+            {
+                var foregroundWindow = User32.GetForegroundWindow();
+                if (foregroundWindow == IntPtr.Zero) return false;
+
+                User32.GetWindowThreadProcessId(foregroundWindow, out var foregroundPid);
+                return foregroundPid == processId;
+            }
+            catch { }
+            return false;
+        }
+
+        /// <summary>
+        /// Safely gets process name without throwing exceptions
+        /// </summary>
+        private string GetSafeProcessName(int processId)
+        {
+            try
+            {
+                var process = Process.GetProcessById(processId);
+                return process.ProcessName;
+            }
+            catch
+            {
+                return $"PID{processId}";
+            }
         }
 
         public void Dispose()

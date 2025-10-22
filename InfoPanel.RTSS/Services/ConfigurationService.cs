@@ -73,6 +73,21 @@ namespace InfoPanel.RTSS.Services
         public string DefaultCaptureMessage => GetStringValue("Display", "defaultCaptureMessage", "Nothing to capture");
 
         /// <summary>
+        /// Comma-separated list of process names to ignore (case-insensitive, without .exe).
+        /// </summary>
+        public string IgnoredProcesses => GetStringValue("Application_Filtering", "ignored_processes", "");
+
+        /// <summary>
+        /// Minimum FPS threshold for applications to be considered (applications below this are ignored).
+        /// </summary>
+        public double MinimumFpsThreshold => GetDoubleValue("Application_Filtering", "minimum_fps_threshold", 1.0);
+
+        /// <summary>
+        /// Whether to prefer fullscreen applications over windowed ones.
+        /// </summary>
+        public bool PreferFullscreen => GetBoolValue("Application_Filtering", "prefer_fullscreen", true);
+
+        /// <summary>
         /// Loads configuration from INI file.
         /// </summary>
         private Dictionary<string, Dictionary<string, string>> LoadConfiguration()
@@ -186,6 +201,22 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
+        /// Gets a double value from configuration.
+        /// </summary>
+        private double GetDoubleValue(string section, string key, double defaultValue)
+        {
+            if (_configData.TryGetValue(section, out var sectionData) && 
+                sectionData.TryGetValue(key, out var value))
+            {
+                if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var doubleValue))
+                {
+                    return doubleValue;
+                }
+            }
+            return defaultValue;
+        }
+
+        /// <summary>
         /// Gets a string value from configuration.
         /// </summary>
         private string GetStringValue(string section, string key, string defaultValue)
@@ -225,7 +256,19 @@ updateInterval=1000
 smoothingFrames=100
 
 # Default message to display when no game is being captured
-defaultCaptureMessage=Nothing to capture";
+defaultCaptureMessage=Nothing to capture
+
+[Application_Filtering]
+# Comma-separated list of process names to ignore (case-insensitive, without .exe)
+# Example: StreamDeck,Teams,Teams.msix,Discord,Chrome
+ignored_processes=
+
+# Only monitor applications with FPS above this threshold
+# Applications with 0.0 FPS (like Stream Deck) will be ignored
+minimum_fps_threshold=1.0
+
+# Prefer fullscreen applications over windowed ones
+prefer_fullscreen=true";
 
                 // Create directory if it doesn't exist
                 var directory = Path.GetDirectoryName(_configFilePath);

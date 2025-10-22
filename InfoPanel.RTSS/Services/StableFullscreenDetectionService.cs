@@ -27,7 +27,7 @@ namespace InfoPanel.RTSS.Services
         private readonly FileLoggingService? _fileLogger;
         private readonly HashSet<string> _processNameBlacklist = new(StringComparer.OrdinalIgnoreCase)
         {
-            "audiodg", "backgroundtaskhost", "csrss", "ctfmon", "dasHost", "dllhost", "dwm",
+            "audiodg", "backgroundtaskhost", "csrss", "ctfmon", "dasHost", "discord", "dllhost", "dwm",
             "explorer", "fontdrvhost", "gamebar", "gamebarftserver", "gameoverlayui64", "icue", "infopanel", "lsass",
             "mobsync", "msedge", "onedrive", "runtimebroker", "searchapp", "searchui",
             "services", "shellexperiencehost", "sihost", "sppsvc", "spoolsv", "startmenuexperiencehost",

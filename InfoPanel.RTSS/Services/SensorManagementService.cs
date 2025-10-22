@@ -119,7 +119,7 @@ namespace InfoPanel.RTSS.Services
         /// <param name="containers">List of plugin containers to add sensors to.</param>
         public void CreateAndRegisterSensors(List<IPluginContainer> containers)
         {
-            var container = new PluginContainer("FPS");
+            var container = new PluginContainer("RTSS");
             
             // Add all sensors to the container
             container.Entries.Add(_fpsSensor);
@@ -135,7 +135,7 @@ namespace InfoPanel.RTSS.Services
 
             containers.Add(container);
             
-            Console.WriteLine($"Registered {container.Entries.Count} sensors in FPS container");
+            Console.WriteLine($"Registered {container.Entries.Count} sensors in RTSS container");
         }
 
         /// <summary>

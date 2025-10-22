@@ -1,3 +1,5 @@
+using System;
+
 namespace InfoPanel.RTSS.Models
 {
     /// <summary>
@@ -133,5 +135,30 @@ namespace InfoPanel.RTSS.Models
         /// Timestamp of the last update.
         /// </summary>
         public DateTime LastUpdate { get; set; } = DateTime.MinValue;
+    }
+
+    /// <summary>
+    /// Event arguments for metrics updates from the RTSS monitoring service.
+    /// </summary>
+    public class MetricsUpdatedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Performance metrics for the monitored process.
+        /// </summary>
+        public PerformanceMetrics Performance { get; set; } = new();
+
+        /// <summary>
+        /// Window information for the monitored process.
+        /// </summary>
+        public WindowInformation Window { get; set; } = new();
+
+        /// <summary>
+        /// Creates a new instance with the specified metrics.
+        /// </summary>
+        public MetricsUpdatedEventArgs(PerformanceMetrics performance, WindowInformation window)
+        {
+            Performance = performance;
+            Window = window;
+        }
     }
 }

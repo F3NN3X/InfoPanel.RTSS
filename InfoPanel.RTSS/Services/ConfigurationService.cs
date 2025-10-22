@@ -120,16 +120,6 @@ namespace InfoPanel.RTSS.Services
                 }
 
                 Console.WriteLine($"ConfigurationService: Loaded {config.Count} sections");
-                
-                // Log current settings safely
-                try
-                {
-                    Console.WriteLine($"ConfigurationService: updateInterval={UpdateInterval}ms");
-                }
-                catch (Exception settingsEx)
-                {
-                    Console.WriteLine($"ConfigurationService: Error reading settings: {settingsEx.Message}");
-                }
             }
             catch (Exception ex)
             {
@@ -138,6 +128,23 @@ namespace InfoPanel.RTSS.Services
             }
 
             return config;
+        }
+
+        /// <summary>
+        /// Logs current configuration settings (called after _configData is initialized).
+        /// </summary>
+        public void LogCurrentSettings()
+        {
+            try
+            {
+                Console.WriteLine($"ConfigurationService: Debug enabled: {IsDebugEnabled}");
+                Console.WriteLine($"ConfigurationService: Update interval: {UpdateInterval}ms");
+                Console.WriteLine($"ConfigurationService: Smoothing frames: {SmoothingFrames}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ConfigurationService: Error reading settings: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -189,7 +196,7 @@ namespace InfoPanel.RTSS.Services
 # Enable/disable debug logging to debug.log file
 # Set to true to enable detailed logging for troubleshooting
 # Set to false to disable logging for production use
-debug=false
+debug=true
 
 [Display]
 # Update interval in milliseconds (1000 = 1 second)

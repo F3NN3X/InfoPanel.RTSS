@@ -15,7 +15,7 @@
     <!-- Limit satellite resources to English only -->
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <!-- Define the plugin version -->
-    <Version>1.1.2</Version>
+    <Version>1.1.4</Version>
     <!-- Customize output path for Release builds -->
     <OutputPath Condition="'$(Configuration)' == 'Release'">bin\Release\net8.0-windows\InfoPanel.RTSS-v$(Version)\InfoPanel.RTSS</OutputPath>
     <!-- Prevent appending TargetFramework to OutputPath -->
@@ -94,12 +94,10 @@
   </Target>
 
   <ItemGroup>
-    <!-- Legacy unused but kept for compatibility - GPU Performance Counter code still exists in DXGIFrameMonitoringService -->
-    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.5" />
-    <PackageReference Include="System.Management" Version="9.0.5" />
-    <PackageReference Include="Vanara.PInvoke.DwmApi" Version="4.0.6" />
-    <PackageReference Include="Vanara.PInvoke.Kernel32" Version="4.0.5" />
-    <PackageReference Include="Vanara.PInvoke.User32" Version="4.0.5" />
+    <!-- Essential packages for RTSS-only monitoring -->
+    <PackageReference Include="System.Management" Version="9.0.5" />              <!-- SystemInformationService: WMI queries for GPU info -->
+    <PackageReference Include="Vanara.PInvoke.Kernel32" Version="4.0.5" />        <!-- RTSSOnlyMonitoringService: Shared memory access -->
+    <PackageReference Include="Vanara.PInvoke.User32" Version="4.0.5" />          <!-- SystemInformationService: Windows API calls -->
   </ItemGroup>
 
   <ItemGroup>

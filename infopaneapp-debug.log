@@ -1,0 +1,320 @@
+------------------------------------------------------------------------------
+You may only use the Microsoft Visual Studio .NET/C/C++ Debugger (vsdbg) with
+Visual Studio Code, Visual Studio or Visual Studio for Mac software to help you
+develop and test your applications.
+------------------------------------------------------------------------------
+  Debug: Logging enabled with ConsoleDiagnosticLogger and min level: Debug
+Warning: Sentry option 'Debug' is set to true while Environment is production. Be aware this can cause performance degradation and is not advised. See https://docs.sentry.io/platforms/dotnet/configuration/diagnostic-logger for more information
+  Debug: DSN read from options: https://5ca30f9d2faba70d50918db10cee0d26@o4508414465146880.ingest.us.sentry.io/4508414467833856
+  Debug: Falling back to stack trace check for trimming detection
+  Debug: This doesn't look like a Native AOT application build.
+  Debug: Initializing Hub for Dsn: 'https://5ca30f9d2faba70d50918db10cee0d26@o4508414465146880.ingest.us.sentry.io/4508414467833856'.
+Warning: Sentry option 'Debug' is set to true while Environment is production. Be aware this can cause performance degradation and is not advised. See https://docs.sentry.io/platforms/dotnet/configuration/diagnostic-logger for more information
+  Debug: Creating transport.
+  Debug: No cache directory path specified. Skipping caching transport creation.
+  Debug: Starting BackgroundWorker.
+  Debug: BackgroundWorker Started.
+  Debug: New scope pushed.
+  Debug: Registering integration: 'AutoSessionTrackingIntegration'.
+  Debug: Attempting to recover persisted session from file.
+  Debug: Persistence directory is not set, returning.
+  Debug: Created directory for installation ID file (C:\Users\joransrb\AppData\Local\Sentry\469550BD7904070149D93D658A87F9B29DE566D7).
+  Debug: Resolved installation ID 'bf7c523b-77d4-463d-bff9-93c7284a7493'.
+   Info: Started new session (SID: ca75fc5f429b4ab7af3592899de916c4; DID: bf7c523b-77d4-463d-bff9-93c7284a7493).
+  Debug: Persisting session (SID: 'ca75fc5f429b4ab7af3592899de916c4') to a file.
+  Debug: Persistence directory is not set, returning.
+  Debug: Enqueuing envelope
+   Info: Envelope queued up: ''
+  Debug: Registering integration: 'AppDomainUnhandledExceptionIntegration'.
+  Debug: Registering integration: 'AppDomainProcessExitIntegration'.
+  Debug: Registering integration: 'UnobservedTaskExceptionIntegration'.
+  Debug: Registering integration: 'SentryDiagnosticListenerIntegration'.
+   Info: DiagnosticSource Integration is disabled because tracing is disabled.
+  Debug: Registering integration: 'WinUIUnhandledExceptionIntegration'.
+  Debug: Using 'GzipBufferedRequestBodyHandler' body compression strategy with level Optimal.
+  Debug: Envelope handed off to transport (event ID: ''). 1 items in queue.
+  Error: Error while processing envelope (event ID: ''). 1 items in queue.
+System.Net.Http.HttpRequestException: The requested name is valid, but no data of the requested type was found. (o4508414465146880.ingest.us.sentry.io:443)
+ ---> System.Net.Sockets.SocketException (11004): The requested name is valid, but no data of the requested type was found.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.DecompressionHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Sentry.Internal.Http.GzipBufferedRequestBodyHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Sentry.Internal.Http.RetryAfterHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Sentry.Internal.Http.HttpTransport.SendEnvelopeAsync(Envelope envelope, CancellationToken cancellationToken)
+   at Sentry.Internal.BackgroundWorker.DoWorkAsync()
+  Debug: De-queueing event
+[11:58:00 INF] Application started. Press Ctrl+C to shut down.
+[11:58:00 INF] Hosting environment: Production
+[11:58:00 INF] Content root path: E:\GitHub\PublicRepos\infopanel\InfoPanel\bin\x64\Debug\net8.0-windows10.0.19041.0\win-x64
+[11:58:01 INF] PawniO detected: version 2.0.1.0
+[11:58:01 DBG] LibreMonitor starting initialization
+[11:58:01 DBG] PluginMonitor starting initialization
+System.Windows.Data Error: 4 : Cannot find source for binding with reference 'ElementName=TitleBar'. BindingExpression:(no path); DataItem=null; target element is 'NavigationView' (Name='RootNavigation'); target property is 'TitleBar' (type 'TitleBar')
+[11:58:01 DBG] SetWindowPositionRelativeToScreen targetScreen=Monitor: \\.\DISPLAY4, Bounds={Left=-600,Top=1111,Width=600,Height=1024}, WorkingArea={Left=-600,Top=1111,Width=600,Height=1024}, Primary=False
+[11:58:01 DBG] SetWindowPositionRelativeToScreen targetScreen=\\.\DISPLAY4 x=-602 y=1121
+[11:58:01 DBG] Reading HWiNFO shared memory
+[PluginUpdateNotifier] Reading config file from C:\ProgramData\InfoPanel\plugins\InfoPanel.PluginUpdateNotifier\InfoPanel.PluginUpdateNotifier.dll.ini
+[PluginUpdateNotifier] Check interval set to: 4 hours
+PresentMonProvider: Provider path: C:\ProgramData\InfoPanel\plugins\InfoPanel.Presentmon\PresentMonDataProvider\PresentMonDataProvider.exe
+RTSSHookService: Hooks path: C:\ProgramData\InfoPanel\plugins\InfoPanel.Presentmon\RTSSHooks
+ConfigurationService: Checking for config at: C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS\InfoPanel.RTSS.ini
+ConfigurationService: Loading configuration from C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS\InfoPanel.RTSS.ini
+ConfigurationService: Loaded 3 sections
+ConfigurationService: Debug enabled: True
+ConfigurationService: Update interval: 1000ms
+ConfigurationService: Smoothing frames: 60
+Sensor management service initialized with all sensors
+[11:58:01 DBG] Image loaded from file: C:\Users\joransrb\AppData\Local\InfoPanel\assets\646fcaa4-cae7-425c-aab2-23cbcc5b226c\arc-mono-ref.png
+[11:58:01 INF] Plugin Clock loaded successfully
+[11:58:01 DBG] Typeface cache miss: Barlow-Bold-True-False
+[11:58:01 DBG] Image 'C:\Users\joransrb\AppData\Local\InfoPanel\assets\646fcaa4-cae7-425c-aab2-23cbcc5b226c\arc-mono-ref.png' loaded successfully (Persistent: false)
+[11:58:01 DBG] Typeface cache miss: Barlow-Bold-False-False
+[11:58:01 DBG] Typeface cache miss: Roboto Mono-Regular-False-False
+[11:58:01 DBG] Typeface cache miss: Barlow-Regular-False-False
+[11:58:01 DBG] Image loaded from file: C:\Users\joransrb\AppData\Local\InfoPanel\assets\646fcaa4-cae7-425c-aab2-23cbcc5b226c\SPOTIFY.png
+[11:58:01 DBG] Image 'C:\Users\joransrb\AppData\Local\InfoPanel\assets\646fcaa4-cae7-425c-aab2-23cbcc5b226c\SPOTIFY.png' loaded successfully (Persistent: false)
+[11:58:01 DBG] Image loaded from file: C:\Users\joransrb\AppData\Local\InfoPanel\assets\646fcaa4-cae7-425c-aab2-23cbcc5b226c\spg_00001.png
+[11:58:01 DBG] Image 'C:\Users\joransrb\AppData\Local\InfoPanel\assets\646fcaa4-cae7-425c-aab2-23cbcc5b226c\spg_00001.png' loaded successfully (Persistent: true)
+[11:58:02 DBG] Reading HWiNFO shared memory
+[11:58:02 INF] Plugin Drive Info loaded successfully
+[11:58:02 INF] Plugin HWiNFO Registry loaded successfully
+[11:58:02 INF] Plugin Network Info loaded successfully
+[11:58:02 INF] Plugin System Info loaded successfully
+[11:58:03 DBG] Plugin Drive Info task started
+[11:58:03 DBG] Plugin HWiNFO Registry task started
+[11:58:03 DBG] Plugin Network Info task started
+[11:58:03 DBG] Plugin System Info task started
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:58:03 INF] Plugin Volume Info loaded successfully
+[11:58:03 INF] Plugin Weather Info - OpenWeatherMap loaded successfully
+AudioLevelMeter initializing...
+Core Audio API enumerator created successfully
+AudioLevelMeter: Loading existing configuration from C:\ProgramData\InfoPanel\plugins\InfoPanel.AudioMeter\InfoPanel.AudioMeter.dll.ini
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{23c4893d-31d1-4ca0-aa65-d72755f08f42} = 'Voice Chat (Elgato Wave:3)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{2952f5ef-ad55-4b4f-b44c-8e38c348e6d1} = 'Browser (Elgato Wave:3)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{63265361-b6ec-4f0e-b930-94c2127ebd95} = 'System (Elgato Wave:3)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{81fcb09e-e5cb-43ed-91b5-b02a98683de5} = 'Speakers (Focusrite USB Audio)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{9c123cde-0838-45e0-8d32-8ef53fa1a081} = 'Headphones (Elgato Wave:3)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{b8ec25ba-3f7b-4b51-adf5-78f4cf4b177a} = 'Music'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{ce6aa9a6-4107-4453-9dd8-d0b6d128b6fd} = 'Headphones (3- Arctis Nova Pro Wireless)'
+Found 7 active audio output devices during initialization
+Processing device 0: Voice Chat (Elgato Wave:3) (ID: {0.0.0.00000000}.{23c4893d-31d1-4ca0-aa65-d72755f08f42})
+? Pre-created container for: Voice Chat (Elgato Wave:3)
+Processing device 1: Browser (Elgato Wave:3) (ID: {0.0.0.00000000}.{2952f5ef-ad55-4b4f-b44c-8e38c348e6d1})
+? Pre-created container for: Browser (Elgato Wave:3)
+Processing device 2: System (Elgato Wave:3) (ID: {0.0.0.00000000}.{63265361-b6ec-4f0e-b930-94c2127ebd95})
+? Pre-created container for: System (Elgato Wave:3)
+Processing device 3: Speakers (Focusrite USB Audio) (ID: {0.0.0.00000000}.{81fcb09e-e5cb-43ed-91b5-b02a98683de5})
+? Pre-created container for: Speakers (Focusrite USB Audio)
+Processing device 4: Headphones (Elgato Wave:3) (ID: {0.0.0.00000000}.{9c123cde-0838-45e0-8d32-8ef53fa1a081})
+? Pre-created container for: Headphones (Elgato Wave:3)
+Processing device 5: Music (Elgato Wave:3) (ID: {0.0.0.00000000}.{b8ec25ba-3f7b-4b51-adf5-78f4cf4b177a})
+  Using custom name: 'Music'
+? Pre-created container for: Music
+Processing device 6: Headphones (3- Arctis Nova Pro Wireless) (ID: {0.0.0.00000000}.{ce6aa9a6-4107-4453-9dd8-d0b6d128b6fd})
+? Pre-created container for: Headphones (3- Arctis Nova Pro Wireless)
+Successfully created 7 device containers
+AudioLevelMeter: Reading INI file from C:\ProgramData\InfoPanel\plugins\InfoPanel.AudioMeter\InfoPanel.AudioMeter.dll.ini
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{23c4893d-31d1-4ca0-aa65-d72755f08f42} = 'Voice Chat (Elgato Wave:3)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{2952f5ef-ad55-4b4f-b44c-8e38c348e6d1} = 'Browser (Elgato Wave:3)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{63265361-b6ec-4f0e-b930-94c2127ebd95} = 'System (Elgato Wave:3)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{81fcb09e-e5cb-43ed-91b5-b02a98683de5} = 'Speakers (Focusrite USB Audio)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{9c123cde-0838-45e0-8d32-8ef53fa1a081} = 'Headphones (Elgato Wave:3)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{b8ec25ba-3f7b-4b51-adf5-78f4cf4b177a} = 'Music'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{ce6aa9a6-4107-4453-9dd8-d0b6d128b6fd} = 'Headphones (3- Arctis Nova Pro Wireless)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{23c4893d-31d1-4ca0-aa65-d72755f08f42} = 'Voice Chat (Elgato Wave:3)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{2952f5ef-ad55-4b4f-b44c-8e38c348e6d1} = 'Browser (Elgato Wave:3)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{63265361-b6ec-4f0e-b930-94c2127ebd95} = 'System (Elgato Wave:3)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{81fcb09e-e5cb-43ed-91b5-b02a98683de5} = 'Speakers (Focusrite USB Audio)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{9c123cde-0838-45e0-8d32-8ef53fa1a081} = 'Headphones (Elgato Wave:3)'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{b8ec25ba-3f7b-4b51-adf5-78f4cf4b177a} = 'Music'
+AudioLevelMeter: Custom name loaded - {0.0.0.00000000}.{ce6aa9a6-4107-4453-9dd8-d0b6d128b6fd} = 'Headphones (3- Arctis Nova Pro Wireless)'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-23c4893d-31d1-4ca0-aa65-d72755f08f42' - 'Voice Chat (Elgato Wave:3)' ? 'Voice Chat (Elgato Wave:3)'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-2952f5ef-ad55-4b4f-b44c-8e38c348e6d1' - 'Browser (Elgato Wave:3)' ? 'Browser (Elgato Wave:3)'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-63265361-b6ec-4f0e-b930-94c2127ebd95' - 'System (Elgato Wave:3)' ? 'System (Elgato Wave:3)'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-81fcb09e-e5cb-43ed-91b5-b02a98683de5' - 'Speakers (Focusrite USB Audio)' ? 'Speakers (Focusrite USB Audio)'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-9c123cde-0838-45e0-8d32-8ef53fa1a081' - 'Headphones (Elgato Wave:3)' ? 'Headphones (Elgato Wave:3)'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-b8ec25ba-3f7b-4b51-adf5-78f4cf4b177a' - 'Music' ? 'Music'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-ce6aa9a6-4107-4453-9dd8-d0b6d128b6fd' - 'Headphones (3- Arctis Nova Pro Wireless)' ? 'Headphones (3- Arctis Nova Pro Wireless)'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-23c4893d-31d1-4ca0-aa65-d72755f08f42' - 'Voice Chat (Elgato Wave:3)' ? 'Voice Chat (Elgato Wave:3)'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-2952f5ef-ad55-4b4f-b44c-8e38c348e6d1' - 'Browser (Elgato Wave:3)' ? 'Browser (Elgato Wave:3)'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-63265361-b6ec-4f0e-b930-94c2127ebd95' - 'System (Elgato Wave:3)' ? 'System (Elgato Wave:3)'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-81fcb09e-e5cb-43ed-91b5-b02a98683de5' - 'Speakers (Focusrite USB Audio)' ? 'Speakers (Focusrite USB Audio)'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-9c123cde-0838-45e0-8d32-8ef53fa1a081' - 'Headphones (Elgato Wave:3)' ? 'Headphones (Elgato Wave:3)'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-b8ec25ba-3f7b-4b51-adf5-78f4cf4b177a' - 'Music' ? 'Music'
+AudioLevelMeter: Updated device name in container 'audio-meter-0-0-0-00000000-ce6aa9a6-4107-4453-9dd8-d0b6d128b6fd' - 'Headphones (3- Arctis Nova Pro Wireless)' ? 'Headphones (3- Arctis Nova Pro Wireless)'
+AudioLevelMeter initialization complete - created 8 containers
+[11:58:03 INF] Plugin Audio Level Meter loaded successfully
+Weather Plugin: Reading INI file from C:\ProgramData\InfoPanel\plugins\InfoPanel.MetYr\InfoPanel.MetYr.dll.ini
+Weather Plugin: INI file content:
+[Yr Weather Plugin]
+Location = Brevik
+Latitude =
+Longitude =
+RefreshIntervalMinutes = 60
+DateTimeFormat = yyyy-MM-dd HH:mm
+ForecastDateFormat = ddd d MMM
+UtcOffsetHours = 2
+ForecastDays = 7
+TemperatureUnit = C
+IconUrl = https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
+Weather Plugin: Validated format 'yyyy-MM-dd HH:mm' -> '2025-10-22 09:58'
+Weather Plugin: Validated format 'ddd d MMM' -> 'Wed 22 Oct'
+Weather Plugin: INI Latitude/Longitude invalid or missing, will use geocoding.
+Weather Plugin: Read location from INI: Brevik
+Weather Plugin: Refresh interval set to: 60 minutes
+Weather Plugin: DateTime format set to: yyyy-MM-dd HH:mm
+Weather Plugin: Forecast date format set to: ddd d MMM
+Weather Plugin: UTC offset hours set to: 2
+Weather Plugin: Forecast days set to: 7
+Weather Plugin: Temperature unit set to: C
+Weather Plugin: Validating IconUrl: 'https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/'
+Weather Plugin: Testing custom IconUrl: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
+[11:58:03 INF] Plugin Weather Info - MET/Yr loaded successfully
+[11:58:03 INF] Plugin Plugin Update Notifier loaded successfully
+=== RTSS Plugin Initialize() called ===
+[11:58:04 DBG] Reading HWiNFO shared memory
+Weather Plugin: Successfully accessed test SVG icon: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/clear-day.svg
+Primary monitor settings - Resolution: 3840 x 2160, Refresh Rate: 240Hz
+GPU detected: NVIDIA GeForce RTX 5090
+System info refreshed - Resolution: 3840 x 2160, Refresh: 240Hz, GPU: NVIDIA GeForce RTX 5090
+RTSS Plugin initialization completed
+Registered 10 sensors in RTSS container
+RTSS sensors loaded successfully
+[11:58:04 INF] Plugin InfoPanel RTSS Monitor loaded successfully
+[11:58:04 DBG] Plugin Volume Info task started
+[11:58:04 DBG] Plugin Weather Info - OpenWeatherMap task started
+[11:58:04 DBG] Plugin Audio Level Meter task started
+? Audio meter activated for device: audio-meter-0-0-0-00000000-23c4893d-31d1-4ca0-aa65-d72755f08f42
+? Audio meter activated for device: audio-meter-0-0-0-00000000-2952f5ef-ad55-4b4f-b44c-8e38c348e6d1
+? Audio meter activated for device: audio-meter-0-0-0-00000000-63265361-b6ec-4f0e-b930-94c2127ebd95
+? Audio meter activated for device: audio-meter-0-0-0-00000000-81fcb09e-e5cb-43ed-91b5-b02a98683de5
+? Audio meter activated for device: audio-meter-0-0-0-00000000-9c123cde-0838-45e0-8d32-8ef53fa1a081
+? Audio meter activated for device: audio-meter-0-0-0-00000000-b8ec25ba-3f7b-4b51-adf5-78f4cf4b177a
+? Audio meter activated for device: audio-meter-0-0-0-00000000-ce6aa9a6-4107-4453-9dd8-d0b6d128b6fd
+Successfully initialized 7 audio meters
+[11:58:04 DBG] Plugin Weather Info - MET/Yr task started
+Weather Plugin: UpdateAsync called at 2025-10-22T09:58:04Z
+[11:58:04 DBG] Plugin Plugin Update Notifier task started
+Weather Plugin: Geocoding URL: https://nominatim.openstreetmap.org/search?q=Brevik&format=json&limit=1
+[11:58:04 INF] Plugin Spotify loaded successfully
+[11:58:04 INF] Plugins loaded in 2750ms
+Weather Plugin: Nominatim response: [{"place_id":153934922,"licence":"Data � OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright","osm_type":"node","osm_id":52199009,"lat":"59.3474836","lon":"18.2043939","class":"place","type":"suburb","place_rank":19,"importance":0.30929013509721104,"addresstype":"suburb","name":"Brevik","display_name":"Brevik, Liding� kommun, Stockholms l�n, 181 67, Sverige","boundingbox":["59.3274836","59.3674836","18.1843939","18.2243939"]}]
+Weather Plugin: Coordinates set from Nominatim - Lat: 59.3474836, Lon: 18.2043939
+Weather Plugin: Fetching current weather: https://api.met.no/weatherapi/nowcast/2.0/complete?lat=59.3475&lon=18.2044
+[11:58:04 DBG] Plugin InfoPanel RTSS Monitor task started
+Weather Plugin: Nowcast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-22T09:52:12Z","units":{"air_temperature":"celsius","precipitation_amount":"mm","precipitation_rate":"mm/h","relative_humidity":"%","wind_from_direction":"degrees","wind_speed":"m/s","wind_speed_of_gust":"m/s"},"radar_coverage":"ok"},"timeseries":[{"time":"2025-10-22T09:55:00Z","data":{"instant":{"details":{"air_temperature":11.1,"precipitation_rate":0.0,"relative_humidity"...
+Weather Plugin: Current timeseries from nowcast: 2025-10-22T09:55:00Z
+Weather Plugin: Fetching forecast: https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=59.3475&lon=18.2044
+Weather Plugin: Forecast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-22T09:28:33Z","units":{"air_pressure_at_sea_level":"hPa","air_temperature":"celsius","air_temperature_max":"celsius","air_temperature_min":"celsius","air_temperature_percentile_10":"celsius","air_temperature_percentile_90":"celsius","cloud_area_fraction":"%","cloud_area_fraction_high":"%","cloud_area_fraction_low":"%","cloud_area_fraction_medium":"%","dew_point_temperature...
+Weather Plugin: Added forecast row - Date: Thu 23 Oct, Weather: Cloudy, Temp: 12 �C / 11 �C, Precip: 0.0 mm, Wind: 2.4 m/s SE
+Weather Plugin: Added forecast row - Date: Fri 24 Oct, Weather: Cloudy, Temp: 11 �C / 10 �C, Precip: 19.2 mm, Wind: 5.5 m/s SE
+Weather Plugin: Added forecast row - Date: Sat 25 Oct, Weather: Moderate Rain, Temp: 12 �C / 9 �C, Precip: 5.3 mm, Wind: 2.3 m/s SE
+Weather Plugin: Added forecast row - Date: Sun 26 Oct, Weather: Cloudy, Temp: 10 �C / 7 �C, Precip: 2.5 mm, Wind: 2.1 m/s SE
+Weather Plugin: Added forecast row - Date: Mon 27 Oct, Weather: Cloudy, Temp: 9 �C / 6 �C, Precip: 0.0 mm, Wind: 2.1 m/s S
+Weather Plugin: Added forecast row - Date: Tue 28 Oct, Weather: Cloudy, Temp: 8 �C / 6 �C, Precip: 0.0 mm, Wind: 2.0 m/s W
+Weather Plugin: Added forecast row - Date: Wed 29 Oct, Weather: Cloudy, Temp: 8 �C / 4 �C, Precip: 0.0 mm, Wind: 2.3 m/s W
+Weather Plugin: Mapped symbol 'lightrain' to icon: rainy-1, description: Light Rain
+Weather Plugin: Using custom icon URL: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
+Weather Plugin: Checking SVG: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/rainy-1.svg
+[11:58:04 DBG] Plugin Spotify task started
+Weather Plugin: Using SVG: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/rainy-1.svg
+Weather Plugin: Set data - Temp: 11.1�C, Weather: lightrain, Description: Light Rain, Icon: rainy-1
+Weather Plugin: UTC time: 2025-10-22 09:58:04 UTC
+Weather Plugin: Adjusted time: 2025-10-22 11:58:04 (offset: 2 hours)
+Weather Plugin: Last refreshed set to: 2025-10-22 11:58
+[11:58:04 DBG] Image 'https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/rainy-1.svg' loaded successfully (Persistent: false)
+[11:58:05 DBG] Reading HWiNFO shared memory
+[11:58:06 DBG] Reading HWiNFO shared memory
+[11:58:07 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:58:09 DBG] Reading HWiNFO shared memory
+[11:58:10 DBG] Reading HWiNFO shared memory
+[11:58:10 INF] LibreHardwareMonitor computer opened in 9483ms
+[11:58:11 DBG] Reading HWiNFO shared memory
+[11:58:13 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:58:14 DBG] Reading HWiNFO shared memory
+[11:58:15 DBG] Reading HWiNFO shared memory
+[11:58:17 DBG] Reading HWiNFO shared memory
+[11:58:18 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:58:19 DBG] Reading HWiNFO shared memory
+[11:58:21 DBG] Reading HWiNFO shared memory
+[11:58:22 DBG] Reading HWiNFO shared memory
+[11:58:23 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:58:24 DBG] Reading HWiNFO shared memory
+[11:58:26 DBG] Reading HWiNFO shared memory
+[11:58:27 DBG] Reading HWiNFO shared memory
+[11:58:28 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:58:30 DBG] Reading HWiNFO shared memory
+[11:58:31 DBG] Reading HWiNFO shared memory
+[11:58:32 DBG] Reading HWiNFO shared memory
+[11:58:34 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:58:35 DBG] Reading HWiNFO shared memory
+[11:58:36 DBG] Reading HWiNFO shared memory
+[11:58:38 DBG] Reading HWiNFO shared memory
+[11:58:39 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:58:40 DBG] Reading HWiNFO shared memory
+[11:58:41 DBG] Reading HWiNFO shared memory
+[11:58:43 DBG] Reading HWiNFO shared memory
+[11:58:44 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:58:45 DBG] Reading HWiNFO shared memory
+[11:58:47 DBG] Reading HWiNFO shared memory
+[11:58:48 DBG] Reading HWiNFO shared memory
+[11:58:49 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:58:51 DBG] Reading HWiNFO shared memory
+[11:58:52 DBG] Reading HWiNFO shared memory
+[11:58:53 DBG] Reading HWiNFO shared memory
+[11:58:54 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:58:56 DBG] Reading HWiNFO shared memory
+[11:58:57 DBG] Reading HWiNFO shared memory
+[11:58:58 DBG] Reading HWiNFO shared memory
+[11:59:00 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:59:01 DBG] Reading HWiNFO shared memory
+[11:59:02 DBG] Reading HWiNFO shared memory
+[11:59:04 DBG] Reading HWiNFO shared memory
+[11:59:05 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:59:06 DBG] Reading HWiNFO shared memory
+[11:59:08 DBG] Reading HWiNFO shared memory
+[11:59:09 DBG] Reading HWiNFO shared memory
+[11:59:10 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[11:59:11 DBG] Reading HWiNFO shared memory
+[11:59:13 DBG] Reading HWiNFO shared memory
+[11:59:14 DBG] Reading HWiNFO shared memory
+[11:59:15 DBG] BeadaPanelTask stopping
+[11:59:15 DBG] TuringPanelTask stopping
+[11:59:15 DBG] LibreMonitor stopping
+[11:59:15 DBG] LibreMonitor task cancelled
+[11:59:15 DBG] Disposing resources for LibreMonitor
+[11:59:15 DBG] LibreMonitor stopped
+[11:59:15 DBG] PluginMonitor stopping
+[11:59:15 DBG] PluginMonitor task cancelled
+[11:59:15 DBG] Disposing resources for PluginMonitor
+[11:59:15 DBG] PluginMonitor stopped
+   Info: AppDomain process exited: Disposing SDK.
+   Info: Disposing the Hub.
+  Debug: Successfully flushed all events up to call to FlushAsync.
+The program '[75196] InfoPanel.exe' has exited with code 0 (0x0).

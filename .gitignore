@@ -4,9 +4,6 @@
 # Ignore bin and obj folders anywhere in the project
 **/bin/
 **/obj/
-dev-debug-log
 
-debug.log
-rtss-debug.log
-user-debug.log
-infopaneapp-debug.log
+# Ignore all log files
+*.log

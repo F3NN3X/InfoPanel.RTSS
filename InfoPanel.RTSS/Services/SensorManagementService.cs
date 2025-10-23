@@ -351,36 +351,29 @@ namespace InfoPanel.RTSS.Services
                             ? windowInfo.WindowTitle 
                             : "Untitled";
                         
-                        if (debugEnabled)
-                        {
-                            _fileLogger?.LogInfo($"[DEBUG] Setting title to: '{newTitle}' (from '{windowInfo.WindowTitle}')");
-                        }
+                        var currentTitle = _windowTitleSensor.Value;
                         
                         // Preserve existing good titles - don't overwrite with generic defaults
-                        if (newTitle != "Untitled" || _windowTitleSensor.Value == SensorConstants.NoCapture || _windowTitleSensor.Value == SensorConstants.DefaultWindowTitle)
+                        if (newTitle != "Untitled" || currentTitle == SensorConstants.NoCapture || currentTitle == SensorConstants.DefaultWindowTitle)
                         {
-                            _windowTitleSensor.Value = newTitle;
-                            if (debugEnabled)
+                            // Only log and update if the title actually changed
+                            if (newTitle != currentTitle)
                             {
-                                _fileLogger?.LogInfo($"[DEBUG] Title sensor updated to: '{_windowTitleSensor.Value}'");
+                                _fileLogger?.LogStateChange("Window Title", currentTitle, newTitle, $"PID: {windowInfo.ProcessId}");
+                                _windowTitleSensor.Value = newTitle;
                             }
-                        }
-                        else
-                        {
-                            if (debugEnabled)
-                            {
-                                _fileLogger?.LogInfo($"[DEBUG] Title NOT updated - preserving existing: '{_windowTitleSensor.Value}'");
-                            }
+                            // No logging for identical updates - eliminates spam
                         }
                     }
                     else
                     {
-                        // Reset to NoCapture when window becomes invalid
-                        if (debugEnabled)
+                        // Reset to NoCapture when window becomes invalid - only if changed
+                        var currentTitle = _windowTitleSensor.Value;
+                        if (currentTitle != SensorConstants.NoCapture)
                         {
-                            _fileLogger?.LogInfo($"[DEBUG] Window invalid - setting to NoCapture");
+                            _fileLogger?.LogStateChange("Window Title", currentTitle, SensorConstants.NoCapture, "Window invalid");
+                            _windowTitleSensor.Value = SensorConstants.NoCapture;
                         }
-                        _windowTitleSensor.Value = SensorConstants.NoCapture;
                     }
                 }
                 catch (Exception ex)

@@ -333,6 +333,10 @@ namespace InfoPanel.RTSS.Services
         // Loop counter for periodic operations
         private int _loopCounter = 0;
         private DateTime _lastDebugLog = DateTime.MinValue;
+        
+        // Periodic status logging
+        private DateTime _lastStatusLog = DateTime.MinValue;
+        private const int STATUS_LOG_INTERVAL_MS = 1000; // Log status every second
 
 
 
@@ -435,7 +439,13 @@ namespace InfoPanel.RTSS.Services
                     MetricsUpdated?.Invoke(_currentFps, _currentFrameTime, _current1PercentLow, _currentWindowTitle, _currentMonitoredPid);
                     EnhancedMetricsUpdated?.Invoke(hookedProcess);
                     
-                    _fileLogger?.LogDebugThrottled($"Enhanced FPS Update: {_currentFps:F1} FPS, {_currentFrameTime:F2}ms, 1%Low: {_current1PercentLow:F1}, API: {hookedProcess.GraphicsAPI}", "enhanced_fps_update");
+                    // Periodic status logging instead of per-update logging
+                    var now = DateTime.Now;
+                    if ((now - _lastStatusLog).TotalMilliseconds >= STATUS_LOG_INTERVAL_MS)
+                    {
+                        _fileLogger?.LogPeriodicStatus(_currentWindowTitle, _currentFps, hookedProcess.GraphicsAPI, true, hookedProcess.Architecture);
+                        _lastStatusLog = now;
+                    }
                 }
             }
             else
@@ -472,6 +482,14 @@ namespace InfoPanel.RTSS.Services
                         }
                         
                         _fileLogger?.LogDebugThrottled("No RTSS shared memory found or no hooked processes", "no_rtss_processes");
+                    }
+                    
+                    // Periodic status logging for idle state (outside the hadData check but inside the lock)
+                    var now = DateTime.Now;
+                    if ((now - _lastStatusLog).TotalMilliseconds >= STATUS_LOG_INTERVAL_MS)
+                    {
+                        _fileLogger?.LogPeriodicStatus(_configService.DefaultCaptureMessage, 0.0, "None", false);
+                        _lastStatusLog = now;
                     }
                 }
             }

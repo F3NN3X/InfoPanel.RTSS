@@ -276,8 +276,11 @@ namespace InfoPanel.RTSS.Services
             if (!_configService.IsDebugEnabled || string.IsNullOrEmpty(_logFilePath) || _disposed || level < _minimumLogLevel)
                 return;
 
-            // Apply throttling to all messages except critical errors
-            if (level != LogLevel.Error && !message.StartsWith("[IMPORTANT]"))
+            // Apply throttling to all messages except critical errors and special status messages
+            if (level != LogLevel.Error && 
+                !message.StartsWith("[IMPORTANT]") && 
+                !message.StartsWith("[STATUS]") && 
+                !message.StartsWith("[CHANGE]"))
             {
                 string throttleKey = CreateThrottleKey(message);
                 if (!ShouldLogThrottledMessage(throttleKey, out int suppressedCount))
@@ -469,6 +472,25 @@ namespace InfoPanel.RTSS.Services
             string status = success ? "SUCCESS" : "FAILED";
             string detailInfo = string.IsNullOrEmpty(details) ? "" : $" - {details}";
             LogDebug($"RTSS {operation}: {status}{detailInfo}");
+        }
+
+        /// <summary>
+        /// Logs periodic status summary with current live data (bypasses throttling)
+        /// </summary>
+        public void LogPeriodicStatus(string currentGame, double fps, string graphicsAPI, bool isActive, string architecture = "")
+        {
+            string archInfo = string.IsNullOrEmpty(architecture) ? "" : $" | Arch: {architecture}";
+            string status = isActive ? "ACTIVE" : "IDLE";
+            AddLogEntry(LogLevel.Info, $"[STATUS] {status}: {currentGame} | FPS: {fps:F1} | API: {graphicsAPI}{archInfo}");
+        }
+
+        /// <summary>
+        /// Logs only when values actually change (eliminates redundant logging)
+        /// </summary>
+        public void LogStateChange(string component, string fromValue, string toValue, string context = "")
+        {
+            string contextInfo = string.IsNullOrEmpty(context) ? "" : $" [{context}]";
+            AddLogEntry(LogLevel.Info, $"[CHANGE] {component}{contextInfo}: '{fromValue}' -> '{toValue}'");
         }
 
         public void Dispose()

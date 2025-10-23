@@ -8,8 +8,10 @@ InfoPanel.RTSS provides detailed performance statistics for running fullscreen a
 
 ![InfoPanel.RTSS Screenshot](https://i.imgur.com/VsyjMRh.png)
 
-**Version:** 1.1.4  
+**Version:** 1.1.5  
 **Author:** F3NN3X
+
+> **🔧 Latest Update:** Version 1.1.5 includes a critical fix for graphics API detection, ensuring Vulkan games are now correctly identified instead of being misdetected as DirectX 11.
 
 ## Features
 
@@ -31,6 +33,67 @@ InfoPanel.RTSS provides detailed performance statistics for running fullscreen a
   * Thread-safe sensor updates prevent crashes during rapid state changes
 * **Multi-monitor Support**: Accurate fullscreen detection on multiple monitor setups.
 * **Universal Game Support**: Works with any game without hardcoded process names or special handling.
+* **Advanced Graphics API Detection**: Accurately identifies graphics technologies and process architectures
+
+## Graphics API & Architecture Detection
+
+InfoPanel.RTSS provides detailed graphics API and architecture detection using modern RTSS shared memory analysis. This information helps understand the rendering technology and process type of monitored applications.
+
+### Supported Graphics APIs
+
+The plugin automatically detects and displays the following graphics APIs:
+
+| **Graphics API** | **Description** | **Example Games** |
+|------------------|-----------------|-------------------|
+| **Vulkan** | Modern low-level graphics API | No Man's Sky, DOOM Eternal, Red Dead Redemption 2 |
+| **DirectX 12** | Microsoft's modern low-level API | Battlefield 2042, Forza Horizon 5, Cyberpunk 2077 |
+| **DirectX 12 AFR** | Multi-GPU Alternate Frame Rendering | SLI/CrossFire enabled games |
+| **DirectX 11** | Modern high-level DirectX | Most contemporary games (2010-2020) |
+| **DirectX 10** | Legacy DirectX version | Older games (2006-2010) |
+| **DirectX 9Ex** | Enhanced DirectX 9 | Windows Vista+ enhanced games |
+| **DirectX 9** | Legacy DirectX version | Older games (2002-2008) |
+| **DirectX 8** | Legacy DirectX version | Very old games (2000-2004) |
+| **OpenGL** | Cross-platform graphics API | Minecraft, older indie games, some AAA titles |
+| **DirectDraw** | Legacy 2D graphics API | Retro games, 2D applications |
+
+### Architecture Classifications
+
+Games are categorized into architectural families based on their graphics technology:
+
+| **Architecture Type** | **Graphics APIs** | **Characteristics** |
+|-----------------------|-------------------|---------------------|
+| **Modern Low-Level** | Vulkan, DirectX 12, DirectX 12 AFR | Close-to-metal APIs with explicit control |
+| **Modern** | DirectX 11 | High-level modern APIs with driver optimization |
+| **Traditional** | DirectX 9/9Ex/10, OpenGL | Established APIs with mature toolchains |
+| **Legacy** | DirectX 8, DirectDraw | Older technologies for retro/compatibility |
+
+### Process Architecture Detection
+
+The plugin also detects the process architecture from RTSS flags:
+
+| **Process Type** | **Description** |
+|------------------|-----------------|
+| **x64** | 64-bit native process |
+| **x86** | 32-bit native process |
+| **UWP** | Universal Windows Platform app |
+| **x64 UWP** | 64-bit UWP application |
+
+### Combined Architecture Display
+
+The plugin combines graphics API classification with process architecture for comprehensive information:
+
+**Examples:**
+- `"Modern Low-Level (x64)"` - Vulkan/DirectX 12 running as 64-bit process
+- `"Modern (x86)"` - DirectX 11 running as 32-bit process  
+- `"Traditional (x64 UWP)"` - OpenGL running as 64-bit UWP app
+- `"Legacy (x86)"` - DirectX 8 running as 32-bit process
+
+### Technical Implementation
+
+- **RTSS v2.10+ Compatibility**: Uses modern APPFLAG enumerated values instead of deprecated bit flags
+- **Accurate Detection**: Fixes previous issues where Vulkan games were misidentified as DirectX 11
+- **Real-time Analysis**: Graphics API detection updates in real-time as games launch
+- **Debug Logging**: Console output shows raw RTSS flags and detected API values for troubleshooting
 
 ## Requirements
 
@@ -132,6 +195,17 @@ The plugin can be customized through the `InfoPanel.RTSS.ini` configuration file
   - **Set to `true`**: Enables detailed logging to debug.log file
   - **Set to `false`**: Disables logging for production use
 
+#### Custom Game Categories
+- **User-Defined Categories**: Create custom game categories by adding INI sections
+  - **Format**: `[Game_Category_YourCategoryName]`
+  - **Pattern Support**: Exact matches, wildcards (`*`), and comma-separated lists
+  - **Example Categories**: Competitive FPS, Racing Games, VR Games, Retro Games
+  - **Priority**: Custom categories override default categorization
+  - **Pattern Examples**:
+    - `pattern1=cyberpunk2077.exe` (exact match)
+    - `pattern2=*witcher*` (wildcard match)
+    - `processes=eldenring.exe,sekiro.exe,*souls*` (comma-separated list)
+
 #### Example Configuration File
 ```ini
 [Display]
@@ -149,6 +223,22 @@ smoothingFrames=60
 # Set to true to enable detailed logging for troubleshooting (RTSS, sensors, window capture)
 # Set to false to disable debug logging for production use
 debug=false
+
+# Custom Game Categories
+# Define your own game categories by creating sections named [Game_Category_YourCategoryName]
+# You can use exact process names, wildcard patterns (*), or comma-separated lists
+
+[Game_Category_Competitive FPS]
+processes=*valorant*,*csgo*,*cs2*,*overwatch*,*apex*,*rainbow*
+
+[Game_Category_Racing Games]
+processes=*forza*,*gran*,*dirt*,*f1*,*crew*,*nfs*
+
+[Game_Category_My Favorite Games]
+pattern1=cyberpunk2077.exe
+pattern2=*witcher*
+pattern3=*battlefield*
+processes=eldenring.exe,sekiro.exe,*souls*
 ```
 
 ## Usage

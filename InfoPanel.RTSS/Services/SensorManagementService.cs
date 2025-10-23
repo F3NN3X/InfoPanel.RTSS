@@ -318,7 +318,7 @@ namespace InfoPanel.RTSS.Services
                     _onePercentLowFpsSensor.Value = metrics.OnePercentLowFps;
                     
                     // Log sensor updates for debugging
-                    _fileLogger?.LogDebug($"Performance sensors updated - FPS: {metrics.Fps}, FrameTime: {metrics.FrameTime:F2}ms, 1%Low: {metrics.OnePercentLowFps}");
+                    _fileLogger?.LogSensorUpdate("Performance", $"FPS: {metrics.Fps}, FrameTime: {metrics.FrameTime:F2}ms, 1%Low: {metrics.OnePercentLowFps}");
                 }
                 catch (Exception ex)
                 {
@@ -342,7 +342,7 @@ namespace InfoPanel.RTSS.Services
                     
                     if (debugEnabled)
                     {
-                        _fileLogger?.LogInfo($"[DEBUG] UpdateWindowSensor - IsValid: {windowInfo.IsValid}, PID: {windowInfo.ProcessId}, Handle: {windowInfo.WindowHandle}, Fullscreen: {windowInfo.IsFullscreen}, Title: '{windowInfo.WindowTitle}'");
+                        _fileLogger?.LogWindowDetection("Detection", windowInfo.WindowTitle ?? "Unknown", (int)windowInfo.ProcessId, windowInfo.IsFullscreen);
                     }
                     
                     if (windowInfo.IsValid)

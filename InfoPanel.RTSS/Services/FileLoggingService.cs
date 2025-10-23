@@ -38,18 +38,54 @@ namespace InfoPanel.RTSS.Services
         private const long MAX_LOG_SIZE_BYTES = 5 * 1024 * 1024; // 5MB max log file size
         private const int MAX_BACKUP_FILES = 3; // Keep 3 backup files
 
-        // Very aggressive message throttling to minimize log volume
-        private readonly Dictionary<string, (DateTime lastLogged, int count)> _messageThrottle = new();
-        private readonly TimeSpan _throttleInterval = TimeSpan.FromMinutes(1); // Only log similar messages once per minute
+        // Smart throttling system with different intervals for different message types
+        private readonly Dictionary<string, (DateTime lastLogged, int count, DateTime firstSeen)> _messageThrottle = new();
+        
+        // Adaptive throttling intervals based on debug mode and message importance
+        private readonly Dictionary<string, TimeSpan> _throttleIntervals = new();
+        
         private DateTime _lastRTSSPollLog = DateTime.MinValue;
         private int _rtssPollingCount = 0;
         
-        // Additional throttling for high-frequency operations
-        private DateTime _lastPerformanceLog = DateTime.MinValue;
-        private DateTime _lastSystemLog = DateTime.MinValue;
+        // Burst allowance - allow first N messages of each type to go through quickly
+        private readonly Dictionary<string, int> _burstCounts = new();
+        private const int DEFAULT_BURST_ALLOWANCE = 5; // Allow first 5 messages quickly
 
         // Log level filtering (can be configured via INI file)
         private readonly LogLevel _minimumLogLevel;
+
+        /// <summary>
+        /// Initializes throttling intervals based on debug mode and message types
+        /// </summary>
+        private void InitializeThrottleIntervals()
+        {
+            if (_configService.IsDebugEnabled)
+            {
+                // Developer mode - more frequent logging for active debugging
+                _throttleIntervals["RTSS_OPERATIONS"] = TimeSpan.FromSeconds(10);      // RTSS polling/scanning
+                _throttleIntervals["PERFORMANCE_UPDATES"] = TimeSpan.FromSeconds(15);  // FPS updates
+                _throttleIntervals["ENHANCED_METRICS"] = TimeSpan.FromSeconds(20);     // Enhanced metrics
+                _throttleIntervals["MONITORING_STATE"] = TimeSpan.FromSeconds(5);     // State changes
+                _throttleIntervals["SYSTEM_INFO"] = TimeSpan.FromSeconds(30);         // System info
+                _throttleIntervals["SENSOR_UPDATES"] = TimeSpan.FromSeconds(12);      // Sensor updates
+                _throttleIntervals["WINDOW_DETECTION"] = TimeSpan.FromSeconds(8);     // Window detection
+                _throttleIntervals["API_DETECTION"] = TimeSpan.FromSeconds(3);        // Graphics API detection
+                _throttleIntervals["DEFAULT"] = TimeSpan.FromSeconds(20);             // Fallback
+            }
+            else
+            {
+                // Production mode - minimal logging (original intervals)
+                _throttleIntervals["RTSS_OPERATIONS"] = TimeSpan.FromMinutes(2);
+                _throttleIntervals["PERFORMANCE_UPDATES"] = TimeSpan.FromMinutes(1);
+                _throttleIntervals["ENHANCED_METRICS"] = TimeSpan.FromMinutes(1);
+                _throttleIntervals["MONITORING_STATE"] = TimeSpan.FromSeconds(30);
+                _throttleIntervals["SYSTEM_INFO"] = TimeSpan.FromMinutes(2);
+                _throttleIntervals["SENSOR_UPDATES"] = TimeSpan.FromMinutes(1);
+                _throttleIntervals["WINDOW_DETECTION"] = TimeSpan.FromSeconds(45);
+                _throttleIntervals["API_DETECTION"] = TimeSpan.FromSeconds(30);
+                _throttleIntervals["DEFAULT"] = TimeSpan.FromMinutes(1);
+            }
+        }
 
         public FileLoggingService(ConfigurationService configService)
         {
@@ -57,6 +93,9 @@ namespace InfoPanel.RTSS.Services
             
             // Set minimum log level (Warning by default for minimal logging, Info when debug enabled)
             _minimumLogLevel = _configService.IsDebugEnabled ? LogLevel.Info : LogLevel.Warning;
+            
+            // Initialize smart throttling intervals based on debug mode
+            InitializeThrottleIntervals();
             
             try
             {
@@ -131,24 +170,34 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
-        /// Creates an intelligent throttle key based on message patterns
+        /// Creates an intelligent throttle key based on message patterns with improved categorization
         /// </summary>
         private string CreateThrottleKey(string message)
         {
-            // Extract patterns for common repetitive messages with aggressive grouping
-            if (message.Contains("RTSS Polling") || message.Contains("Scanning RTSS") || message.Contains("RTSS"))
+            // More specific categorization for better throttling control
+            if (message.Contains("RTSS Polling") || message.Contains("Scanning RTSS"))
                 return "RTSS_OPERATIONS";
-            if (message.Contains("Performance metrics updated") || message.Contains("FPS Update") || message.Contains("metrics updated"))
+            if (message.Contains("API Detection") || message.Contains("Graphics API") || message.Contains("Detected:"))
+                return "API_DETECTION";
+            if (message.Contains("Performance metrics updated") || message.Contains("FPS Update"))
                 return "PERFORMANCE_UPDATES";
-            if (message.Contains("Enhanced Gaming Metrics") || message.Contains("Enhanced") || message.Contains("Gaming Metrics"))
+            if (message.Contains("Enhanced Gaming Metrics") || message.Contains("Enhanced"))
                 return "ENHANCED_METRICS";
-            if (message.Contains("Monitoring") || message.Contains("Detection") || message.Contains("Started") || message.Contains("Stopped"))
+            if (message.Contains("sensors updated") || message.Contains("Sensor"))
+                return "SENSOR_UPDATES";
+            if (message.Contains("Window") || message.Contains("Fullscreen") || message.Contains("capture"))
+                return "WINDOW_DETECTION";
+            if (message.Contains("Monitoring") && (message.Contains("Started") || message.Contains("Stopped")))
                 return "MONITORING_STATE";
             if (message.Contains("System") || message.Contains("GPU") || message.Contains("Display"))
                 return "SYSTEM_INFO";
             
-            // For other messages, use first 20 chars to group similar messages more aggressively
-            return message.Substring(0, Math.Min(20, message.Length));
+            // For other messages, create more specific keys to avoid over-grouping
+            var words = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length >= 2)
+                return $"{words[0]}_{words[1]}".ToUpper();
+            
+            return "DEFAULT";
         }
 
         /// <summary>
@@ -175,22 +224,38 @@ namespace InfoPanel.RTSS.Services
                 var now = DateTime.Now;
                 suppressedCount = 0;
                 
+                // Get throttle interval for this message type
+                var throttleInterval = _throttleIntervals.TryGetValue(key, out var interval) ? 
+                    interval : _throttleIntervals["DEFAULT"];
+                
                 if (_messageThrottle.TryGetValue(key, out var existing))
                 {
-                    _messageThrottle[key] = (existing.lastLogged, existing.count + 1);
+                    _messageThrottle[key] = (existing.lastLogged, existing.count + 1, existing.firstSeen);
                     
-                    // Only log if enough time has passed
-                    if (now - existing.lastLogged >= _throttleInterval)
+                    // Check if we're still in burst allowance period (first 30 seconds)
+                    var burstCount = _burstCounts.TryGetValue(key, out var count) ? count : 0;
+                    var timeSinceFirst = now - existing.firstSeen;
+                    
+                    if (burstCount < DEFAULT_BURST_ALLOWANCE && timeSinceFirst <= TimeSpan.FromSeconds(30))
+                    {
+                        _burstCounts[key] = burstCount + 1;
+                        return true; // Allow burst messages
+                    }
+                    
+                    // After burst period, use normal throttling
+                    if (now - existing.lastLogged >= throttleInterval)
                     {
                         suppressedCount = existing.count;
-                        _messageThrottle[key] = (now, 0);
+                        _messageThrottle[key] = (now, 0, existing.firstSeen);
                         return true;
                     }
                     return false;
                 }
                 else
                 {
-                    _messageThrottle[key] = (now, 0);
+                    // First message of this type - always allow and start tracking
+                    _messageThrottle[key] = (now, 0, now);
+                    _burstCounts[key] = 1;
                     return true;
                 }
             }
@@ -340,14 +405,9 @@ namespace InfoPanel.RTSS.Services
 
         public void LogFPSUpdate(double fps, double frameTime, string source = "")
         {
-            var now = DateTime.Now;
-            // Only log FPS updates every 30 seconds to reduce spam
-            if (now - _lastPerformanceLog >= TimeSpan.FromSeconds(30))
-            {
-                string sourceInfo = string.IsNullOrEmpty(source) ? "" : $" [{source}]";
-                LogDebug($"FPS Update{sourceInfo}: {fps:F1} FPS, {frameTime:F2}ms");
-                _lastPerformanceLog = now;
-            }
+            // Use new throttling system instead of manual timing
+            string sourceInfo = string.IsNullOrEmpty(source) ? "" : $" [{source}]";
+            LogDebug($"FPS Update{sourceInfo}: {fps:F1} FPS, {frameTime:F2}ms");
         }
 
         public void LogMonitoringState(string action, int pid = 0, string windowTitle = "")
@@ -369,13 +429,46 @@ namespace InfoPanel.RTSS.Services
 
         public void LogSystemInfo(string component, string info)
         {
-            var now = DateTime.Now;
-            // Only log system info every 60 seconds to reduce repeated system info
-            if (now - _lastSystemLog >= TimeSpan.FromSeconds(60))
-            {
-                LogInfo($"System {component}: {info}");
-                _lastSystemLog = now;
-            }
+            // Use new throttling system instead of manual timing
+            LogInfo($"System {component}: {info}");
+        }
+
+        /// <summary>
+        /// Logs graphics API detection events with detailed flag information
+        /// </summary>
+        public void LogAPIDetection(string processName, uint rawFlags, uint apiValue, string detectedAPI, string architecture = "")
+        {
+            string archInfo = string.IsNullOrEmpty(architecture) ? "" : $", Arch: {architecture}";
+            LogInfo($"API Detection - {processName}: Raw: 0x{rawFlags:X8}, API: 0x{apiValue:X4} -> {detectedAPI}{archInfo}");
+        }
+
+        /// <summary>
+        /// Logs sensor update events with throttling
+        /// </summary>
+        public void LogSensorUpdate(string sensorType, string value, string context = "")
+        {
+            string contextInfo = string.IsNullOrEmpty(context) ? "" : $" [{context}]";
+            LogDebug($"Sensor Update{contextInfo} - {sensorType}: {value}");
+        }
+
+        /// <summary>
+        /// Logs window detection events 
+        /// </summary>
+        public void LogWindowDetection(string action, string windowTitle, int pid = 0, bool isFullscreen = false)
+        {
+            string pidInfo = pid > 0 ? $" PID: {pid}" : "";
+            string modeInfo = isFullscreen ? " [Fullscreen]" : " [Windowed]";
+            LogDebug($"Window {action}{modeInfo}{pidInfo}: {windowTitle}");
+        }
+
+        /// <summary>
+        /// Enhanced RTSS polling logs with more context in debug mode
+        /// </summary>
+        public void LogRTSSOperation(string operation, string details = "", bool success = true)
+        {
+            string status = success ? "SUCCESS" : "FAILED";
+            string detailInfo = string.IsNullOrEmpty(details) ? "" : $" - {details}";
+            LogDebug($"RTSS {operation}: {status}{detailInfo}");
         }
 
         public void Dispose()

@@ -100,11 +100,7 @@ namespace InfoPanel.RTSS.Services
                 _ => "Unknown"
             };
             
-            // Debug log for API detection (helpful for verifying the fix)
-            if (result != "Unknown")
-            {
-                Console.WriteLine($"[RTSS API Detection] Raw flags: 0x{rtssFlags:X8}, API value: 0x{apiValue:X4}, Detected: {result}");
-            }
+            // No console output here - will be logged by caller with more context
             
             return result;
         }
@@ -491,7 +487,7 @@ namespace InfoPanel.RTSS.Services
                 try
                 {
                     // Try RTSS shared memory V2 only - use throttled logging since this runs every 16ms
-                    _fileLogger?.LogRTSSPolling("Scanning for RTSS shared memory...");
+                    _fileLogger?.LogRTSSOperation("Scanning", "Checking shared memory for hooked processes");
                     
                     var result = TryReadRTSSSharedMemory("RTSSSharedMemoryV2");
                     if (result != null) 
@@ -505,7 +501,7 @@ namespace InfoPanel.RTSS.Services
                 }
                 catch (Exception ex)
                 {
-                    _fileLogger?.LogDebugThrottled($"Error scanning RTSS shared memory: {ex.Message}", "rtss_scan_error");
+                    _fileLogger?.LogRTSSOperation("Scanning", $"Error: {ex.Message}", false);
                     return null;
                 }
             }).ConfigureAwait(false);
@@ -690,6 +686,10 @@ namespace InfoPanel.RTSS.Services
                         bestCandidate.GraphicsAPI = RTSSDataAnalyzer.GetGraphicsAPI(bestCandidate.RTSSFlags);
                         bestCandidate.Architecture = RTSSDataAnalyzer.GetArchitecture(bestCandidate.GraphicsAPI, bestCandidate.RTSSFlags);
                         bestCandidate.GameCategory = RTSSDataAnalyzer.GetGameCategory(bestCandidate.ProcessName, bestCandidate.GraphicsAPI, _configService);
+                        
+                        // Enhanced logging for API detection
+                        uint apiValue = bestCandidate.RTSSFlags & 0x0000FFFF; // APPFLAG_API_USAGE_MASK
+                        _fileLogger?.LogAPIDetection(bestCandidate.ProcessName, bestCandidate.RTSSFlags, apiValue, bestCandidate.GraphicsAPI, bestCandidate.Architecture);
                         bestCandidate.FrameTimeMs = bestCandidate.Fps > 0 ? 1000.0 / bestCandidate.Fps : 0.0;
                         bestCandidate.WindowTitle = GetWindowTitleForPid(bestCandidate.ProcessId);
                         

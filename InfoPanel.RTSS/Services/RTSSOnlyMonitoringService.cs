@@ -51,9 +51,7 @@ namespace InfoPanel.RTSS.Services
         public string Architecture { get; set; } = string.Empty;
         public string GameCategory { get; set; } = string.Empty;
         
-        // Display properties
-        public int ResolutionX { get; set; }
-        public int ResolutionY { get; set; }
+        // Display properties (resolution removed - was confusing in borderless mode)
         public double RefreshRate { get; set; }
         public bool VSync { get; set; }
         public string DisplayMode { get; set; } = string.Empty;
@@ -342,7 +340,7 @@ namespace InfoPanel.RTSS.Services
                     MetricsUpdated?.Invoke(_currentFps, _currentFrameTime, _current1PercentLow, _currentWindowTitle, _currentMonitoredPid);
                     EnhancedMetricsUpdated?.Invoke(hookedProcess);
                     
-                    _fileLogger?.LogDebugThrottled($"Enhanced FPS Update: {_currentFps:F1} FPS, {_currentFrameTime:F2}ms, 1%Low: {_current1PercentLow:F1}, API: {hookedProcess.GraphicsAPI}, Resolution: {hookedProcess.ResolutionX}x{hookedProcess.ResolutionY}", "enhanced_fps_update");
+                    _fileLogger?.LogDebugThrottled($"Enhanced FPS Update: {_currentFps:F1} FPS, {_currentFrameTime:F2}ms, 1%Low: {_current1PercentLow:F1}, API: {hookedProcess.GraphicsAPI}", "enhanced_fps_update");
                 }
             }
             else
@@ -534,13 +532,23 @@ namespace InfoPanel.RTSS.Services
                             var stat1PercentLow = Marshal.ReadInt32(mapView, entryOffset + 544);    // dwStatFramerate1Dot0PercentLow (millihertz)
                             var stat0Point1PercentLow = Marshal.ReadInt32(mapView, entryOffset + 548); // dwStatFramerate0Dot1PercentLow (millihertz)
                             
-                            // RTSS v2.20+ resolution fields (approximate offsets based on structure analysis)
-                            // Note: These offsets may need adjustment based on actual RTSS version and structure padding
-                            var resolutionX = Marshal.ReadInt32(mapView, entryOffset + 3200);       // dwResolutionX (estimated offset)
-                            var resolutionY = Marshal.ReadInt32(mapView, entryOffset + 3204);       // dwResolutionY (estimated offset)
+                            // RESOLUTION DATA: Removed due to inconsistent behavior between display modes
+                            // Borderless fullscreen shows display resolution instead of game render resolution
+                            // This was confusing for users, so resolution detection has been removed
                             
-                            // GPU frame timing from v2.21+ (estimated offset)
-                            var gpuFrameTimeUs = Marshal.ReadInt32(mapView, entryOffset + 3300);    // dwGpuFrameTime (estimated offset)
+                            // GPU frame timing: Also using estimated offset, may not be reliable
+                            // Using documented offset 679 from RTSS documentation instead
+                            int gpuFrameTimeUs = 0;
+                            try
+                            {
+                                // Try reading GPU frame time from documented offset (if available)
+                                gpuFrameTimeUs = Marshal.ReadInt32(mapView, entryOffset + 679); // dwGpuFrameTime (documented v2.21+)
+                            }
+                            catch
+                            {
+                                // GPU frame time not available in this RTSS version
+                                gpuFrameTimeUs = 0;
+                            }
                             
                             // Calculate frame statistics with proper conversions
                             double frameTimeMs = fps > 0 ? 1000.0 / fps : 0.0;
@@ -582,8 +590,7 @@ namespace InfoPanel.RTSS.Services
                                 ProcessName = processName,
                                 RTSSFlags = rtssFlags,
                                 RTSSEngineVersion = 0, // TODO: Read actual engine version when offset is confirmed
-                                ResolutionX = resolutionX > 0 ? resolutionX : 0,
-                                ResolutionY = resolutionY > 0 ? resolutionY : 0,
+                                // Resolution detection removed - was inconsistent between display modes
                                 RefreshRate = 0.0, // TODO: Read refresh rate when offset is confirmed
                                 LastUpdate = DateTime.Now
                             };
@@ -610,15 +617,10 @@ namespace InfoPanel.RTSS.Services
                         
                         // Enhanced analysis with new methods
                         bestCandidate.VSync = RTSSDataAnalyzer.GetVSyncStatus(bestCandidate.RTSSFlags, bestCandidate.Fps, bestCandidate.RefreshRate);
-                        bestCandidate.DisplayMode = RTSSDataAnalyzer.GetDisplayMode(bestCandidate.IsFullscreen, bestCandidate.ResolutionX, bestCandidate.ResolutionY, bestCandidate.RefreshRate);
+                        bestCandidate.DisplayMode = RTSSDataAnalyzer.GetDisplayMode(bestCandidate.IsFullscreen, 0, 0, bestCandidate.RefreshRate); // Resolution removed
                         
-                        // Validate resolution data - if corrupted, log warning and reset
-                        if (bestCandidate.ResolutionX > 10000 || bestCandidate.ResolutionY > 10000 || bestCandidate.ResolutionX < 0 || bestCandidate.ResolutionY < 0)
-                        {
-                            _fileLogger?.LogInfo($"Warning: Corrupted resolution data detected for PID {bestCandidate.ProcessId}: {bestCandidate.ResolutionX}x{bestCandidate.ResolutionY}, resetting to 0x0");
-                            bestCandidate.ResolutionX = 0;
-                            bestCandidate.ResolutionY = 0;
-                        }
+                        // Resolution detection removed - was inconsistent and confusing for users
+                        // Borderless fullscreen mode reported display resolution instead of game render resolution
                         
                         // Validate FPS statistics - if native RTSS stats are unavailable, use fallback calculations
                         if (bestCandidate.MinFps <= 0 && bestCandidate.MaxFps <= 0 && bestCandidate.AvgFps <= 0)
@@ -840,6 +842,9 @@ namespace InfoPanel.RTSS.Services
             catch { }
             return false;
         }
+
+        // Resolution detection methods removed - were causing confusion for borderless fullscreen users
+        // RTSS resolution data was inconsistent between display modes
 
         /// <summary>
         /// Safely gets process name without throwing exceptions

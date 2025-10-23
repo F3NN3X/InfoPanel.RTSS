@@ -205,7 +205,7 @@ namespace InfoPanel.RTSS
                 _fileLogger.LogDebug($"RTSS Frame Times: Min {candidate.MinFrameTimeMs:F2} | Avg {candidate.AvgFrameTimeMs:F2} | Max {candidate.MaxFrameTimeMs:F2} ms");
                 _fileLogger.LogDebug($"RTSS Percentiles: 1% Low {candidate.OnePercentLowFpsNative:F1} | 0.1% Low {candidate.ZeroPointOnePercentLowFps:F1} FPS");
                 _fileLogger.LogDebug($"Graphics: {candidate.GraphicsAPI} ({candidate.Architecture}) - {candidate.GameCategory}");
-                _fileLogger.LogDebug($"Display: {candidate.ResolutionX}x{candidate.ResolutionY} @ {candidate.RefreshRate:F0}Hz, {candidate.DisplayMode}, VSync: {candidate.VSync}");
+                _fileLogger.LogDebug($"Display: @ {candidate.RefreshRate:F0}Hz, {candidate.DisplayMode}, VSync: {candidate.VSync}"); // Resolution removed
                 _fileLogger.LogDebug($"State: Fullscreen {candidate.IsFullscreen}, Foreground {candidate.IsForeground}");
                 
                 // Update the enhanced sensors with the full RTSSCandidate data

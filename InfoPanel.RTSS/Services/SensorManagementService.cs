@@ -31,7 +31,7 @@ namespace InfoPanel.RTSS.Services
         private readonly PluginText _graphicsApiSensor;
         private readonly PluginText _architectureSensor;
         private readonly PluginText _gameCategorySensor;
-        private readonly PluginText _gameResolutionSensor;  // Separate from system resolution
+        // Game resolution sensor removed - was confusing in borderless fullscreen mode
         private readonly PluginText _displayModeSensor;
         
         /// <summary>
@@ -167,11 +167,7 @@ namespace InfoPanel.RTSS.Services
                 "Unknown"
             );
 
-            _gameResolutionSensor = new PluginText(
-                "game-resolution",
-                "Game Resolution",
-                "0x0"
-            );
+            // Game resolution sensor removed - was confusing in borderless mode
 
             _displayModeSensor = new PluginText(
                 "display-mode",
@@ -209,7 +205,7 @@ namespace InfoPanel.RTSS.Services
             container.Entries.Add(_graphicsApiSensor);
             container.Entries.Add(_architectureSensor);
             container.Entries.Add(_gameCategorySensor);
-            container.Entries.Add(_gameResolutionSensor);
+            // Game resolution sensor removed
             container.Entries.Add(_displayModeSensor);
 
             containers.Add(container);
@@ -334,7 +330,7 @@ namespace InfoPanel.RTSS.Services
                     _graphicsApiSensor.Value = "Unknown";
                     _architectureSensor.Value = "Unknown";
                     _gameCategorySensor.Value = "Unknown";
-                    _gameResolutionSensor.Value = "Unknown";
+                    // Game resolution sensor removed
                     _displayModeSensor.Value = "Unknown";
                     
                     // Clear cached window title
@@ -362,7 +358,7 @@ namespace InfoPanel.RTSS.Services
                     _graphicsApiSensor.Value = "Unknown";
                     _architectureSensor.Value = "Unknown";
                     _gameCategorySensor.Value = "Unknown";
-                    _gameResolutionSensor.Value = "Unknown";
+                    // Game resolution sensor removed
                     _displayModeSensor.Value = "Unknown";
                     
                     // Reset RTSS native statistics sensors that can get stuck
@@ -527,15 +523,7 @@ namespace InfoPanel.RTSS.Services
                     _gameCategorySensor.Value = candidate.GameCategory ?? "Unknown";
                     _displayModeSensor.Value = candidate.DisplayMode ?? "Unknown";
                     
-                    // Update game resolution sensor (separate from system resolution)
-                    if (candidate.ResolutionX > 0 && candidate.ResolutionY > 0)
-                    {
-                        _gameResolutionSensor.Value = $"{candidate.ResolutionX}x{candidate.ResolutionY}";
-                    }
-                    else
-                    {
-                        _gameResolutionSensor.Value = "Unknown";
-                    }
+                    // Game resolution sensor removed - was confusing in borderless fullscreen mode
                     
                     // Update RTSS native statistics (Min/Max/Avg FPS) from RTSSCandidate
                     _avgFpsSensor.Value = (float)candidate.AvgFps;
@@ -547,7 +535,7 @@ namespace InfoPanel.RTSS.Services
                     _minFrameTimeSensor.Value = (float)candidate.MinFrameTimeMs;
                     _maxFrameTimeSensor.Value = (float)candidate.MaxFrameTimeMs;
                     
-                    _fileLogger?.LogDebug($"Enhanced sensors updated - API: {candidate.GraphicsAPI}, Category: {candidate.GameCategory}, Resolution: {candidate.ResolutionX}x{candidate.ResolutionY}");
+                    _fileLogger?.LogDebug($"Enhanced sensors updated - API: {candidate.GraphicsAPI}, Category: {candidate.GameCategory}");
                     _fileLogger?.LogDebug($"RTSS Stats sensors updated - Min: {candidate.MinFps:F1}, Avg: {candidate.AvgFps:F1}, Max: {candidate.MaxFps:F1} FPS");
                     _fileLogger?.LogDebug($"RTSS Frame Time sensors updated - Min: {candidate.MinFrameTimeMs:F2}, Avg: {candidate.AvgFrameTimeMs:F2}, Max: {candidate.MaxFrameTimeMs:F2} ms");
                 }

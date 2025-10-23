@@ -43,6 +43,43 @@
   - **RTSS Monitoring**: 3+ candidate selection calls changed to `LogDebug`
   - **Batching System**: Existing 500ms batching and throttling remains fully functional
 
+### 🎯 **RTSS Game Resolution Detection - Major Discovery & Fix**
+- **Discovered Official RTSS Resolution Fields**: Found documented resolution support in RTSS v2.20+ header files
+  - **Previous Assumption Wrong**: Incorrectly assumed RTSS doesn't provide resolution data
+  - **Header File Analysis**: Examined `RTSSSharedMemory.h` and found `dwResolutionX`/`dwResolutionY` fields
+  - **Game Render Resolution**: RTSS provides actual game rendering resolution, not just window size
+  - **Critical Distinction**: Game render resolution (1920x1080) vs window resolution (3840x2160 fullscreen)
+
+- **Implemented Proper RTSS Resolution Reading**: Using official documented offsets from v2.20+
+  - **Correct Offsets**: `dwResolutionX` at offset +9216, `dwResolutionY` at offset +9220 from app entry
+  - **Version Detection**: Only reads resolution fields from RTSS v2.20+ (0x00020014) to prevent issues with older versions
+  - **Data Validation**: Ensures resolution values are reasonable (1x1 to 7680x4320) before acceptance
+  - **Hybrid Fallback**: Uses Windows API window size when RTSS resolution unavailable (< v2.20 or invalid data)
+
+- **Fixed Resolution vs Window Size Issue**: Now correctly reports game's internal render resolution
+  - **Previous Problem**: Showed window size (3840x2160) instead of game resolution (1920x1080)
+  - **RTSS Advantage**: Hooks graphics APIs to capture actual render target dimensions
+  - **Real Game Resolution**: Shows what the game engine actually renders at before scaling to display
+  - **Fullscreen Accuracy**: Correctly detects 1920x1080 game resolution even in 3840x2160 fullscreen window
+
+### 🚫 **Game Resolution Feature Removal**
+- **Removed Confusing Game Resolution Sensor**: Eliminated due to inconsistent behavior between display modes
+  - **Problem Identified**: Borderless fullscreen showed display resolution (3840x2160) instead of game render resolution (1920x1080)
+  - **User Confusion**: Most users prefer borderless fullscreen but got misleading resolution data
+  - **Decision**: Complete removal better than inconsistent/confusing information
+
+- **Comprehensive Resolution Code Cleanup**: Removed all game resolution detection infrastructure
+  - **RTSS Resolution Reading**: Removed dwResolutionX/dwResolutionY field reading from RTSS v2.20+
+  - **Windows API Fallback**: Removed GetProcessWindowWidth()/GetProcessWindowHeight() methods
+  - **Data Model Changes**: Removed ResolutionX/ResolutionY from RTSSCandidate class
+  - **Sensor Removal**: Removed "Game Resolution" sensor from sensor management service
+  - **Display Resolution Preserved**: System/display resolution sensor remains functional for monitor info
+
+- **Improved User Experience**: Eliminates confusion while preserving essential functionality
+  - **No More Mixed Messages**: Users won't see conflicting resolution information
+  - **Cleaner UI**: One less confusing sensor in InfoPanel display
+  - **Future-Proof**: Can be re-implemented properly if better detection method found
+
 ### ✨ **User Experience Improvements**
 - **Clean InfoPanel Console**: Users now see clean console output without debug flooding
 - **Controllable Debug Logging**: Users can toggle detailed logging via `debug=false/true` in config

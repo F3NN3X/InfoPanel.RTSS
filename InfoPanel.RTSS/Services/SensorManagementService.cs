@@ -398,7 +398,7 @@ namespace InfoPanel.RTSS.Services
                     _onePercentLowFpsSensor.Value = metrics.OnePercentLowFps;
                     
                     // Log sensor updates for debugging
-                    _fileLogger?.LogInfo($"Performance sensors updated - FPS: {metrics.Fps}, FrameTime: {metrics.FrameTime:F2}ms, 1%Low: {metrics.OnePercentLowFps}");
+                    _fileLogger?.LogDebug($"Performance sensors updated - FPS: {metrics.Fps}, FrameTime: {metrics.FrameTime:F2}ms, 1%Low: {metrics.OnePercentLowFps}");
                 }
                 catch (Exception ex)
                 {
@@ -547,9 +547,9 @@ namespace InfoPanel.RTSS.Services
                     _minFrameTimeSensor.Value = (float)candidate.MinFrameTimeMs;
                     _maxFrameTimeSensor.Value = (float)candidate.MaxFrameTimeMs;
                     
-                    _fileLogger?.LogInfo($"Enhanced sensors updated - API: {candidate.GraphicsAPI}, Category: {candidate.GameCategory}, Resolution: {candidate.ResolutionX}x{candidate.ResolutionY}");
-                    _fileLogger?.LogInfo($"RTSS Stats sensors updated - Min: {candidate.MinFps:F1}, Avg: {candidate.AvgFps:F1}, Max: {candidate.MaxFps:F1} FPS");
-                    _fileLogger?.LogInfo($"RTSS Frame Time sensors updated - Min: {candidate.MinFrameTimeMs:F2}, Avg: {candidate.AvgFrameTimeMs:F2}, Max: {candidate.MaxFrameTimeMs:F2} ms");
+                    _fileLogger?.LogDebug($"Enhanced sensors updated - API: {candidate.GraphicsAPI}, Category: {candidate.GameCategory}, Resolution: {candidate.ResolutionX}x{candidate.ResolutionY}");
+                    _fileLogger?.LogDebug($"RTSS Stats sensors updated - Min: {candidate.MinFps:F1}, Avg: {candidate.AvgFps:F1}, Max: {candidate.MaxFps:F1} FPS");
+                    _fileLogger?.LogDebug($"RTSS Frame Time sensors updated - Min: {candidate.MinFrameTimeMs:F2}, Avg: {candidate.AvgFrameTimeMs:F2}, Max: {candidate.MaxFrameTimeMs:F2} ms");
                 }
                 catch (Exception ex)
                 {

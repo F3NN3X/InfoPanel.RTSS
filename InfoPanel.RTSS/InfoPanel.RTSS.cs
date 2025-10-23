@@ -10,10 +10,11 @@ using System.Threading.Tasks;
 namespace InfoPanel.RTSS
 {
     /// <summary>
-    /// Simplified RTSS-only FPS monitoring plugin.
-    /// Eliminates complex fullscreen detection in favor of direct RTSS shared memory scanning.
+    /// RTSS-only performance monitoring plugin for InfoPanel.
+    /// Provides real-time FPS, frame times, and comprehensive gaming metrics through RTSS shared memory integration.
+    /// Supports enhanced metrics including graphics API detection, game categorization, and advanced performance statistics.
     /// </summary>
-    public class InfoPanelFPS : BasePlugin
+    public class InfoPanelRTSS : BasePlugin
     {
         #region BasePlugin Properties
 
@@ -36,7 +37,7 @@ namespace InfoPanel.RTSS
 
         #region Constructor
 
-        public InfoPanelFPS() : base("InfoPanel.RTSS", "InfoPanel RTSS Monitor", "RTSS-based FPS monitoring plugin for InfoPanel")
+        public InfoPanelRTSS() : base("InfoPanel.RTSS", "InfoPanel RTSS Monitor", "Advanced RTSS-based performance monitoring plugin for InfoPanel")
         {
             try
             {
@@ -64,7 +65,7 @@ namespace InfoPanel.RTSS
         #region BasePlugin Overrides
 
         /// <summary>
-        /// Loads sensors into the InfoPanel framework.
+        /// Loads comprehensive RTSS sensors into the InfoPanel framework.
         /// </summary>
         public override void Load(List<InfoPanel.Plugins.IPluginContainer> containers)
         {
@@ -80,12 +81,12 @@ namespace InfoPanel.RTSS
         }
 
         /// <summary>
-        /// Not implemented; UpdateAsync is used instead.
+        /// Not implemented; UpdateAsync is used instead for async operations.
         /// </summary>
         public override void Update() => throw new NotImplementedException();
 
         /// <summary>
-        /// Simplified update method - RTSS monitoring service handles everything internally.
+        /// Updates system information sensors while RTSS monitoring runs independently.
         /// </summary>
         public override async Task UpdateAsync(CancellationToken cancellationToken)
         {
@@ -97,8 +98,8 @@ namespace InfoPanel.RTSS
 
                 await Task.Delay(100, cancellationToken).ConfigureAwait(false); // Basic throttling
 
-                // RTSS monitoring service handles all monitoring logic internally
-                // Sensors are updated via the OnMetricsUpdated event handler
+                // RTSS monitoring service handles all performance monitoring independently  
+                // Performance sensors are updated via event handlers
             }
             catch (Exception ex)
             {
@@ -107,13 +108,13 @@ namespace InfoPanel.RTSS
         }
 
         /// <summary>
-        /// Initializes the simplified RTSS-only plugin and starts monitoring.
+        /// Initializes the RTSS performance monitoring plugin and starts background monitoring.
         /// </summary>
         public override void Initialize()
         {
             try
             {
-                _fileLogger.LogInfo("=== RTSS Plugin Initialize() called ===");
+                _fileLogger.LogInfo("=== RTSS Performance Monitoring Plugin Initialize() ===");
 
                 _cancellationTokenSource = new CancellationTokenSource();
 
@@ -121,9 +122,9 @@ namespace InfoPanel.RTSS
                 var systemInfo = _systemInfoService.GetSystemInformation();
                 _fileLogger.LogSystemInfo("Information", $"GPU: {systemInfo.GpuName}, Display: {systemInfo.Resolution}@{systemInfo.RefreshRate}Hz");
 
-                // Start simplified RTSS monitoring
+                // Start RTSS shared memory monitoring
                 _ = Task.Run(async () => await _rtssMonitoringService.StartMonitoringAsync(_cancellationTokenSource.Token).ConfigureAwait(false));
-                _fileLogger.LogInfo("RTSS-only monitoring task started");
+                _fileLogger.LogInfo("RTSS shared memory monitoring started");
 
                 _fileLogger.LogInfo("RTSS Plugin initialization completed successfully");
             }
@@ -181,7 +182,7 @@ namespace InfoPanel.RTSS
                     _sensorService.ResetEnhancedSensors();
                 }
                 
-                _fileLogger.LogInfo($"Metrics updated - FPS: {fps:F1}, 1% Low: {onePercentLow:F1}, Title: {windowTitle}");
+                _fileLogger.LogDebug($"Performance metrics updated - FPS: {fps:F1}, 1% Low: {onePercentLow:F1}, Game: {windowTitle}");
             }
             catch (Exception ex)
             {
@@ -196,16 +197,16 @@ namespace InfoPanel.RTSS
         {
             try
             {
-                // Comprehensive enhanced metrics logging
-                _fileLogger.LogInfo($"=== Enhanced Metrics Update ===");
-                _fileLogger.LogInfo($"Process: PID {candidate.ProcessId} ({candidate.ProcessName}) - {candidate.WindowTitle}");
-                _fileLogger.LogInfo($"Performance: FPS {candidate.Fps:F1}, Frame Time {candidate.FrameTimeMs:F2}ms, GPU Frame Time {candidate.GpuFrameTimeMs:F2}ms");
-                _fileLogger.LogInfo($"RTSS Native Stats: Min {candidate.MinFps:F1} | Avg {candidate.AvgFps:F1} | Max {candidate.MaxFps:F1} FPS");
-                _fileLogger.LogInfo($"RTSS Frame Times: Min {candidate.MinFrameTimeMs:F2} | Avg {candidate.AvgFrameTimeMs:F2} | Max {candidate.MaxFrameTimeMs:F2} ms");
-                _fileLogger.LogInfo($"RTSS Percentiles: 1% Low {candidate.OnePercentLowFpsNative:F1} | 0.1% Low {candidate.ZeroPointOnePercentLowFps:F1} FPS");
-                _fileLogger.LogInfo($"Graphics: {candidate.GraphicsAPI} ({candidate.Architecture}) - {candidate.GameCategory}");
-                _fileLogger.LogInfo($"Display: {candidate.ResolutionX}x{candidate.ResolutionY} @ {candidate.RefreshRate:F0}Hz, {candidate.DisplayMode}, VSync: {candidate.VSync}");
-                _fileLogger.LogInfo($"State: Fullscreen {candidate.IsFullscreen}, Foreground {candidate.IsForeground}");
+                // Comprehensive enhanced metrics logging (Debug level - too frequent for Info)
+                _fileLogger.LogDebug($"=== Enhanced Metrics Update ===");
+                _fileLogger.LogDebug($"Process: PID {candidate.ProcessId} ({candidate.ProcessName}) - {candidate.WindowTitle}");
+                _fileLogger.LogDebug($"Performance: FPS {candidate.Fps:F1}, Frame Time {candidate.FrameTimeMs:F2}ms, GPU Frame Time {candidate.GpuFrameTimeMs:F2}ms");
+                _fileLogger.LogDebug($"RTSS Native Stats: Min {candidate.MinFps:F1} | Avg {candidate.AvgFps:F1} | Max {candidate.MaxFps:F1} FPS");
+                _fileLogger.LogDebug($"RTSS Frame Times: Min {candidate.MinFrameTimeMs:F2} | Avg {candidate.AvgFrameTimeMs:F2} | Max {candidate.MaxFrameTimeMs:F2} ms");
+                _fileLogger.LogDebug($"RTSS Percentiles: 1% Low {candidate.OnePercentLowFpsNative:F1} | 0.1% Low {candidate.ZeroPointOnePercentLowFps:F1} FPS");
+                _fileLogger.LogDebug($"Graphics: {candidate.GraphicsAPI} ({candidate.Architecture}) - {candidate.GameCategory}");
+                _fileLogger.LogDebug($"Display: {candidate.ResolutionX}x{candidate.ResolutionY} @ {candidate.RefreshRate:F0}Hz, {candidate.DisplayMode}, VSync: {candidate.VSync}");
+                _fileLogger.LogDebug($"State: Fullscreen {candidate.IsFullscreen}, Foreground {candidate.IsForeground}");
                 
                 // Update the enhanced sensors with the full RTSSCandidate data
                 _sensorService.UpdateEnhancedSensors(candidate);
@@ -247,7 +248,7 @@ namespace InfoPanel.RTSS
             }
         }
 
-        public new void Dispose()
+        public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);

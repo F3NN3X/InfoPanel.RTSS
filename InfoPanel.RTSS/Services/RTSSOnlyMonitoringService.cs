@@ -399,7 +399,7 @@ namespace InfoPanel.RTSS.Services
                     var result = TryReadRTSSSharedMemory("RTSSSharedMemoryV2");
                     if (result != null) 
                     {
-                        _fileLogger?.LogInfo($"Found RTSS data: PID {result.ProcessId}, FPS {result.Fps:F1}");
+                        _fileLogger?.LogDebug($"Found RTSS data: PID {result.ProcessId}, FPS {result.Fps:F1}");
                         return result;
                     }
                     
@@ -629,7 +629,7 @@ namespace InfoPanel.RTSS.Services
                             bestCandidate.AvgFps = bestCandidate.Fps;
                         }
                         
-                        _fileLogger?.LogInfo($"Selected enhanced gaming candidate: PID {bestCandidate.ProcessId} ({bestCandidate.ProcessName}) - FPS: {bestCandidate.Fps:F1}, API: {bestCandidate.GraphicsAPI}");
+                        _fileLogger?.LogDebug($"Selected enhanced gaming candidate: PID {bestCandidate.ProcessId} ({bestCandidate.ProcessName}) - FPS: {bestCandidate.Fps:F1}, API: {bestCandidate.GraphicsAPI}");
                         return bestCandidate;
                     }
 
@@ -789,7 +789,7 @@ namespace InfoPanel.RTSS.Services
                     .First();
             }
 
-            _fileLogger?.LogInfo($"Selected candidate: {selected.ProcessName} (PID {selected.ProcessId}) with {selected.Fps:F1} FPS" +
+            _fileLogger?.LogDebug($"Selected candidate: {selected.ProcessName} (PID {selected.ProcessId}) with {selected.Fps:F1} FPS" +
                                (selected.IsFullscreen ? " [Fullscreen]" : ""));
             return selected;
         }

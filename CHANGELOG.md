@@ -2,6 +2,34 @@
 
 ## v1.1.5 (October 23, 2025)
 
+### 🎯 **User-Configurable Game Categories**
+- **Enhanced Configuration**: Added support for custom game categories via INI file
+- **New INI Sections**: 
+  - Create `[Game_Category_YourCategoryName]` sections to define custom categories
+  - Support for both individual patterns (`pattern1=`, `pattern2=`) and comma-separated lists (`processes=`)
+  - Wildcard pattern matching with `*` support (e.g., `*valorant*`, `game*.exe`)
+- **Configuration Service Enhancement**: Extended `GetCustomGameCategories()` method to parse user-defined categories
+- **Game Categorization Logic**: Modified `RTSSDataAnalyzer.GetGameCategory()` to prioritize custom user rules over default categories
+- **Pattern Matching**: Added flexible `IsPatternMatch()` helper supporting exact matches and wildcard patterns
+- **Example Categories**: Pre-configured examples for Competitive FPS, Racing Games, VR Games, and Retro Games
+- **Backward Compatibility**: Default categorization still works when no custom categories are defined
+
+### 🧪 **[REMOVED] Experimental RTSS Statistics Control**
+- **Added Then Removed**: Experimental feature to enable RTSS statistics recording programmatically
+- **Issue**: Caused InfoPanel crashes when enabled 
+- **Resolution**: Completely removed in v1.1.5 for stability
+
+### 🗑️ **Complete Removal of Min/Avg/Max FPS Statistics**
+- **Issue**: Experimental statistics control was causing InfoPanel crashes when enabled
+- **Decision**: Completely removed Min/Average/Max FPS functionality to eliminate crash risk
+- **Removed Components**:
+  - **Sensors**: Removed `_avgFpsSensor`, `_minFpsSensor`, `_maxFpsSensor` and related frame time sensors
+  - **Models**: Removed `MinFps`, `AvgFps`, `MaxFps`, `MinFrameTimeMs`, `MaxFrameTimeMs`, `AvgFrameTimeMs` from `PerformanceMetrics` and `RTSSCandidate`
+  - **RTSS Reading**: Removed all RTSS statistics shared memory reading (`dwStatFramerateMin/Avg/Max`)
+  - **Configuration**: Removed `[RTSS_Control]` section and `enable_stats_recording` option
+  - **UI**: No longer displays statistical FPS data in InfoPanel sensors
+- **Rationale**: Current FPS is the primary value users need; statistical data was problematic and not essential
+- **Result**: Plugin is now more stable and focused on core FPS monitoring without experimental features
 **🧹 Console Output Cleanup & Legacy Code Removal**
 
 ### 🔇 **Console Output Cleanup**
@@ -29,6 +57,33 @@
 ### 🚀 **Debug Logging Performance Optimization**
 - **Fixed Excessive Debug Logging**: Resolved debug log files growing extremely large (30,000+ lines)
   - **Root Cause**: High-frequency event handlers (16ms gaming updates) calling `LogInfo` multiple times per cycle
+
+### 📊 **Fixed FPS Statistics Duplication Issue**
+- **Problem**: Average/Min/Max FPS all showed identical values (same as current FPS)
+- **Root Cause**: RTSS statistical fields require active recording (`STATFLAG_RECORD`) and accumulated data (`dwStatCount > 0`)
+- **Solution**: Added proper RTSS statistics validation before using statistical data
+  - **Statistics Check**: Read `dwStatFlags` (offset 268) and `dwStatCount` (offset 280) from RTSS shared memory
+  - **Conditional Usage**: Only use `dwStatFramerateMin/Avg/Max` when statistics recording is active and has data
+  - **Fallback Behavior**: Use current FPS for Min/Avg/Max when RTSS statistics are not available
+  - **User Visibility**: Added debug logging to show when statistical data vs. fallback values are used
+  - **Expected Behavior**: Min/Avg/Max will show actual statistics when RTSS recording is active, otherwise current FPS as fallback
+
+### 🧪 **[REMOVED] Experimental RTSS Statistics Control**
+- **Added Then Removed**: Experimental feature to enable RTSS statistics recording programmatically
+- **Issue**: Caused InfoPanel crashes when enabled 
+- **Resolution**: Completely removed in v1.1.6 for stability
+
+### 🗑️ **Complete Removal of Min/Avg/Max FPS Statistics**
+- **Issue**: Experimental statistics control was causing InfoPanel crashes when enabled
+- **Decision**: Completely removed Min/Average/Max FPS functionality to eliminate crash risk
+- **Removed Components**:
+  - **Sensors**: Removed `_avgFpsSensor`, `_minFpsSensor`, `_maxFpsSensor` and related frame time sensors
+  - **Models**: Removed `MinFps`, `AvgFps`, `MaxFps`, `MinFrameTimeMs`, `MaxFrameTimeMs`, `AvgFrameTimeMs` from `PerformanceMetrics` and `RTSSCandidate`
+  - **RTSS Reading**: Removed all RTSS statistics shared memory reading (`dwStatFramerateMin/Avg/Max`)
+  - **Configuration**: Removed `[RTSS_Control]` section and `enable_stats_recording` option
+  - **UI**: No longer displays statistical FPS data in InfoPanel sensors
+- **Rationale**: Current FPS is the primary value users need; statistical data was problematic and not essential
+- **Result**: Plugin is now more stable and focused on core FPS monitoring without experimental features
   - **Performance Impact**: Event handlers generating 60+ log calls/second overwhelming throttling system
   - **Solution Applied**: Changed frequent monitoring calls from `LogInfo` to `LogDebug` level
 

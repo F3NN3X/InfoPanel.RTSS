@@ -29,14 +29,6 @@ namespace InfoPanel.RTSS.Services
         public double Fps { get; set; }
         public double FrameTimeMs { get; set; }
         public double OnePercentLowFps { get; set; }
-        public double MinFps { get; set; }
-        public double MaxFps { get; set; }
-        public double AvgFps { get; set; }
-        
-        // Advanced frame timing metrics
-        public double MinFrameTimeMs { get; set; }
-        public double MaxFrameTimeMs { get; set; }
-        public double AvgFrameTimeMs { get; set; }
         
         // RTSS native percentile calculations
         public double OnePercentLowFpsNative { get; set; }
@@ -110,11 +102,37 @@ namespace InfoPanel.RTSS.Services
         }
         
         /// <summary>
-        /// Categorizes game type based on process name patterns and graphics API
+        /// Categorizes game type based on custom user rules, process name patterns, and graphics API
         /// </summary>
-        public static string GetGameCategory(string processName, string graphicsAPI)
+        public static string GetGameCategory(string processName, string graphicsAPI, ConfigurationService? configService = null)
         {
             var lowerProcessName = processName.ToLowerInvariant();
+            
+            // First, check custom user-defined categories
+            if (configService != null)
+            {
+                var customCategories = configService.GetCustomGameCategories();
+                foreach (var category in customCategories)
+                {
+                    foreach (var pattern in category.Value)
+                    {
+                        if (IsPatternMatch(lowerProcessName, pattern))
+                        {
+                            return category.Key;
+                        }
+                    }
+                }
+            }
+            
+            // Fallback to default categorization logic
+            return GetDefaultGameCategory(lowerProcessName, graphicsAPI);
+        }
+        
+        /// <summary>
+        /// Default game categorization logic (used when no custom categories match)
+        /// </summary>
+        private static string GetDefaultGameCategory(string lowerProcessName, string graphicsAPI)
+        {
             
             // AAA/Modern games typically use DX11/DX12/Vulkan
             if (graphicsAPI is "DirectX 12" or "DirectX 11" or "Vulkan")
@@ -135,6 +153,41 @@ namespace InfoPanel.RTSS.Services
             }
             
             return "Standard";
+        }
+        
+        /// <summary>
+        /// Checks if a process name matches a pattern (supports wildcards * and exact matches)
+        /// </summary>
+        private static bool IsPatternMatch(string processName, string pattern)
+        {
+            if (string.IsNullOrEmpty(pattern))
+                return false;
+                
+            // Exact match
+            if (pattern == processName)
+                return true;
+                
+            // Simple wildcard support
+            if (pattern.Contains('*'))
+            {
+                // Convert simple wildcards to regex-like matching
+                var parts = pattern.Split('*', StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length == 0)
+                    return true; // Pattern was just "*"
+                    
+                string currentProcess = processName;
+                foreach (var part in parts)
+                {
+                    int index = currentProcess.IndexOf(part, StringComparison.OrdinalIgnoreCase);
+                    if (index == -1)
+                        return false;
+                    currentProcess = currentProcess.Substring(index + part.Length);
+                }
+                return true;
+            }
+            
+            // Contains match (no wildcards)
+            return processName.Contains(pattern, StringComparison.OrdinalIgnoreCase);
         }
         
         /// <summary>
@@ -523,11 +576,6 @@ namespace InfoPanel.RTSS.Services
                             var rtssFlags = (uint)Marshal.ReadInt32(mapView, entryOffset + 264);    // dwFlags (offset 264)
                             var frameTimeUs = Marshal.ReadInt32(mapView, entryOffset + 280);        // dwFrameTime in microseconds (offset 280)
                             
-                            // RTSS native statistics (documented offsets from RTSSSharedMemory structure)
-                            var statFramerateMin = Marshal.ReadInt32(mapView, entryOffset + 304);   // dwStatFramerateMin (millihertz)
-                            var statFramerateAvg = Marshal.ReadInt32(mapView, entryOffset + 308);   // dwStatFramerateAvg (millihertz)
-                            var statFramerateMax = Marshal.ReadInt32(mapView, entryOffset + 312);   // dwStatFramerateMax (millihertz)
-                            
                             // RTSS native percentile calculations (v2.13+ offsets - approximate)
                             var stat1PercentLow = Marshal.ReadInt32(mapView, entryOffset + 544);    // dwStatFramerate1Dot0PercentLow (millihertz)
                             var stat0Point1PercentLow = Marshal.ReadInt32(mapView, entryOffset + 548); // dwStatFramerate0Dot1PercentLow (millihertz)
@@ -554,16 +602,7 @@ namespace InfoPanel.RTSS.Services
                             double frameTimeMs = fps > 0 ? 1000.0 / fps : 0.0;
                             double gpuFrameTimeMs = gpuFrameTimeUs > 0 ? gpuFrameTimeUs / 1000.0 : 0.0;
                             
-                            // Convert RTSS native statistics (millihertz to Hz)
-                            double minFps = statFramerateMin > 0 ? statFramerateMin / 1000.0 : 0.0;
-                            double avgFps = statFramerateAvg > 0 ? statFramerateAvg / 1000.0 : 0.0;
-                            double maxFps = statFramerateMax > 0 ? statFramerateMax / 1000.0 : 0.0;
-                            
-                            // Calculate frame time statistics from FPS (RTSS doesn't provide direct frame time stats)
-                            // Note: Max FPS corresponds to Min frame time, Min FPS corresponds to Max frame time
-                            double minFrameTimeMs = maxFps > 0 ? 1000.0 / maxFps : 0.0;  // Max FPS = Min frame time
-                            double avgFrameTimeMs = avgFps > 0 ? 1000.0 / avgFps : 0.0;  // Avg FPS = Avg frame time
-                            double maxFrameTimeMs = minFps > 0 ? 1000.0 / minFps : 0.0;  // Min FPS = Max frame time
+                            // Convert RTSS native percentile calculations (millihertz to FPS)
                             double onePercentLowNative = stat1PercentLow > 0 ? stat1PercentLow / 1000.0 : 0.0;
                             double zeroPointOnePercentLow = stat0Point1PercentLow > 0 ? stat0Point1PercentLow / 1000.0 : 0.0;
                             
@@ -575,13 +614,6 @@ namespace InfoPanel.RTSS.Services
                                 FrameTimeMs = frameTimeMs,
                                 GpuFrameTimeMs = gpuFrameTimeMs,
                                 
-                                // RTSS native statistics
-                                MinFps = minFps,
-                                MaxFps = maxFps,
-                                AvgFps = avgFps,
-                                MinFrameTimeMs = minFrameTimeMs,
-                                MaxFrameTimeMs = maxFrameTimeMs,
-                                AvgFrameTimeMs = avgFrameTimeMs,
                                 OnePercentLowFpsNative = onePercentLowNative,
                                 ZeroPointOnePercentLowFps = zeroPointOnePercentLow,
                                 
@@ -611,7 +643,7 @@ namespace InfoPanel.RTSS.Services
                         // Populate enhanced metrics using RTSSDataAnalyzer with validation
                         bestCandidate.GraphicsAPI = RTSSDataAnalyzer.GetGraphicsAPI(bestCandidate.RTSSFlags);
                         bestCandidate.Architecture = RTSSDataAnalyzer.GetArchitecture(bestCandidate.GraphicsAPI, bestCandidate.RTSSEngineVersion);
-                        bestCandidate.GameCategory = RTSSDataAnalyzer.GetGameCategory(bestCandidate.ProcessName, bestCandidate.GraphicsAPI);
+                        bestCandidate.GameCategory = RTSSDataAnalyzer.GetGameCategory(bestCandidate.ProcessName, bestCandidate.GraphicsAPI, _configService);
                         bestCandidate.FrameTimeMs = bestCandidate.Fps > 0 ? 1000.0 / bestCandidate.Fps : 0.0;
                         bestCandidate.WindowTitle = GetWindowTitleForPid(bestCandidate.ProcessId);
                         
@@ -622,14 +654,8 @@ namespace InfoPanel.RTSS.Services
                         // Resolution detection removed - was inconsistent and confusing for users
                         // Borderless fullscreen mode reported display resolution instead of game render resolution
                         
-                        // Validate FPS statistics - if native RTSS stats are unavailable, use fallback calculations
-                        if (bestCandidate.MinFps <= 0 && bestCandidate.MaxFps <= 0 && bestCandidate.AvgFps <= 0)
-                        {
-                            _fileLogger?.LogDebugThrottled("Native RTSS statistics unavailable, using fallback calculations", "rtss_stats_fallback");
-                            bestCandidate.MinFps = bestCandidate.Fps; // Simple fallback
-                            bestCandidate.MaxFps = bestCandidate.Fps;
-                            bestCandidate.AvgFps = bestCandidate.Fps;
-                        }
+                        // FPS statistics now properly handled during RTSS data reading
+                        // Statistics are set to current FPS when RTSS recording is not active
                         
                         _fileLogger?.LogDebug($"Selected enhanced gaming candidate: PID {bestCandidate.ProcessId} ({bestCandidate.ProcessName}) - FPS: {bestCandidate.Fps:F1}, API: {bestCandidate.GraphicsAPI}");
                         return bestCandidate;

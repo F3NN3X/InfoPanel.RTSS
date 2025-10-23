@@ -88,6 +88,55 @@ namespace InfoPanel.RTSS.Services
         public bool PreferFullscreen => GetBoolValue("Application_Filtering", "prefer_fullscreen", true);
 
         /// <summary>
+        /// Gets custom game category rules from the configuration.
+        /// Returns a dictionary where key is the category name and value is a list of process patterns.
+        /// </summary>
+        public Dictionary<string, List<string>> GetCustomGameCategories()
+        {
+            var categories = new Dictionary<string, List<string>>();
+            
+            // Look for all sections that start with "Game_Category_"
+            foreach (var sectionName in _configData.Keys)
+            {
+                if (sectionName.StartsWith("Game_Category_", StringComparison.OrdinalIgnoreCase))
+                {
+                    var categoryName = sectionName.Substring("Game_Category_".Length);
+                    var patterns = new List<string>();
+                    
+                    var section = _configData[sectionName];
+                    foreach (var kvp in section)
+                    {
+                        // Support multiple patterns: pattern1, pattern2, etc. OR processes=pattern1,pattern2,pattern3
+                        if (kvp.Key.Equals("processes", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Comma-separated list in processes key
+                            var processPatterns = kvp.Value.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                .Select(p => p.Trim().ToLowerInvariant())
+                                .Where(p => !string.IsNullOrEmpty(p));
+                            patterns.AddRange(processPatterns);
+                        }
+                        else if (kvp.Key.StartsWith("pattern", StringComparison.OrdinalIgnoreCase) || 
+                                 kvp.Key.StartsWith("process", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Individual pattern keys: pattern1=game.exe, pattern2=*steam*, etc.
+                            if (!string.IsNullOrWhiteSpace(kvp.Value))
+                            {
+                                patterns.Add(kvp.Value.Trim().ToLowerInvariant());
+                            }
+                        }
+                    }
+                    
+                    if (patterns.Count > 0)
+                    {
+                        categories[categoryName] = patterns;
+                    }
+                }
+            }
+            
+            return categories;
+        }
+
+        /// <summary>
         /// Loads configuration from INI file.
         /// </summary>
         private Dictionary<string, Dictionary<string, string>> LoadConfiguration()

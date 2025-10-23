@@ -16,12 +16,6 @@ namespace InfoPanel.RTSS.Services
         private readonly PluginSensor _fpsSensor;
         private readonly PluginSensor _onePercentLowFpsSensor;
         private readonly PluginSensor _currentFrameTimeSensor;
-        private readonly PluginSensor _avgFpsSensor;       // RTSS built-in average FPS
-        private readonly PluginSensor _minFpsSensor;       // RTSS built-in min FPS (1% low equivalent)
-        private readonly PluginSensor _maxFpsSensor;       // RTSS built-in max FPS
-        private readonly PluginSensor _avgFrameTimeSensor; // RTSS built-in average frame time
-        private readonly PluginSensor _minFrameTimeSensor; // RTSS built-in min frame time
-        private readonly PluginSensor _maxFrameTimeSensor; // RTSS built-in max frame time
         private readonly PluginText _windowTitleSensor;
         private readonly PluginText _resolutionSensor;
         private readonly PluginSensor _refreshRateSensor;
@@ -76,48 +70,6 @@ namespace InfoPanel.RTSS.Services
             _currentFrameTimeSensor = new PluginSensor(
                 SensorConstants.CurrentFrameTimeSensorId,
                 SensorConstants.CurrentFrameTimeSensorDisplayName,
-                0,
-                SensorConstants.FrameTimeUnit
-            );
-
-            _avgFpsSensor = new PluginSensor(
-                "avg-fps",
-                "Average FPS",
-                0,
-                SensorConstants.FpsUnit
-            );
-
-            _minFpsSensor = new PluginSensor(
-                "min-fps",
-                "Min FPS (1% Low)",
-                0,
-                SensorConstants.FpsUnit
-            );
-
-            _maxFpsSensor = new PluginSensor(
-                "max-fps",
-                "Max FPS",
-                0,
-                SensorConstants.FpsUnit
-            );
-
-            _avgFrameTimeSensor = new PluginSensor(
-                "avg-frame-time",
-                "Average Frame Time",
-                0,
-                SensorConstants.FrameTimeUnit
-            );
-
-            _minFrameTimeSensor = new PluginSensor(
-                "min-frame-time",
-                "Min Frame Time",
-                0,
-                SensorConstants.FrameTimeUnit
-            );
-
-            _maxFrameTimeSensor = new PluginSensor(
-                "max-frame-time",
-                "Max Frame Time",
                 0,
                 SensorConstants.FrameTimeUnit
             );
@@ -188,14 +140,8 @@ namespace InfoPanel.RTSS.Services
             
             // Add all sensors to the container
             container.Entries.Add(_fpsSensor);
-            container.Entries.Add(_avgFpsSensor);
-            container.Entries.Add(_minFpsSensor);
-            container.Entries.Add(_maxFpsSensor);
             container.Entries.Add(_onePercentLowFpsSensor);
             container.Entries.Add(_currentFrameTimeSensor);
-            container.Entries.Add(_avgFrameTimeSensor);
-            container.Entries.Add(_minFrameTimeSensor);
-            container.Entries.Add(_maxFrameTimeSensor);
             container.Entries.Add(_windowTitleSensor);
             container.Entries.Add(_resolutionSensor);
             container.Entries.Add(_refreshRateSensor);
@@ -229,11 +175,6 @@ namespace InfoPanel.RTSS.Services
                     _fpsSensor.Value = state.Performance.Fps;
                     _currentFrameTimeSensor.Value = state.Performance.FrameTime;
                     _onePercentLowFpsSensor.Value = state.Performance.OnePercentLowFps;
-                    
-                    // Update RTSS built-in statistics sensors
-                    _avgFpsSensor.Value = state.Performance.AverageFps;
-                    _minFpsSensor.Value = state.Performance.MinFps;
-                    _maxFpsSensor.Value = state.Performance.MaxFps;
                 }
                 else
                 {
@@ -241,9 +182,6 @@ namespace InfoPanel.RTSS.Services
                     _fpsSensor.Value = 0;
                     _currentFrameTimeSensor.Value = 0;
                     _onePercentLowFpsSensor.Value = 0;
-                    _avgFpsSensor.Value = 0;
-                    _minFpsSensor.Value = 0;
-                    _maxFpsSensor.Value = 0;
                     // Add logging for debugging
                     _fileLogger?.LogInfo("SensorManagementService: Reset all FPS sensors to 0");
                 }
@@ -313,12 +251,6 @@ namespace InfoPanel.RTSS.Services
                     _fpsSensor.Value = 0;
                     _onePercentLowFpsSensor.Value = 0;
                     _currentFrameTimeSensor.Value = 0;
-                    _avgFpsSensor.Value = 0;
-                    _minFpsSensor.Value = 0;
-                    _maxFpsSensor.Value = 0;
-                    _avgFrameTimeSensor.Value = 0;
-                    _minFrameTimeSensor.Value = 0;
-                    _maxFrameTimeSensor.Value = 0;
 
                     // Reset information sensors to defaults
                     _windowTitleSensor.Value = SensorConstants.DefaultWindowTitle;
@@ -360,14 +292,6 @@ namespace InfoPanel.RTSS.Services
                     _gameCategorySensor.Value = "Unknown";
                     // Game resolution sensor removed
                     _displayModeSensor.Value = "Unknown";
-                    
-                    // Reset RTSS native statistics sensors that can get stuck
-                    _avgFpsSensor.Value = 0;
-                    _minFpsSensor.Value = 0;
-                    _maxFpsSensor.Value = 0;
-                    _avgFrameTimeSensor.Value = 0;
-                    _minFrameTimeSensor.Value = 0;
-                    _maxFrameTimeSensor.Value = 0;
 
                     _fileLogger?.LogInfo("Enhanced RTSS sensors reset to default values (game quit detected)");
                 }
@@ -525,19 +449,7 @@ namespace InfoPanel.RTSS.Services
                     
                     // Game resolution sensor removed - was confusing in borderless fullscreen mode
                     
-                    // Update RTSS native statistics (Min/Max/Avg FPS) from RTSSCandidate
-                    _avgFpsSensor.Value = (float)candidate.AvgFps;
-                    _minFpsSensor.Value = (float)candidate.MinFps;
-                    _maxFpsSensor.Value = (float)candidate.MaxFps;
-                    
-                    // Update RTSS calculated frame time statistics from RTSSCandidate
-                    _avgFrameTimeSensor.Value = (float)candidate.AvgFrameTimeMs;
-                    _minFrameTimeSensor.Value = (float)candidate.MinFrameTimeMs;
-                    _maxFrameTimeSensor.Value = (float)candidate.MaxFrameTimeMs;
-                    
                     _fileLogger?.LogDebug($"Enhanced sensors updated - API: {candidate.GraphicsAPI}, Category: {candidate.GameCategory}");
-                    _fileLogger?.LogDebug($"RTSS Stats sensors updated - Min: {candidate.MinFps:F1}, Avg: {candidate.AvgFps:F1}, Max: {candidate.MaxFps:F1} FPS");
-                    _fileLogger?.LogDebug($"RTSS Frame Time sensors updated - Min: {candidate.MinFrameTimeMs:F2}, Avg: {candidate.AvgFrameTimeMs:F2}, Max: {candidate.MaxFrameTimeMs:F2} ms");
                 }
                 catch (Exception ex)
                 {

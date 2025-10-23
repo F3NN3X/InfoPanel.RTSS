@@ -201,8 +201,6 @@ namespace InfoPanel.RTSS
                 _fileLogger.LogDebug($"=== Enhanced Metrics Update ===");
                 _fileLogger.LogDebug($"Process: PID {candidate.ProcessId} ({candidate.ProcessName}) - {candidate.WindowTitle}");
                 _fileLogger.LogDebug($"Performance: FPS {candidate.Fps:F1}, Frame Time {candidate.FrameTimeMs:F2}ms, GPU Frame Time {candidate.GpuFrameTimeMs:F2}ms");
-                _fileLogger.LogDebug($"RTSS Native Stats: Min {candidate.MinFps:F1} | Avg {candidate.AvgFps:F1} | Max {candidate.MaxFps:F1} FPS");
-                _fileLogger.LogDebug($"RTSS Frame Times: Min {candidate.MinFrameTimeMs:F2} | Avg {candidate.AvgFrameTimeMs:F2} | Max {candidate.MaxFrameTimeMs:F2} ms");
                 _fileLogger.LogDebug($"RTSS Percentiles: 1% Low {candidate.OnePercentLowFpsNative:F1} | 0.1% Low {candidate.ZeroPointOnePercentLowFps:F1} FPS");
                 _fileLogger.LogDebug($"Graphics: {candidate.GraphicsAPI} ({candidate.Architecture}) - {candidate.GameCategory}");
                 _fileLogger.LogDebug($"Display: @ {candidate.RefreshRate:F0}Hz, {candidate.DisplayMode}, VSync: {candidate.VSync}"); // Resolution removed

@@ -196,6 +196,24 @@
   - **Clean Rotation**: Seamless archival without losing important debug information
 - **Enhanced Reliability**: Improved error handling and fallback mechanisms for logging failures
 
+### 🖥️ **Enhanced Window Detection System**
+- **Problem Resolved**: Borderless fullscreen games incorrectly detected as exclusive fullscreen
+- **Issue Example**: No Man's Sky borderless fullscreen mode showed as "Exclusive Fullscreen" instead of "Borderless Fullscreen"
+- **Root Cause Analysis**: Window style detection logic was using incorrect assumptions about Win32 API flags
+- **Comprehensive Debug Implementation**: Added detailed window analysis logging to identify actual patterns
+  - **Window Style Analysis**: Logs hex values, popup flags, overlapped flags, and size matching
+  - **Monitor Detection**: Multi-monitor aware positioning and resolution analysis
+  - **Decoration Calculation**: Measures window vs client area differences for accurate classification
+- **Detection Logic Overhaul**: Rewrote detection algorithm based on actual game behavior patterns
+  - **Borderless Fullscreen**: `WS_POPUP` style flag + matches monitor size (e.g., No Man's Sky)
+  - **Exclusive Fullscreen**: No popup, no overlapped flags + matches monitor size
+  - **Windowed Modes**: `WS_OVERLAPPEDWINDOW` style for bordered windows
+  - **Enhanced Classification**: "Bordered" (renamed from "Large Windowed"), "Maximized Window", etc.
+- **Win32 API Integration**: Added proper `GetWindowLong`, `GetClientRect`, and `MonitorFromWindow` support
+- **Multi-Monitor Support**: Accurate detection across different monitor configurations
+- **Testing Validated**: All three No Man's Sky display modes now correctly identified
+- **Result**: Users get accurate display mode information for better gaming insights
+
 ---
 
 ## v1.1.4 (October 22, 2025)

@@ -18,10 +18,20 @@ namespace InfoPanel.RTSS.Services
         private readonly PluginSensor _avgFpsSensor;       // RTSS built-in average FPS
         private readonly PluginSensor _minFpsSensor;       // RTSS built-in min FPS (1% low equivalent)
         private readonly PluginSensor _maxFpsSensor;       // RTSS built-in max FPS
+        private readonly PluginSensor _avgFrameTimeSensor; // RTSS built-in average frame time
+        private readonly PluginSensor _minFrameTimeSensor; // RTSS built-in min frame time
+        private readonly PluginSensor _maxFrameTimeSensor; // RTSS built-in max frame time
         private readonly PluginText _windowTitleSensor;
         private readonly PluginText _resolutionSensor;
         private readonly PluginSensor _refreshRateSensor;
         private readonly PluginText _gpuNameSensor;
+        
+        // Enhanced RTSS sensors for advanced metrics
+        private readonly PluginText _graphicsApiSensor;
+        private readonly PluginText _architectureSensor;
+        private readonly PluginText _gameCategorySensor;
+        private readonly PluginText _gameResolutionSensor;  // Separate from system resolution
+        private readonly PluginText _displayModeSensor;
         
         /// <summary>
         /// Cached window title to prevent flickering when window validation temporarily fails.
@@ -88,6 +98,27 @@ namespace InfoPanel.RTSS.Services
                 SensorConstants.FpsUnit
             );
 
+            _avgFrameTimeSensor = new PluginSensor(
+                "avg-frame-time",
+                "Average Frame Time",
+                0,
+                SensorConstants.FrameTimeUnit
+            );
+
+            _minFrameTimeSensor = new PluginSensor(
+                "min-frame-time",
+                "Min Frame Time",
+                0,
+                SensorConstants.FrameTimeUnit
+            );
+
+            _maxFrameTimeSensor = new PluginSensor(
+                "max-frame-time",
+                "Max Frame Time",
+                0,
+                SensorConstants.FrameTimeUnit
+            );
+
             // Initialize text sensors
             _windowTitleSensor = new PluginText(
                 SensorConstants.WindowTitleSensorId,
@@ -114,6 +145,37 @@ namespace InfoPanel.RTSS.Services
                 SensorConstants.DefaultGpuName
             );
 
+            // Initialize enhanced RTSS sensors
+            _graphicsApiSensor = new PluginText(
+                "graphics-api",
+                "Graphics API",
+                "Unknown"
+            );
+
+            _architectureSensor = new PluginText(
+                "architecture",
+                "Architecture",
+                "Unknown"
+            );
+
+            _gameCategorySensor = new PluginText(
+                "game-category",
+                "Game Category",
+                "Unknown"
+            );
+
+            _gameResolutionSensor = new PluginText(
+                "game-resolution",
+                "Game Resolution",
+                "0x0"
+            );
+
+            _displayModeSensor = new PluginText(
+                "display-mode",
+                "Display Mode",
+                "Unknown"
+            );
+
             Console.WriteLine("Sensor management service initialized with all sensors");
         }
 
@@ -132,10 +194,20 @@ namespace InfoPanel.RTSS.Services
             container.Entries.Add(_maxFpsSensor);
             container.Entries.Add(_onePercentLowFpsSensor);
             container.Entries.Add(_currentFrameTimeSensor);
+            container.Entries.Add(_avgFrameTimeSensor);
+            container.Entries.Add(_minFrameTimeSensor);
+            container.Entries.Add(_maxFrameTimeSensor);
             container.Entries.Add(_windowTitleSensor);
             container.Entries.Add(_resolutionSensor);
             container.Entries.Add(_refreshRateSensor);
             container.Entries.Add(_gpuNameSensor);
+            
+            // Add enhanced RTSS sensors
+            container.Entries.Add(_graphicsApiSensor);
+            container.Entries.Add(_architectureSensor);
+            container.Entries.Add(_gameCategorySensor);
+            container.Entries.Add(_gameResolutionSensor);
+            container.Entries.Add(_displayModeSensor);
 
             containers.Add(container);
             
@@ -245,6 +317,9 @@ namespace InfoPanel.RTSS.Services
                     _avgFpsSensor.Value = 0;
                     _minFpsSensor.Value = 0;
                     _maxFpsSensor.Value = 0;
+                    _avgFrameTimeSensor.Value = 0;
+                    _minFrameTimeSensor.Value = 0;
+                    _maxFrameTimeSensor.Value = 0;
 
                     // Reset information sensors to defaults
                     _windowTitleSensor.Value = SensorConstants.DefaultWindowTitle;
@@ -252,14 +327,54 @@ namespace InfoPanel.RTSS.Services
                     _refreshRateSensor.Value = 0;
                     _gpuNameSensor.Value = SensorConstants.DefaultGpuName;
                     
+                    // Reset enhanced RTSS sensors to defaults
+                    _graphicsApiSensor.Value = "Unknown";
+                    _architectureSensor.Value = "Unknown";
+                    _gameCategorySensor.Value = "Unknown";
+                    _gameResolutionSensor.Value = "Unknown";
+                    _displayModeSensor.Value = "Unknown";
+                    
                     // Clear cached window title
                     _lastValidWindowTitle = string.Empty;
 
-                    Console.WriteLine("All sensors reset to default values");
+                    Console.WriteLine("All sensors reset to default values (including enhanced RTSS sensors)");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error resetting sensors: {ex}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Resets only the enhanced RTSS sensors to their default values (called when game quits).
+        /// </summary>
+        public void ResetEnhancedSensors()
+        {
+            lock (_sensorLock)
+            {
+                try
+                {
+                    // Reset enhanced RTSS sensors to defaults
+                    _graphicsApiSensor.Value = "Unknown";
+                    _architectureSensor.Value = "Unknown";
+                    _gameCategorySensor.Value = "Unknown";
+                    _gameResolutionSensor.Value = "Unknown";
+                    _displayModeSensor.Value = "Unknown";
+                    
+                    // Reset RTSS native statistics sensors that can get stuck
+                    _avgFpsSensor.Value = 0;
+                    _minFpsSensor.Value = 0;
+                    _maxFpsSensor.Value = 0;
+                    _avgFrameTimeSensor.Value = 0;
+                    _minFrameTimeSensor.Value = 0;
+                    _maxFrameTimeSensor.Value = 0;
+
+                    Console.WriteLine("Enhanced RTSS sensors reset to default values (game quit detected)");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error resetting enhanced sensors: {ex}");
                 }
             }
         }
@@ -389,6 +504,53 @@ namespace InfoPanel.RTSS.Services
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error updating window title sensor: {ex}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates enhanced sensors with comprehensive RTSSCandidate data.
+        /// </summary>
+        /// <param name="candidate">The RTSSCandidate containing enhanced gaming metrics.</param>
+        public void UpdateEnhancedSensors(RTSSCandidate candidate)
+        {
+            lock (_sensorLock)
+            {
+                try
+                {
+                    // Update enhanced text sensors with RTSSCandidate data
+                    _graphicsApiSensor.Value = candidate.GraphicsAPI ?? "Unknown";
+                    _architectureSensor.Value = candidate.Architecture ?? "Unknown";
+                    _gameCategorySensor.Value = candidate.GameCategory ?? "Unknown";
+                    _displayModeSensor.Value = candidate.DisplayMode ?? "Unknown";
+                    
+                    // Update game resolution sensor (separate from system resolution)
+                    if (candidate.ResolutionX > 0 && candidate.ResolutionY > 0)
+                    {
+                        _gameResolutionSensor.Value = $"{candidate.ResolutionX}x{candidate.ResolutionY}";
+                    }
+                    else
+                    {
+                        _gameResolutionSensor.Value = "Unknown";
+                    }
+                    
+                    // Update RTSS native statistics (Min/Max/Avg FPS) from RTSSCandidate
+                    _avgFpsSensor.Value = (float)candidate.AvgFps;
+                    _minFpsSensor.Value = (float)candidate.MinFps;
+                    _maxFpsSensor.Value = (float)candidate.MaxFps;
+                    
+                    // Update RTSS calculated frame time statistics from RTSSCandidate
+                    _avgFrameTimeSensor.Value = (float)candidate.AvgFrameTimeMs;
+                    _minFrameTimeSensor.Value = (float)candidate.MinFrameTimeMs;
+                    _maxFrameTimeSensor.Value = (float)candidate.MaxFrameTimeMs;
+                    
+                    Console.WriteLine($"Enhanced sensors updated - API: {candidate.GraphicsAPI}, Category: {candidate.GameCategory}, Resolution: {candidate.ResolutionX}x{candidate.ResolutionY}");
+                    Console.WriteLine($"RTSS Stats sensors updated - Min: {candidate.MinFps:F1}, Avg: {candidate.AvgFps:F1}, Max: {candidate.MaxFps:F1} FPS");
+                    Console.WriteLine($"RTSS Frame Time sensors updated - Min: {candidate.MinFrameTimeMs:F2}, Avg: {candidate.AvgFrameTimeMs:F2}, Max: {candidate.MaxFrameTimeMs:F2} ms");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error updating enhanced sensors: {ex}");
                 }
             }
         }

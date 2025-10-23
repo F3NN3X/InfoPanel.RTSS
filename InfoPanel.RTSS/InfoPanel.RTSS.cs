@@ -49,6 +49,7 @@ namespace InfoPanel.RTSS
                 // Initialize RTSS-only monitoring service with event handling
                 _rtssMonitoringService = new RTSSOnlyMonitoringService(_configService, _fileLogger);
                 _rtssMonitoringService.MetricsUpdated += OnMetricsUpdated;
+                _rtssMonitoringService.EnhancedMetricsUpdated += OnEnhancedMetricsUpdated;
 
                 _fileLogger.LogInfo("InfoPanel.RTSS plugin constructed successfully");
             }
@@ -179,6 +180,9 @@ namespace InfoPanel.RTSS
                 {
                     // No game running - directly set the configured default message
                     _sensorService.UpdateWindowTitle(windowTitle);
+                    
+                    // Reset enhanced sensors when no game is running to prevent stuck values
+                    _sensorService.ResetEnhancedSensors();
                 }
                 
                 _fileLogger.LogInfo($"Metrics updated - FPS: {fps:F1}, 1% Low: {onePercentLow:F1}, Title: {windowTitle}");
@@ -187,6 +191,34 @@ namespace InfoPanel.RTSS
             {
                 Console.WriteLine($"Error in OnMetricsUpdated: {ex}");
                 _fileLogger.LogError("Error in OnMetricsUpdated", ex);
+            }
+        }
+
+        /// <summary>
+        /// Handles enhanced metrics updates from the RTSS monitoring service with comprehensive gaming data.
+        /// </summary>
+        private void OnEnhancedMetricsUpdated(RTSSCandidate candidate)
+        {
+            try
+            {
+                // Comprehensive enhanced metrics logging
+                _fileLogger.LogInfo($"=== Enhanced Metrics Update ===");
+                _fileLogger.LogInfo($"Process: PID {candidate.ProcessId} ({candidate.ProcessName}) - {candidate.WindowTitle}");
+                _fileLogger.LogInfo($"Performance: FPS {candidate.Fps:F1}, Frame Time {candidate.FrameTimeMs:F2}ms, GPU Frame Time {candidate.GpuFrameTimeMs:F2}ms");
+                _fileLogger.LogInfo($"RTSS Native Stats: Min {candidate.MinFps:F1} | Avg {candidate.AvgFps:F1} | Max {candidate.MaxFps:F1} FPS");
+                _fileLogger.LogInfo($"RTSS Frame Times: Min {candidate.MinFrameTimeMs:F2} | Avg {candidate.AvgFrameTimeMs:F2} | Max {candidate.MaxFrameTimeMs:F2} ms");
+                _fileLogger.LogInfo($"RTSS Percentiles: 1% Low {candidate.OnePercentLowFpsNative:F1} | 0.1% Low {candidate.ZeroPointOnePercentLowFps:F1} FPS");
+                _fileLogger.LogInfo($"Graphics: {candidate.GraphicsAPI} ({candidate.Architecture}) - {candidate.GameCategory}");
+                _fileLogger.LogInfo($"Display: {candidate.ResolutionX}x{candidate.ResolutionY} @ {candidate.RefreshRate:F0}Hz, {candidate.DisplayMode}, VSync: {candidate.VSync}");
+                _fileLogger.LogInfo($"State: Fullscreen {candidate.IsFullscreen}, Foreground {candidate.IsForeground}");
+                
+                // Update the enhanced sensors with the full RTSSCandidate data
+                _sensorService.UpdateEnhancedSensors(candidate);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in OnEnhancedMetricsUpdated: {ex}");
+                _fileLogger.LogError("Error in OnEnhancedMetricsUpdated", ex);
             }
         }
 

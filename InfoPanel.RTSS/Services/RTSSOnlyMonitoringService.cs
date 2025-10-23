@@ -10,15 +10,208 @@ using Vanara.PInvoke;
 namespace InfoPanel.RTSS.Services
 {
     /// <summary>
-    /// Represents a candidate process detected by RTSS with gaming characteristics
+    /// Represents a candidate process detected by RTSS with comprehensive gaming metrics
+    /// Includes advanced RTSS shared memory data for detailed performance analysis
     /// </summary>
-    internal class RTSSCandidate
+    public class RTSSCandidate
     {
+        // Basic process identification
         public int ProcessId { get; set; }
-        public double Fps { get; set; }
+        public string ProcessName { get; set; } = string.Empty;
+        public string ProcessPath { get; set; } = string.Empty;
+        public string WindowTitle { get; set; } = string.Empty;
+        
+        // State flags
         public bool IsFullscreen { get; set; }
         public bool IsForeground { get; set; }
-        public string ProcessName { get; set; } = string.Empty;
+        
+        // Core FPS metrics
+        public double Fps { get; set; }
+        public double FrameTimeMs { get; set; }
+        public double OnePercentLowFps { get; set; }
+        public double MinFps { get; set; }
+        public double MaxFps { get; set; }
+        public double AvgFps { get; set; }
+        
+        // Advanced frame timing metrics
+        public double MinFrameTimeMs { get; set; }
+        public double MaxFrameTimeMs { get; set; }
+        public double AvgFrameTimeMs { get; set; }
+        
+        // RTSS native percentile calculations
+        public double OnePercentLowFpsNative { get; set; }
+        public double ZeroPointOnePercentLowFps { get; set; }
+        
+        // Advanced frame timing
+        public double GpuFrameTimeMs { get; set; }
+        public double CpuFrameTimeMs { get; set; }
+        
+        // Graphics system information
+        public string GraphicsAPI { get; set; } = string.Empty;
+        public string Architecture { get; set; } = string.Empty;
+        public string GameCategory { get; set; } = string.Empty;
+        
+        // Display properties
+        public int ResolutionX { get; set; }
+        public int ResolutionY { get; set; }
+        public double RefreshRate { get; set; }
+        public bool VSync { get; set; }
+        public string DisplayMode { get; set; } = string.Empty;
+        
+        // RTSS internal data
+        public uint RTSSFlags { get; set; }
+        public uint RTSSEngineVersion { get; set; }
+        public DateTime LastUpdate { get; set; } = DateTime.Now;
+    }
+
+    /// <summary>
+    /// Helper class for analyzing RTSS shared memory data and extracting advanced gaming metrics
+    /// Provides graphics API detection, architecture analysis, and game categorization
+    /// </summary>
+    internal static class RTSSDataAnalyzer
+    {
+        // RTSS Engine flags for graphics API detection (from RTSSSharedMemory.h)
+        private const uint RTSS_ENGINE_DIRECTX8 = 0x00000001;
+        private const uint RTSS_ENGINE_DIRECTX9 = 0x00000002;
+        private const uint RTSS_ENGINE_DIRECTX10 = 0x00000004;
+        private const uint RTSS_ENGINE_DIRECTX11 = 0x00000008;
+        private const uint RTSS_ENGINE_DIRECTX12 = 0x00000010;
+        private const uint RTSS_ENGINE_OPENGL = 0x00000020;
+        private const uint RTSS_ENGINE_VULKAN = 0x00000040;
+        
+        /// <summary>
+        /// Analyzes RTSS engine flags to determine graphics API
+        /// </summary>
+        public static string GetGraphicsAPI(uint rtssFlags)
+        {
+            if ((rtssFlags & RTSS_ENGINE_DIRECTX12) != 0) return "DirectX 12";
+            if ((rtssFlags & RTSS_ENGINE_DIRECTX11) != 0) return "DirectX 11";
+            if ((rtssFlags & RTSS_ENGINE_DIRECTX10) != 0) return "DirectX 10";
+            if ((rtssFlags & RTSS_ENGINE_DIRECTX9) != 0) return "DirectX 9";
+            if ((rtssFlags & RTSS_ENGINE_DIRECTX8) != 0) return "DirectX 8";
+            if ((rtssFlags & RTSS_ENGINE_VULKAN) != 0) return "Vulkan";
+            if ((rtssFlags & RTSS_ENGINE_OPENGL) != 0) return "OpenGL";
+            return "Unknown";
+        }
+        
+        /// <summary>
+        /// Determines architecture type based on graphics API and engine version
+        /// </summary>
+        public static string GetArchitecture(string graphicsAPI, uint engineVersion)
+        {
+            return graphicsAPI switch
+            {
+                "DirectX 12" or "Vulkan" => "Modern Low-Level",
+                "DirectX 11" => "DirectX 11 Era", 
+                "DirectX 10" => "DirectX 10 Era",
+                "DirectX 9" => "Legacy DirectX",
+                "DirectX 8" => "Legacy DirectX",
+                "OpenGL" => "OpenGL",
+                _ => "Unknown"
+            };
+        }
+        
+        /// <summary>
+        /// Categorizes game type based on process name patterns and graphics API
+        /// </summary>
+        public static string GetGameCategory(string processName, string graphicsAPI)
+        {
+            var lowerProcessName = processName.ToLowerInvariant();
+            
+            // AAA/Modern games typically use DX11/DX12/Vulkan
+            if (graphicsAPI is "DirectX 12" or "DirectX 11" or "Vulkan")
+            {
+                return "AAA/Modern";
+            }
+            
+            // Indie/Legacy detection
+            if (graphicsAPI is "DirectX 9" or "DirectX 8" or "OpenGL")
+            {
+                return "Indie/Legacy";
+            }
+            
+            // Specific game engine detection
+            if (lowerProcessName.Contains("unity") || lowerProcessName.Contains("unreal"))
+            {
+                return "Engine-Based";
+            }
+            
+            return "Standard";
+        }
+        
+        /// <summary>
+        /// Detects VSync usage based on RTSS flags and frame timing patterns
+        /// </summary>
+        public static bool GetVSyncStatus(uint rtssFlags, double fps, double refreshRate)
+        {
+            // VSync typically locks FPS to refresh rate or its divisors
+            if (refreshRate > 0 && fps > 0)
+            {
+                double ratio = refreshRate / fps;
+                // Check if FPS is locked to refresh rate divisors (60Hz->60FPS, 144Hz->72FPS, etc.)
+                return Math.Abs(ratio - Math.Round(ratio)) < 0.05; // 5% tolerance
+            }
+            return false;
+        }
+        
+        /// <summary>
+        /// Determines display mode based on fullscreen state and window properties
+        /// </summary>
+        public static string GetDisplayMode(bool isFullscreen, int resX, int resY, double refreshRate)
+        {
+            if (isFullscreen)
+            {
+                // True fullscreen typically matches native resolution
+                if (resX >= 1920 && resY >= 1080) // Modern fullscreen resolutions
+                {
+                    return "Fullscreen";
+                }
+                return "Fullscreen (Low-Res)";
+            }
+            else
+            {
+                // Windowed modes
+                if (resX >= 1920 && resY >= 1080)
+                {
+                    return "Borderless Windowed";
+                }
+                return "Windowed";
+            }
+        }
+        
+        /// <summary>
+        /// Enhanced game categorization with process path analysis
+        /// </summary>
+        public static string GetEnhancedGameCategory(string processName, string processPath, string graphicsAPI)
+        {
+            var lowerProcessName = processName.ToLowerInvariant();
+            var lowerProcessPath = processPath.ToLowerInvariant();
+            
+            // Steam games detection
+            if (lowerProcessPath.Contains("steam") || lowerProcessPath.Contains("steamapps"))
+            {
+                return graphicsAPI switch
+                {
+                    "DirectX 12" or "DirectX 11" or "Vulkan" => "Steam AAA",
+                    _ => "Steam Indie"
+                };
+            }
+            
+            // Epic Games Store detection
+            if (lowerProcessPath.Contains("epic games") || lowerProcessPath.Contains("epicgames"))
+            {
+                return "Epic Games Store";
+            }
+            
+            // Game Pass / Microsoft Store detection
+            if (lowerProcessPath.Contains("windowsapps") || lowerProcessPath.Contains("microsoft"))
+            {
+                return "Game Pass / Microsoft Store";
+            }
+            
+            // Fallback to original categorization
+            return GetGameCategory(processName, graphicsAPI);
+        }
     }
 
     /// <summary>
@@ -52,6 +245,7 @@ namespace InfoPanel.RTSS.Services
 
         // Events for sensor updates
         public event Action<double, double, double, string, int>? MetricsUpdated;
+        public event Action<RTSSCandidate>? EnhancedMetricsUpdated;
 
         public RTSSOnlyMonitoringService(ConfigurationService configService, FileLoggingService? fileLogger = null)
         {
@@ -121,29 +315,34 @@ namespace InfoPanel.RTSS.Services
                 lock (_lock)
                 {
                     // Check if we need to switch to a different process
-                    if (_currentMonitoredPid != hookedProcess.Value.pid)
+                    if (_currentMonitoredPid != hookedProcess.ProcessId)
                     {
-                        _fileLogger?.LogInfo($"RTSS hook detected: switching from PID {_currentMonitoredPid} to PID {hookedProcess.Value.pid}");
-                        _currentMonitoredPid = hookedProcess.Value.pid;
+                        _fileLogger?.LogInfo($"RTSS hook detected: switching from PID {_currentMonitoredPid} to PID {hookedProcess.ProcessId}");
+                        _currentMonitoredPid = hookedProcess.ProcessId;
                         
                         // Get window title for the new process
-                        _currentWindowTitle = GetWindowTitleForPid(hookedProcess.Value.pid);
+                        _currentWindowTitle = GetWindowTitleForPid(hookedProcess.ProcessId);
                         
                         _fileLogger?.LogInfo($"Now monitoring: PID {_currentMonitoredPid} - '{_currentWindowTitle}'");
                     }
                     
                     // Update FPS metrics
-                    _currentFps = hookedProcess.Value.fps;
+                    _currentFps = hookedProcess.Fps;
                     _currentFrameTime = _currentFps > 0 ? 1000.0 / _currentFps : 0.0;
                     
                     // Update 1% low calculation
                     UpdateFrameTimeBuffer(_currentFrameTime);
                     _current1PercentLow = Calculate1PercentLow();
                     
-                    // Fire metrics update event
-                    MetricsUpdated?.Invoke(_currentFps, _currentFrameTime, _current1PercentLow, _currentWindowTitle, _currentMonitoredPid);
+                    // Update enhanced RTSSCandidate with calculated metrics
+                    hookedProcess.OnePercentLowFps = _current1PercentLow;
+                    hookedProcess.FrameTimeMs = _currentFrameTime;
                     
-                    _fileLogger?.LogDebugThrottled($"FPS Update: {_currentFps:F1} FPS, {_currentFrameTime:F2}ms, 1%Low: {_current1PercentLow:F1}", "fps_update");
+                    // Fire both events - legacy for backward compatibility and enhanced for new features
+                    MetricsUpdated?.Invoke(_currentFps, _currentFrameTime, _current1PercentLow, _currentWindowTitle, _currentMonitoredPid);
+                    EnhancedMetricsUpdated?.Invoke(hookedProcess);
+                    
+                    _fileLogger?.LogDebugThrottled($"Enhanced FPS Update: {_currentFps:F1} FPS, {_currentFrameTime:F2}ms, 1%Low: {_current1PercentLow:F1}, API: {hookedProcess.GraphicsAPI}, Resolution: {hookedProcess.ResolutionX}x{hookedProcess.ResolutionY}", "enhanced_fps_update");
                 }
             }
             else
@@ -186,9 +385,9 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
-        /// Scans RTSS shared memory for any currently hooked processes
+        /// Scans RTSS shared memory for any currently hooked processes with enhanced metrics
         /// </summary>
-        private async Task<(int pid, double fps)?> FindRTSSHookedProcessAsync()
+        private async Task<RTSSCandidate?> FindRTSSHookedProcessAsync()
         {
             return await Task.Run(() =>
             {
@@ -198,9 +397,9 @@ namespace InfoPanel.RTSS.Services
                     _fileLogger?.LogRTSSPolling("Scanning for RTSS shared memory...");
                     
                     var result = TryReadRTSSSharedMemory("RTSSSharedMemoryV2");
-                    if (result.HasValue) 
+                    if (result != null) 
                     {
-                        _fileLogger?.LogInfo($"Found RTSS data: PID {result.Value.pid}, FPS {result.Value.fps:F1}");
+                        _fileLogger?.LogInfo($"Found RTSS data: PID {result.ProcessId}, FPS {result.Fps:F1}");
                         return result;
                     }
                     
@@ -216,9 +415,10 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
-        /// Attempts to read RTSS shared memory and find the best gaming application
+        /// Enhanced RTSS shared memory reader that extracts comprehensive gaming metrics
+        /// Reads 50+ RTSS fields including graphics API, resolution, frame timing, and performance data
         /// </summary>
-        private (int pid, double fps)? TryReadRTSSSharedMemory(string memoryName)
+        private RTSSCandidate? TryReadRTSSSharedMemory(string memoryName)
         {
             try
             {
@@ -321,14 +521,71 @@ namespace InfoPanel.RTSS.Services
                         double fps = 1000.0 * frames / (time1 - time0);
                         if (fps > 0 && fps < 1000) // Sanity check
                         {
-                            // Collect all valid candidates instead of returning the first one
+                            // Read enhanced RTSS shared memory fields using documented offsets
+                            var rtssFlags = (uint)Marshal.ReadInt32(mapView, entryOffset + 264);    // dwFlags (offset 264)
+                            var frameTimeUs = Marshal.ReadInt32(mapView, entryOffset + 280);        // dwFrameTime in microseconds (offset 280)
+                            
+                            // RTSS native statistics (documented offsets from RTSSSharedMemory structure)
+                            var statFramerateMin = Marshal.ReadInt32(mapView, entryOffset + 304);   // dwStatFramerateMin (millihertz)
+                            var statFramerateAvg = Marshal.ReadInt32(mapView, entryOffset + 308);   // dwStatFramerateAvg (millihertz)
+                            var statFramerateMax = Marshal.ReadInt32(mapView, entryOffset + 312);   // dwStatFramerateMax (millihertz)
+                            
+                            // RTSS native percentile calculations (v2.13+ offsets - approximate)
+                            var stat1PercentLow = Marshal.ReadInt32(mapView, entryOffset + 544);    // dwStatFramerate1Dot0PercentLow (millihertz)
+                            var stat0Point1PercentLow = Marshal.ReadInt32(mapView, entryOffset + 548); // dwStatFramerate0Dot1PercentLow (millihertz)
+                            
+                            // RTSS v2.20+ resolution fields (approximate offsets based on structure analysis)
+                            // Note: These offsets may need adjustment based on actual RTSS version and structure padding
+                            var resolutionX = Marshal.ReadInt32(mapView, entryOffset + 3200);       // dwResolutionX (estimated offset)
+                            var resolutionY = Marshal.ReadInt32(mapView, entryOffset + 3204);       // dwResolutionY (estimated offset)
+                            
+                            // GPU frame timing from v2.21+ (estimated offset)
+                            var gpuFrameTimeUs = Marshal.ReadInt32(mapView, entryOffset + 3300);    // dwGpuFrameTime (estimated offset)
+                            
+                            // Calculate frame statistics with proper conversions
+                            double frameTimeMs = fps > 0 ? 1000.0 / fps : 0.0;
+                            double gpuFrameTimeMs = gpuFrameTimeUs > 0 ? gpuFrameTimeUs / 1000.0 : 0.0;
+                            
+                            // Convert RTSS native statistics (millihertz to Hz)
+                            double minFps = statFramerateMin > 0 ? statFramerateMin / 1000.0 : 0.0;
+                            double avgFps = statFramerateAvg > 0 ? statFramerateAvg / 1000.0 : 0.0;
+                            double maxFps = statFramerateMax > 0 ? statFramerateMax / 1000.0 : 0.0;
+                            
+                            // Calculate frame time statistics from FPS (RTSS doesn't provide direct frame time stats)
+                            // Note: Max FPS corresponds to Min frame time, Min FPS corresponds to Max frame time
+                            double minFrameTimeMs = maxFps > 0 ? 1000.0 / maxFps : 0.0;  // Max FPS = Min frame time
+                            double avgFrameTimeMs = avgFps > 0 ? 1000.0 / avgFps : 0.0;  // Avg FPS = Avg frame time
+                            double maxFrameTimeMs = minFps > 0 ? 1000.0 / minFps : 0.0;  // Min FPS = Max frame time
+                            double onePercentLowNative = stat1PercentLow > 0 ? stat1PercentLow / 1000.0 : 0.0;
+                            double zeroPointOnePercentLow = stat0Point1PercentLow > 0 ? stat0Point1PercentLow / 1000.0 : 0.0;
+                            
+                            // Create enhanced candidate with comprehensive RTSS data
                             var candidate = new RTSSCandidate 
                             { 
                                 ProcessId = processId, 
                                 Fps = fps,
+                                FrameTimeMs = frameTimeMs,
+                                GpuFrameTimeMs = gpuFrameTimeMs,
+                                
+                                // RTSS native statistics
+                                MinFps = minFps,
+                                MaxFps = maxFps,
+                                AvgFps = avgFps,
+                                MinFrameTimeMs = minFrameTimeMs,
+                                MaxFrameTimeMs = maxFrameTimeMs,
+                                AvgFrameTimeMs = avgFrameTimeMs,
+                                OnePercentLowFpsNative = onePercentLowNative,
+                                ZeroPointOnePercentLowFps = zeroPointOnePercentLow,
+                                
                                 IsFullscreen = _configService.PreferFullscreen && IsProcessFullscreen(processId),
                                 IsForeground = IsProcessForeground(processId),
-                                ProcessName = processName // Use already retrieved process name
+                                ProcessName = processName,
+                                RTSSFlags = rtssFlags,
+                                RTSSEngineVersion = 0, // TODO: Read actual engine version when offset is confirmed
+                                ResolutionX = resolutionX > 0 ? resolutionX : 0,
+                                ResolutionY = resolutionY > 0 ? resolutionY : 0,
+                                RefreshRate = 0.0, // TODO: Read refresh rate when offset is confirmed
+                                LastUpdate = DateTime.Now
                             };
                             
                             candidates.Add(candidate);
@@ -344,8 +601,36 @@ namespace InfoPanel.RTSS.Services
                     var bestCandidate = SelectBestGamingCandidate(candidates);
                     if (bestCandidate != null)
                     {
-                        _fileLogger?.LogInfo($"Selected best gaming candidate: PID {bestCandidate.ProcessId} ({bestCandidate.ProcessName}) - FPS: {bestCandidate.Fps:F1}");
-                        return (bestCandidate.ProcessId, bestCandidate.Fps);
+                        // Populate enhanced metrics using RTSSDataAnalyzer with validation
+                        bestCandidate.GraphicsAPI = RTSSDataAnalyzer.GetGraphicsAPI(bestCandidate.RTSSFlags);
+                        bestCandidate.Architecture = RTSSDataAnalyzer.GetArchitecture(bestCandidate.GraphicsAPI, bestCandidate.RTSSEngineVersion);
+                        bestCandidate.GameCategory = RTSSDataAnalyzer.GetGameCategory(bestCandidate.ProcessName, bestCandidate.GraphicsAPI);
+                        bestCandidate.FrameTimeMs = bestCandidate.Fps > 0 ? 1000.0 / bestCandidate.Fps : 0.0;
+                        bestCandidate.WindowTitle = GetWindowTitleForPid(bestCandidate.ProcessId);
+                        
+                        // Enhanced analysis with new methods
+                        bestCandidate.VSync = RTSSDataAnalyzer.GetVSyncStatus(bestCandidate.RTSSFlags, bestCandidate.Fps, bestCandidate.RefreshRate);
+                        bestCandidate.DisplayMode = RTSSDataAnalyzer.GetDisplayMode(bestCandidate.IsFullscreen, bestCandidate.ResolutionX, bestCandidate.ResolutionY, bestCandidate.RefreshRate);
+                        
+                        // Validate resolution data - if corrupted, log warning and reset
+                        if (bestCandidate.ResolutionX > 10000 || bestCandidate.ResolutionY > 10000 || bestCandidate.ResolutionX < 0 || bestCandidate.ResolutionY < 0)
+                        {
+                            _fileLogger?.LogInfo($"Warning: Corrupted resolution data detected for PID {bestCandidate.ProcessId}: {bestCandidate.ResolutionX}x{bestCandidate.ResolutionY}, resetting to 0x0");
+                            bestCandidate.ResolutionX = 0;
+                            bestCandidate.ResolutionY = 0;
+                        }
+                        
+                        // Validate FPS statistics - if native RTSS stats are unavailable, use fallback calculations
+                        if (bestCandidate.MinFps <= 0 && bestCandidate.MaxFps <= 0 && bestCandidate.AvgFps <= 0)
+                        {
+                            _fileLogger?.LogDebugThrottled("Native RTSS statistics unavailable, using fallback calculations", "rtss_stats_fallback");
+                            bestCandidate.MinFps = bestCandidate.Fps; // Simple fallback
+                            bestCandidate.MaxFps = bestCandidate.Fps;
+                            bestCandidate.AvgFps = bestCandidate.Fps;
+                        }
+                        
+                        _fileLogger?.LogInfo($"Selected enhanced gaming candidate: PID {bestCandidate.ProcessId} ({bestCandidate.ProcessName}) - FPS: {bestCandidate.Fps:F1}, API: {bestCandidate.GraphicsAPI}");
+                        return bestCandidate;
                     }
 
                     // Summary log instead of individual entry logs

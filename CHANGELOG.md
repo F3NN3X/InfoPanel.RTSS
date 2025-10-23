@@ -1,5 +1,460 @@
 # CHANGELOG
 
+## v1.1.5 (October 23, 2025)
+
+### 🎯 **User-Configurable Game Categories**
+- **Enhanced Configuration**: Added support for custom game categories via INI file
+- **New INI Sections**: 
+  - Create `[Game_Category_YourCategoryName]` sections to define custom categories
+  - Support for both individual patterns (`pattern1=`, `pattern2=`) and comma-separated lists (`processes=`)
+  - Wildcard pattern matching with `*` support (e.g., `*valorant*`, `game*.exe`)
+- **Configuration Service Enhancement**: Extended `GetCustomGameCategories()` method to parse user-defined categories
+- **Game Categorization Logic**: Modified `RTSSDataAnalyzer.GetGameCategory()` to prioritize custom user rules over default categories
+- **Pattern Matching**: Added flexible `IsPatternMatch()` helper supporting exact matches and wildcard patterns
+- **Example Categories**: Pre-configured examples for Competitive FPS, Racing Games, VR Games, and Retro Games
+- **Backward Compatibility**: Default categorization still works when no custom categories are defined
+
+### 🔧 **[CRITICAL FIX] Graphics API Detection Overhaul**
+- **Root Cause**: Plugin was using **deprecated RTSS v2.9 bit flags**, causing Vulkan games to be misdetected as DirectX 11
+- **Issue Example**: No Man's Sky (Vulkan) incorrectly showed as "DirectX 11" due to bit collision in flag checking
+- **Solution**: Complete migration to **RTSS v2.10+ APPFLAG system**
+  - **Updated Constants**: Replaced deprecated `RTSS_ENGINE_*` bit flags with modern `APPFLAG_*` enumerated values
+  - **Fixed Detection Logic**: Changed from bit flag checking to proper value extraction using `APPFLAG_API_USAGE_MASK`
+  - **Enhanced Architecture Detection**: Added support for x64/UWP architecture flags from RTSS shared memory
+- **New API Support**: 
+  - **Accurate Vulkan Detection**: Now correctly identifies Vulkan games (No Man's Sky, DOOM Eternal, etc.)
+  - **DirectX 12 AFR**: Support for multi-GPU DirectX 12 Alternate Frame Rendering
+  - **DirectX 9Ex**: Enhanced DirectX 9 Extended detection
+  - **Process Architecture**: Shows x86/x64/UWP architecture alongside graphics API
+- **Result**: All graphics APIs now detected correctly, resolving long-standing Vulkan misdetection issue
+
+### 🧪 **[REMOVED] Experimental RTSS Statistics Control**
+- **Added Then Removed**: Experimental feature to enable RTSS statistics recording programmatically
+- **Issue**: Caused InfoPanel crashes when enabled 
+- **Resolution**: Completely removed in v1.1.5 for stability
+
+### 🗑️ **Complete Removal of Min/Avg/Max FPS Statistics**
+- **Issue**: Experimental statistics control was causing InfoPanel crashes when enabled
+- **Decision**: Completely removed Min/Average/Max FPS functionality to eliminate crash risk
+- **Removed Components**:
+  - **Sensors**: Removed `_avgFpsSensor`, `_minFpsSensor`, `_maxFpsSensor` and related frame time sensors
+  - **Models**: Removed `MinFps`, `AvgFps`, `MaxFps`, `MinFrameTimeMs`, `MaxFrameTimeMs`, `AvgFrameTimeMs` from `PerformanceMetrics` and `RTSSCandidate`
+  - **RTSS Reading**: Removed all RTSS statistics shared memory reading (`dwStatFramerateMin/Avg/Max`)
+  - **Configuration**: Removed `[RTSS_Control]` section and `enable_stats_recording` option
+  - **UI**: No longer displays statistical FPS data in InfoPanel sensors
+- **Rationale**: Current FPS is the primary value users need; statistical data was problematic and not essential
+- **Result**: Plugin is now more stable and focused on core FPS monitoring without experimental features
+**🧹 Console Output Cleanup & Legacy Code Removal**
+
+### 🔇 **Console Output Cleanup**
+- **Eliminated InfoPanel Console Flooding**: Replaced all `Console.WriteLine` statements with file-based logging
+  - **Main Plugin**: Converted 10+ console outputs to `_fileLogger.LogInfo()` calls
+  - **SensorManagementService**: Replaced 22+ console outputs with conditional file logging
+  - **SystemInformationService**: Converted 15+ console outputs to file logging
+  - **ConfigurationService**: Replaced console outputs with explanatory comments (file logger unavailable during initialization)
+  - **File Logger Exceptions**: Preserved 2 console outputs for file logger initialization/write errors (circular dependency prevention)
+  - **Disposal Exception**: Kept 1 console output for disposal errors as fallback when file logger may not be available
+
+### 🔧 **Enhanced Logging Architecture**
+- **Service Integration**: Updated service constructors to accept `FileLoggingService?` parameter
+- **Conditional Logging**: Implemented null-safe logging pattern: `_fileLogger?.LogInfo()`
+- **Dependency Injection**: Main plugin now passes file logger instance to all services requiring logging
+- **Debug Information Preservation**: All debug information still available in `debug.log` file
+
+### 🗑️ **Legacy Code Removal**
+- **Removed Legacy IPC Code**: Eliminated unused `FpsDataSharedMemory.cs` (350+ lines)
+  - **IPC Architecture Cleanup**: Removed entire `IPC/` folder containing legacy elevated service communication code
+  - **Shared Memory Classes**: Deleted `FpsDataReader`, `FpsDataWriter`, and `FpsData` struct definitions
+  - **Memory-Mapped File Code**: Removed unused cross-process communication infrastructure
+  - **Verification**: Confirmed zero references to removed code in active codebase
+
+### 🚀 **Debug Logging Performance Optimization**
+- **Fixed Excessive Debug Logging**: Resolved debug log files growing extremely large (30,000+ lines)
+  - **Root Cause**: High-frequency event handlers (16ms gaming updates) calling `LogInfo` multiple times per cycle
+
+### 📊 **Fixed FPS Statistics Duplication Issue**
+- **Problem**: Average/Min/Max FPS all showed identical values (same as current FPS)
+- **Root Cause**: RTSS statistical fields require active recording (`STATFLAG_RECORD`) and accumulated data (`dwStatCount > 0`)
+- **Solution**: Added proper RTSS statistics validation before using statistical data
+  - **Statistics Check**: Read `dwStatFlags` (offset 268) and `dwStatCount` (offset 280) from RTSS shared memory
+  - **Conditional Usage**: Only use `dwStatFramerateMin/Avg/Max` when statistics recording is active and has data
+  - **Fallback Behavior**: Use current FPS for Min/Avg/Max when RTSS statistics are not available
+  - **User Visibility**: Added debug logging to show when statistical data vs. fallback values are used
+  - **Expected Behavior**: Min/Avg/Max will show actual statistics when RTSS recording is active, otherwise current FPS as fallback
+
+### 🧪 **[REMOVED] Experimental RTSS Statistics Control**
+- **Added Then Removed**: Experimental feature to enable RTSS statistics recording programmatically
+- **Issue**: Caused InfoPanel crashes when enabled 
+- **Resolution**: Completely removed in v1.1.6 for stability
+
+### 🗑️ **Complete Removal of Min/Avg/Max FPS Statistics**
+- **Issue**: Experimental statistics control was causing InfoPanel crashes when enabled
+- **Decision**: Completely removed Min/Average/Max FPS functionality to eliminate crash risk
+- **Removed Components**:
+  - **Sensors**: Removed `_avgFpsSensor`, `_minFpsSensor`, `_maxFpsSensor` and related frame time sensors
+  - **Models**: Removed `MinFps`, `AvgFps`, `MaxFps`, `MinFrameTimeMs`, `MaxFrameTimeMs`, `AvgFrameTimeMs` from `PerformanceMetrics` and `RTSSCandidate`
+  - **RTSS Reading**: Removed all RTSS statistics shared memory reading (`dwStatFramerateMin/Avg/Max`)
+  - **Configuration**: Removed `[RTSS_Control]` section and `enable_stats_recording` option
+  - **UI**: No longer displays statistical FPS data in InfoPanel sensors
+- **Rationale**: Current FPS is the primary value users need; statistical data was problematic and not essential
+- **Result**: Plugin is now more stable and focused on core FPS monitoring without experimental features
+  - **Performance Impact**: Event handlers generating 60+ log calls/second overwhelming throttling system
+  - **Solution Applied**: Changed frequent monitoring calls from `LogInfo` to `LogDebug` level
+
+- **Smart Log Level Management**: Enhanced existing log filtering system
+  - **Production Mode** (`debug=false`): Only Warning/Error messages logged (~2 writes/second)
+  - **Debug Mode** (`debug=true`): Full detailed logging including performance updates
+  - **Affected Methods**: `OnMetricsUpdated`, `OnEnhancedMetricsUpdated`, sensor updates, RTSS monitoring
+
+- **Optimized High-Frequency Logging**: Converted performance-critical logging calls
+  - **Main Plugin Events**: 10+ frequent `LogInfo` calls changed to `LogDebug`
+  - **Sensor Management**: 4+ performance update calls changed to `LogDebug`
+  - **RTSS Monitoring**: 3+ candidate selection calls changed to `LogDebug`
+  - **Batching System**: Existing 500ms batching and throttling remains fully functional
+
+### 🎯 **RTSS Game Resolution Detection - Major Discovery & Fix**
+- **Discovered Official RTSS Resolution Fields**: Found documented resolution support in RTSS v2.20+ header files
+  - **Previous Assumption Wrong**: Incorrectly assumed RTSS doesn't provide resolution data
+  - **Header File Analysis**: Examined `RTSSSharedMemory.h` and found `dwResolutionX`/`dwResolutionY` fields
+  - **Game Render Resolution**: RTSS provides actual game rendering resolution, not just window size
+  - **Critical Distinction**: Game render resolution (1920x1080) vs window resolution (3840x2160 fullscreen)
+
+- **Implemented Proper RTSS Resolution Reading**: Using official documented offsets from v2.20+
+  - **Correct Offsets**: `dwResolutionX` at offset +9216, `dwResolutionY` at offset +9220 from app entry
+  - **Version Detection**: Only reads resolution fields from RTSS v2.20+ (0x00020014) to prevent issues with older versions
+  - **Data Validation**: Ensures resolution values are reasonable (1x1 to 7680x4320) before acceptance
+  - **Hybrid Fallback**: Uses Windows API window size when RTSS resolution unavailable (< v2.20 or invalid data)
+
+- **Fixed Resolution vs Window Size Issue**: Now correctly reports game's internal render resolution
+  - **Previous Problem**: Showed window size (3840x2160) instead of game resolution (1920x1080)
+  - **RTSS Advantage**: Hooks graphics APIs to capture actual render target dimensions
+  - **Real Game Resolution**: Shows what the game engine actually renders at before scaling to display
+  - **Fullscreen Accuracy**: Correctly detects 1920x1080 game resolution even in 3840x2160 fullscreen window
+
+### 🚫 **Game Resolution Feature Removal**
+- **Removed Confusing Game Resolution Sensor**: Eliminated due to inconsistent behavior between display modes
+  - **Problem Identified**: Borderless fullscreen showed display resolution (3840x2160) instead of game render resolution (1920x1080)
+  - **User Confusion**: Most users prefer borderless fullscreen but got misleading resolution data
+  - **Decision**: Complete removal better than inconsistent/confusing information
+
+- **Comprehensive Resolution Code Cleanup**: Removed all game resolution detection infrastructure
+  - **RTSS Resolution Reading**: Removed dwResolutionX/dwResolutionY field reading from RTSS v2.20+
+  - **Windows API Fallback**: Removed GetProcessWindowWidth()/GetProcessWindowHeight() methods
+  - **Data Model Changes**: Removed ResolutionX/ResolutionY from RTSSCandidate class
+  - **Sensor Removal**: Removed "Game Resolution" sensor from sensor management service
+  - **Display Resolution Preserved**: System/display resolution sensor remains functional for monitor info
+
+- **Improved User Experience**: Eliminates confusion while preserving essential functionality
+  - **No More Mixed Messages**: Users won't see conflicting resolution information
+  - **Cleaner UI**: One less confusing sensor in InfoPanel display
+  - **Future-Proof**: Can be re-implemented properly if better detection method found
+
+### ✨ **User Experience Improvements**
+- **Clean InfoPanel Console**: Users now see clean console output without debug flooding
+- **Controllable Debug Logging**: Users can toggle detailed logging via `debug=false/true` in config
+- **Maintained Debug Capabilities**: All troubleshooting information still available in log files
+- **Production-Ready Logging**: Minimal log file growth in production mode while preserving diagnostic capabilities
+- **Leaner Codebase**: Reduced complexity by removing unused legacy components
+- **Better Performance**: Eliminated overhead from unused IPC and shared memory code
+
+### 🏗️ **Technical Improvements**
+- **Simplified Architecture**: Plugin now focuses entirely on RTSS-only monitoring without legacy fallbacks
+- **Reduced Build Artifacts**: Smaller plugin package due to removal of unused code
+- **Cleaner Project Structure**: Eliminated unused folders and simplified file organization
+- **Better Maintainability**: Reduced cognitive load by removing dead code paths
+
+### 🎯 **Code Quality & Consistency Improvements**
+- **Class Name Alignment**: Renamed `InfoPanelFPS` → `InfoPanelRTSS` to match project purpose and RTSS-focused functionality
+- **Enhanced Documentation**: Updated class and method summaries to accurately reflect comprehensive RTSS capabilities
+  - **Class Documentation**: Improved summary to highlight advanced gaming metrics and RTSS shared memory integration
+  - **Method Comments**: Updated Initialize, Load, and UpdateAsync documentation for current architecture
+  - **Event Handler Documentation**: Enhanced descriptions of metrics processing and enhanced gaming data handling
+- **Improved Logging Messages**: Made log output more descriptive and professional
+  - **Initialization Logging**: "RTSS Plugin Initialize()" → "RTSS Performance Monitoring Plugin Initialize()"
+  - **Monitoring Status**: "RTSS-only monitoring task started" → "RTSS shared memory monitoring started"
+  - **Metrics Updates**: "Metrics updated" → "Performance metrics updated" with better context
+- **Code Standards**: Removed unnecessary `new` keyword from Dispose method, reducing compiler warnings
+- **Consistency**: Aligned class identity with project branding and technical capabilities
+
+### 📊 **Advanced Logging System Overhaul**
+- **Batched Logging Architecture**: Replaced immediate file writes with intelligent batching system
+  - **Write Frequency**: From ~60+ writes/second to ~2 writes/second (500ms batching)
+  - **Performance Boost**: Significant reduction in file I/O operations and disk overhead
+  - **Memory Management**: Automatic buffer flushing when buffer reaches 20 entries (smaller batches)
+- **Ultra-Aggressive Message Throttling**: Dramatically reduced log volume with minimal essential logging
+  - **Pattern Recognition**: Intelligent grouping of similar messages (RTSS operations, performance updates, etc.)
+  - **Suppression Tracking**: Shows count of suppressed messages when throttling occurs
+  - **Minimal Frequency**: General throttling at 1-minute intervals, RTSS polling summaries every 2 minutes
+  - **Performance Limits**: FPS updates limited to every 30 seconds, system info every 60 seconds
+- **Restrictive Log Level Filtering**: Implemented minimal logging by default
+  - **Debug Mode**: Shows Info+ levels when debug is enabled (excludes verbose Debug entries)
+  - **Production Mode**: Only Warning/Error levels when debug is disabled (minimal essential logging)
+  - **Dramatic Spam Reduction**: Eliminates 90%+ of routine logging messages
+- **Automatic Log Rotation**: Smart file size management to prevent huge log files
+  - **Size Limit**: Automatic rotation when log exceeds 5MB
+  - **Backup Management**: Maintains 3 historical backup files (debug.log.1, debug.log.2, debug.log.3)
+  - **Clean Rotation**: Seamless archival without losing important debug information
+- **Enhanced Reliability**: Improved error handling and fallback mechanisms for logging failures
+
+### 🖥️ **Enhanced Window Detection System**
+- **Problem Resolved**: Borderless fullscreen games incorrectly detected as exclusive fullscreen
+- **Issue Example**: No Man's Sky borderless fullscreen mode showed as "Exclusive Fullscreen" instead of "Borderless Fullscreen"
+- **Root Cause Analysis**: Window style detection logic was using incorrect assumptions about Win32 API flags
+- **Comprehensive Debug Implementation**: Added detailed window analysis logging to identify actual patterns
+  - **Window Style Analysis**: Logs hex values, popup flags, overlapped flags, and size matching
+  - **Monitor Detection**: Multi-monitor aware positioning and resolution analysis
+  - **Decoration Calculation**: Measures window vs client area differences for accurate classification
+- **Detection Logic Overhaul**: Rewrote detection algorithm based on actual game behavior patterns
+  - **Borderless Fullscreen**: `WS_POPUP` style flag + matches monitor size (e.g., No Man's Sky)
+  - **Exclusive Fullscreen**: No popup, no overlapped flags + matches monitor size
+  - **Windowed Modes**: `WS_OVERLAPPEDWINDOW` style for bordered windows
+  - **Enhanced Classification**: "Bordered" (renamed from "Large Windowed"), "Maximized Window", etc.
+- **Win32 API Integration**: Added proper `GetWindowLong`, `GetClientRect`, and `MonitorFromWindow` support
+- **Multi-Monitor Support**: Accurate detection across different monitor configurations
+- **Testing Validated**: All three No Man's Sky display modes now correctly identified
+- **Result**: Users get accurate display mode information for better gaming insights
+
+---
+
+## v1.1.4 (October 22, 2025)
+
+**🧹 Legacy Code Cleanup & Enhanced User Experience**
+
+### 🗑️ **Major Code Cleanup**
+- **Removed Legacy Services**: Eliminated unused `DXGIFrameMonitoringService` (1300+ lines of complex GPU performance counter code)
+  - **GPU Performance Counter Removal**: Deleted all Windows GPU performance counter integration 
+  - **Legacy Fallback Elimination**: Removed complex GPU adapter detection and frame rate counter logic
+  - **Simplified Architecture**: Clean 5-service architecture with only essential components
+
+### 📦 **Dependency Optimization**
+- **Package Cleanup**: Removed unused NuGet package dependencies from RTSS-only architecture
+  - **Removed** `System.Diagnostics.PerformanceCounter` (v9.0.5) - was only used by removed DXGIFrameMonitoringService
+  - **Removed** `Vanara.PInvoke.DwmApi` (v4.0.6) - desktop window manager calls no longer needed
+  - **Retained Essential Packages**: Kept only `System.Management`, `Vanara.PInvoke.Kernel32`, and `Vanara.PInvoke.User32`
+
+### 🏗️ **Interface Cleanup**
+- **Cleaned Interface Definitions**: Recreated `IMonitoringServices.cs` with only essential service interfaces
+  - **Removed** `IDXGIFrameMonitoringService` references and related legacy interfaces
+  - **Streamlined** service contracts to match RTSS-only architecture
+  - **Maintained** essential interfaces: `ISensorManagementService`, `ISystemInformationService`, `IConfigurationService`
+
+### ✨ **New Features**
+- **Customizable Default Message**: User-configurable capture message via INI settings
+  - **Added** `[Display] defaultCaptureMessage` configuration option in InfoPanel.RTSS.ini
+  - **User Control**: Customize the "Nothing to capture" message to any preferred text
+  - **Localization Support**: Users can set messages in their preferred language
+  - **Default Value**: Maintains "Nothing to capture" if not configured for backwards compatibility
+
+### 🐛 **Critical Bug Fixes**
+- **Fixed Window Title Capture Issue**: Resolved blank title display despite RTSS detecting games
+  - **Root Cause**: `WindowInformation.IsValid` validation was failing due to missing required fields
+  - **Solution**: Properly populate ProcessId, WindowHandle, and IsFullscreen fields for validation
+  - **Impact**: Game window titles now display correctly when FPS monitoring is active
+
+- **Fixed Stale FPS Data After Game Exit**: Resolved persistent FPS display when games close
+  - **Root Cause**: Cleanup logic only triggered when no RTSS entries existed, but stale entries with zero FPS persisted
+  - **Solution**: Enhanced cleanup to trigger when no **valid FPS data** is found, regardless of RTSS entry existence
+  - **Impact**: FPS data and window titles now clear immediately (within 16ms) when games exit
+
+- **Unified Debug Logging Control**: Consolidated all debug output under single INI toggle
+  - **Enhancement**: Both RTSS monitoring and sensor window capture debug output now controlled by `[Debug] debug` setting
+  - **User Experience**: Single configuration point for all plugin debug logging
+  - **Performance**: No unwanted debug output when debugging is disabled
+
+### 🔧 **Build System Updates**
+- **Updated Package Comments**: Refreshed project file comments to reflect current RTSS-only usage patterns
+- **Dependency Documentation**: Added inline comments explaining each remaining package's specific usage
+- **Build Verification**: Confirmed successful compilation after legacy code and dependency removal
+
+### 🚀 **Debug Logging Optimization**
+- **Massive Log File Size Reduction**: Implemented intelligent message throttling to prevent oversized debug logs
+  - **Problem Solved**: Previous 16ms polling created 3,750+ log entries per minute (massive files unsuitable for public testing)
+  - **Solution**: Smart throttling system with message grouping and time-based intervals
+  - **Result**: 99%+ reduction in debug log size while maintaining diagnostic capability
+
+### 🎯 **Advanced Throttling Features**
+- **Message Throttling System**: Prevents repetitive debug spam while preserving important events
+  - **LogDebugThrottled**: Groups similar messages with 5-second intervals and occurrence counting
+  - **LogRTSSPolling**: Ultra-throttled 10-second intervals for high-frequency RTSS operations
+  - **Smart Grouping**: Related messages share throttle keys to prevent log flooding
+  - **Occurrence Tracking**: Shows "occurred X times since last log" for comprehensive visibility
+
+- **Time-Based Debug Intervals**: Replaced complex loop-counter math with simple time-based checks
+  - **Changed From**: Loop counter calculations (every ~312 loops ≈ 5 seconds)
+  - **Changed To**: Direct time-based intervals (500ms for active debugging)
+  - **Benefits**: More predictable timing, cleaner code, consistent intervals regardless of processing delays
+
+### 🔍 **Production-Ready Logging**
+- **Public Release Optimization**: Debug logs now suitable for distribution and user testing
+  - **Before**: Potential 62.5 debug entries per second (16ms raw polling)
+  - **After**: Maximum 2 debug entries per second (500ms intervals)
+  - **User Experience**: Manageable debug files that won't overwhelm end users
+  - **Diagnostic Value**: Maintains full troubleshooting capability with occurrence counters
+
+- **Sensor Update Optimization**: Enhanced FPS clearing and window title display logic
+  - **Fixed Sensor Clearing**: Removed blocking IsValid check that prevented proper FPS reset to 0
+  - **Enhanced Window Title Updates**: Direct sensor updates ensure configured default message displays correctly
+  - **UI Consistency**: Proper sensor state management for reliable InfoPanel display updates
+
+### 📊 **Version 1.1.4 Summary**
+This release focuses on **code cleanup**, **critical bug fixes**, and **production readiness** for public testing:
+
+**🎯 Key Achievements:**
+- ✅ **Eliminated 1300+ lines** of unused legacy GPU monitoring code
+- ✅ **Fixed critical sensor clearing** issue (FPS stuck after game exit)
+- ✅ **Resolved window title display** problem (blank titles despite game detection) 
+- ✅ **Achieved 99% debug log size reduction** through intelligent throttling
+- ✅ **Enhanced user customization** with configurable default capture message
+- ✅ **Streamlined architecture** with clean 5-service design
+- ✅ **Production-ready logging** suitable for public release and testing
+
+**🚀 Ready for Public Distribution:** Optimized, stable, and user-friendly plugin with manageable debug output and reliable sensor behavior.
+
+---
+
+## v1.1.3 (October 22, 2025)
+
+**🔧 RTSS-Only Architecture & Simplified Monitoring**
+
+### 🏗️ **Major Architectural Changes** 
+- **RTSS-Only Monitoring**: Complete elimination of complex fullscreen detection in favor of pure RTSS shared memory scanning
+  - **Removed** `StableFullscreenDetectionService` and complex multi-service architecture  
+  - **Added** `RTSSOnlyMonitoringService` that continuously scans RTSS shared memory every 16ms
+  - **Direct RTSS Integration**: Only monitors processes that RTSS has successfully hooked - no competing detection systems
+  - **Simplified Event System**: Single `MetricsUpdated` event with direct FPS, frame time, and window title updates
+
+### ✨ **New Features**
+- **Debug Logging Toggle**: User-controllable debug output via InfoPanel.RTSS.ini configuration
+  - **Added** `[Debug] debug=false` setting to control logging behavior
+  - **Enhanced** FileLoggingService to respect debug configuration setting
+  - **User Control**: No more unwanted debug.log files during normal operation - enable only when needed
+
+- **Enhanced Application Blacklist**: Comprehensive process filtering to prevent false positives
+  - **Added** Discord, iCUE, and SignalRGB to blacklist preventing interference and 60-second timeouts
+  - **Eliminated** false positive detections from background applications
+  - **Improved** process filtering for reliable game-only monitoring
+
+### 🚀 **Performance & Stability Improvements**
+- **Simplified Plugin Architecture**: Streamlined main plugin implementation
+  - **Reduced** complex state management and competing monitoring systems
+  - **Eliminated** monitoring restart loops that prevented RTSS from completing 60-second hook attempts
+  - **Direct RTSS Reading**: FPS data comes directly from RTSS Frames field (offset 276) for pixel-perfect accuracy
+  - **PID-Based Title Mapping**: Window titles are mapped by process ID ensuring accurate correlation with FPS data
+
+- **Anti-Cheat Compatibility**: Passive monitoring approach safe for protected games
+  - **No ETW Tracing**: Eliminated kernel-level monitoring that triggers anti-cheat detection
+  - **No DLL Injection**: RTSS handles all hooking, plugin only reads shared memory passively
+  - **Works with**: Battlefield (Javelin), Valorant (Vanguard), Apex Legends (EAC), and other protected games
+
+### 🐛 **Bug Fixes**
+- **Fixed** FPS flashing after game closure - clean sensor transitions when processes end
+- **Fixed** Complex detection system interference causing RTSS hook failures
+- **Fixed** Process existence validation preventing infinite monitoring loops for dead processes
+- **Fixed** Thread-safe sensor updates preventing collection modification exceptions
+
+### 🏃‍♂️ **User Experience**
+- **Stable FPS Display**: No more rapid switching between detection methods
+- **Accurate Window Titles**: PID-based filtering ensures titles match the process providing FPS data
+- **Clean UI Transitions**: Smooth sensor updates when applications start/stop
+- **Reliable Operation**: Single monitoring source eliminates timing conflicts and state corruption
+
+---
+
+## v1.1.2 (October 22, 2025)
+
+**🎯 RTSS-First Title Detection & Improved Stability**
+
+### ✨ **New Features**
+- **RTSS-First Window Title Detection**: Revolutionary approach that only displays window titles after RTSS successfully hooks a process
+  - Eliminates timing issues where titles showed as "-" or "[No Window]"
+  - Perfect PID matching between RTSS monitoring and window title display
+  - Event-driven architecture with `RTSSHooked` callback system
+  - Enhanced window title detection with retry logic and process refresh for games during startup
+
+- **Stable Fullscreen Detection**: Replaced complex window monitoring with proven stable detection service
+  - Uses comprehensive system process blacklisting for better reliability
+  - Improved tolerance-based fullscreen detection from stable version
+  - Reduced false positives from system windows and desktop applications
+
+### 🚀 **Performance Improvements**  
+- **Thread-Safe Sensor Updates**: Added lock synchronization to prevent collection modification exceptions
+  - All sensor update methods now use `lock(_sensorLock)` for thread safety
+  - Prevents crashes when UpdateAsync and StopMonitoringAsync run simultaneously
+  - Enhanced stability during rapid game launches and closures
+
+- **Simplified Continuous Monitoring**: Streamlined monitoring loop focusing only on RTSS-successful hooks
+  - Removed complex state management and redundant process checking
+  - Eliminated excessive logging of every window change on the system
+  - Increased monitoring interval to 3 seconds for better stability
+  - **Key Change**: Only logs when RTSS successfully hooks a process (no more noise!)
+
+### 🏗️ **Architecture Cleanup**
+- **Event-Driven Title Updates**: RTSS hook detection now fires events with PID and confirmed window title
+  - `OnRTSSHooked` event handler ensures proper state synchronization
+  - Performance.MonitoredProcessId automatically updated when RTSS hooks occur
+  - Clean event subscription/unsubscription lifecycle management
+
+- **Service Consolidation**: Removed redundant WindowDetectionService, using single stable detection service
+- **RTSS-First Approach**: Prioritizes RTSS monitoring over traditional window detection
+- **Reduced Complexity**: Simplified async task management and error handling
+- **Enhanced Debug Logging**: Added comprehensive RTSS hook debugging and window title detection tracing
+
+### 🐞 **Bug Fixes**
+- **Window Title Timing Issues**: Fixed critical bug where window titles appeared as "-" instead of game names
+  - Root cause: Missing synchronization between RTSS events and sensor update logic
+  - Solution: Ensure Performance.MonitoredProcessId matches Window.ProcessId in RTSS event handler
+
+- **Process Existence Validation**: Improved RTSS detection with proper process lifecycle checks
+  - Enhanced stale RTSS entry filtering and logging
+  - Eliminated infinite monitoring loops for dead processes
+  - Better process existence validation in RTSS detection
+
+- **Compilation Issues**: Fixed service reference conflicts and async method calls
+- **Memory Management**: Better disposal of detection services and background tasks
+- **Interface Resolution**: Added missing using statements for DXGIFrameMonitoringService references
+
+---
+
+## v1.1.1 (October 21, 2025)
+
+**🐞 Debug Logging for User Troubleshooting**
+
+### ✨ **New Features**
+- **File-Based Debug Logging**: Added comprehensive debug logging to `debug.log` in plugin directory
+  - **Purpose**: Help troubleshoot user issues where plugin shows no FPS
+  - **Location**: `C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS\debug.log`
+  - **Content**: Plugin initialization, RTSS detection attempts, FPS updates, system information, errors
+  - **Safety**: Thread-safe file writing with proper exception handling
+
+### 🔧 **Enhanced Debugging**
+- **Plugin Lifecycle Logging**: Tracks constructor, initialization, service startup, and disposal
+- **RTSS Detection Logging**: Detailed logs of RTSS shared memory attempts and hook detection
+  - Logs retry attempts (e.g., "Waiting for RTSS to hook game... (5/60s)")
+  - Records successful detection: "RTSS hook detected after X seconds"
+  - Reports failures: "RTSS not detected after 60 seconds, falling back to GPU counters"
+- **FPS Update Logging**: Records actual FPS values from RTSS with timestamps
+- **System Information Logging**: GPU name, display resolution, and refresh rate
+- **Error Logging**: Full exception details with stack traces for debugging
+
+### 🛠️ **Technical Implementation**
+- **FileLoggingService**: New service class for centralized file logging
+- **Automatic Cleanup**: Proper disposal with session end markers
+- **Log File Management**: Creates new session log on each plugin load
+- **Fallback Safety**: Falls back to console logging if file writing fails
+- **Integration**: Logging integrated into DXGIFrameMonitoringService and main plugin class
+
+### 📝 **For Users Experiencing Issues**
+When reporting "no FPS showing" problems, please share the `debug.log` file from:
+`C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS\debug.log`
+
+This will help identify:
+- Whether RTSS is installed and running
+- If RTSS successfully hooks the game
+- Any initialization or service startup failures
+- System configuration details
+
+---
+
 ## v1.1.0 (October 20, 2025)
 
 **🎯 Major FPS Accuracy & Consistency Improvements**
@@ -41,302 +496,3 @@
 - **GPU Frame Time Sensor**: Removed from roadmap (offset 679 reserved for future use)
   - Reason: Focus on core FPS metrics first, may revisit in future versions
 
----
-
-## v1.0.0 (October 19, 2025)
-
-**🎉 Initial Release - Complete Rebranding from InfoPanel.FPS to InfoPanel.RTSS**
-
-### 🔄 **Major Changes**
-- **Project Rebranding**: Complete transition from InfoPanel.FPS to InfoPanel.RTSS
-  - All namespaces updated from `InfoPanel.FPS.*` to `InfoPanel.RTSS.*`
-  - Plugin name changed from "InfoPanel Simple FPS" to "InfoPanel RTSS Monitor"  
-  - File structure updated: `InfoPanel.FPS.csproj` → `InfoPanel.RTSS.csproj`
-  - Main class renamed from `FpsPlugin` to `RTSSPlugin`
-  - Configuration file renamed: `InfoPanel.FPS.ini` → `InfoPanel.RTSS.ini`
-
-### ✨ **Core Features** (Inherited from Previous Development)
-- **RTSS Integration**: Direct FPS reading from RivaTuner Statistics Server shared memory
-- **Anti-Cheat Compatible**: Passive monitoring without process injection or ETW tracing
-- **Service Architecture**: Modular design with dedicated monitoring services
-- **Thread-Safe Updates**: Lock synchronization prevents collection modification crashes
-- **Universal Game Support**: No hardcoded game logic - works with any RTSS-supported application
-
-### 🛠 **Technical Implementation**
-- **Performance Monitoring**: 1% low FPS calculation using rolling 100-frame window
-- **Window Detection**: Fullscreen application detection with alt-tab support
-- **PID-Based Filtering**: Accurate window title matching for monitored processes
-- **Real-Time Updates**: 1-second sensor refresh interval for stable UI
-- **Comprehensive Logging**: Debug output for troubleshooting and monitoring
-
----
-
-## Previous Development History (InfoPanel.FPS)
-
-## v1.1.7-RTSS (October 16, 2025)
-
-- **Critical Bug Fix: FPS Flashing After Game Close**
-  - **Root Cause Fixed**: RTSS shared memory retains stale FPS values for dead processes indefinitely
-  - **Process Validation**: Added process existence check in `GetRTSSMonitoredProcessId()` before returning monitored PIDs
-  - **Eliminated Infinite Loop**: Prevents monitoring start/stop cycles for dead processes with stale RTSS entries
-  - **Clean UI Transitions**: No more FPS value flashing between last recorded value and 0 after games close
-  - **Stale Entry Detection**: Logs and skips RTSS entries for processes that no longer exist
-
-- **Enhanced RTSS Detection Logic**
-  - **Stale Entry Filtering**: Validates process existence when RTSS reports active FPS data (> 0)
-  - **Improved Logging**: Clear distinction between valid detections and stale entry skipping
-  - **Anti-Cheat Compatibility**: Maintains passive RTSS reading approach for maximum game compatibility
-  - **Universal Game Support**: Works with any game RTSS can hook without game-specific workarounds
-
-## v1.1.6 (October 15, 2025)
-
-- **Thread Safety Improvements**
-  - **Fixed Collection Modification Exception**: Resolved crash caused by concurrent sensor updates from multiple threads
-  - **Lock Synchronization**: Added thread-safe access to all sensor update methods using `_sensorLock`
-  - **Stable Multi-Threading**: Prevents race conditions when `UpdateAsync` and `StopMonitoringAsync` run simultaneously
-  - **Enhanced Reliability**: Eliminates "Collection was modified; enumeration operation may not execute" errors
-
-- **Title Caching Enhancements**
-  - **PID-Based Filtering**: Window titles only cached when monitored process ID matches window process ID
-  - **Process Existence Validation**: Uses RTSS monitored PID to verify game processes are still running
-  - **Alt-Tab Support**: Maintains cached titles when switching between applications
-  - **Persistent Titles**: Cached window titles persist during temporary window validation failures
-
-- **RTSS Integration Improvements**
-  - **Direct FPS Reading**: Reads instantaneous FPS directly from RTSS Frames field (offset 276)
-  - **Accurate Frame Times**: Calculates frame times as `1000.0 / FPS` for pixel-perfect accuracy
-  - **1% Low Calculation**: 100-frame rolling window with outlier filtering (FPS < 10) for reliable stutter detection
-  - **RTSS Hook Detection**: Automatic 60-second retry logic with graceful fallback when RTSS hasn't hooked yet
-
-- **Code Quality & Architecture**
-  - **Removed Hardcoded Game Logic**: Eliminated all game-specific bypasses for universal compatibility
-  - **Service-Based Architecture**: Refactored into specialized services (WindowDetection, DXGIFrameMonitoring, SensorManagement, etc.)
-  - **Clean Codebase**: Removed unused fields, deleted obsolete files, and cleaned up debug logging
-  - **Zero Build Warnings**: Achieved clean compilation with no warnings or errors
-
-- **Gaming Compatibility**
-  - **Universal Game Support**: Works with all games without hardcoded process names or titles
-  - **Anti-Cheat Compatible**: Tested and verified with Battlefield 2042/6, Gray Zone Warfare, No Man's Sky, Deadside
-  - **Fast Launch Handling**: Gracefully handles games launched before RTSS hooks (title appears once hooked)
-  - **Multi-Monitor Support**: Accurate fullscreen detection across different monitor configurations
-
-## v1.1.4 (October 13, 2025)
-
-- **RTSS Integration for Enhanced Anti-Cheat Compatibility**
-  - **RTSS Support**: Added integration with RivaTuner Statistics Server (RTSS) for superior anti-cheat compatibility
-  - **Shared Memory Access**: Reads FPS data directly from RTSS shared memory, bypassing traditional ETW monitoring restrictions  
-  - **Multi-Application Support**: Works with MSI Afterburner, RivaTuner, and other RTSS-compatible applications
-  - **Automatic Detection**: Seamlessly detects and connects to RTSS when available, falling back to other methods when not
-  - **Real-Time Polling**: Efficient 500ms polling interval provides smooth, responsive FPS updates
-  - **Process Filtering**: Intelligently matches FPS data to the target game process for accurate monitoring
-
-- **Enhanced Fallback Architecture**
-  - **Prioritized Fallback System**: PresentMon → RTSS → System-wide ETW → Performance Counters
-  - **RTSS Priority**: RTSS becomes the primary fallback for anti-cheat protected games due to proven compatibility
-  - **Robust Error Handling**: Graceful degradation when RTSS is unavailable or disconnected
-  - **Connection Monitoring**: Automatically detects RTSS disconnections and attempts reconnection
-
-- **Gaming Compatibility Improvements**
-  - **Kernel Anti-Cheat Support**: Enhanced support for games with kernel-level protection (BattlEye, Easy Anti-Cheat, Vanguard, Javelin)
-  - **Modern Game Testing**: Specifically improved compatibility with Battlefield 2042/6, Valorant, PUBG, Rainbow Six Siege
-  - **Overlay Integration**: Works alongside popular gaming overlays that use RTSS for FPS display
-  - **Resource Cleanup**: Proper disposal of RTSS resources prevents memory leaks and connection issues
-
-## v1.1.3 (October 13, 2025)
-
-- **Anti-Cheat Compatibility Improvements**
-  - **Multi-Tier Fallback System**: Implemented cascading monitoring strategies to bypass kernel-level anti-cheat restrictions
-  - **System-Wide ETW Monitoring**: Added fallback to monitor all DirectX presentations when process-specific monitoring is blocked
-  - **Performance Counter Fallback**: Final fallback using system-level metrics when ETW monitoring is completely blocked
-  - **Enhanced Game Support**: Now compatible with games using kernel-level anti-cheat systems like Javelin (Battlefield 2042/6)
-  - **Intelligent Detection**: Automatically detects access denied scenarios and switches to compatible monitoring methods
-  - **Native Approach**: Uses only Windows APIs and system metrics to avoid anti-cheat detection while remaining accurate
-
-- **Technical Improvements**
-  - **Smart Error Handling**: Distinguishes between anti-cheat blocking and other monitoring failures
-  - **Refresh Rate Integration**: Uses monitor refresh rate for more accurate FPS estimation in fallback modes
-  - **Reduced Invasiveness**: Fallback methods are less likely to trigger anti-cheat detection
-  - **Maintained Accuracy**: Preserves FPS monitoring quality even in fallback modes
-
-## v1.1.2 (October 13, 2025)
-
-- **Improved FPS Display Smoothing**
-  - **Smoothed FPS Updates**: FPS values now display averaged results over recent frames instead of instantaneous values
-  - **Reduced Erratic Behavior**: Eliminated jumpy FPS readings by calculating rolling averages over up to 120 recent frames
-  - **Enhanced Readability**: FPS counter now updates once per second with stable, smoothed values for better user experience
-  - **Adaptive Averaging**: Automatically adjusts averaging window based on actual frame rate for optimal smoothing
-
-## v1.1.1 (September 20, 2025)
-
-- **Critical Bug Fix**
-  - **Removed Hardcoded File Logging**: Eliminated `C:\temp\fps_plugin_debug.log` file operations that were causing crashes for users without the temp directory
-  - **Improved Stability**: Plugin now relies solely on console logging instead of file system operations
-  - **Enhanced Compatibility**: Ensures plugin works on all Windows systems regardless of directory permissions or structure
-
-## v1.1.0 (September 19, 2025)
-
-- **Major Architectural Refactoring and Reliability Improvements**
-  - **Service-Based Architecture**: Split monolithic 774-line code into dedicated services using C# best practices
-    - `PerformanceMonitoringService`: PresentMon integration, frame time calculations, and performance metrics
-    - `WindowDetectionService`: Windows API hooks, fullscreen detection, and process validation
-    - `SystemInformationService`: GPU detection, monitor information, and system queries
-    - `SensorManagementService`: InfoPanel sensor creation, registration, and updates
-  - **Dependency Injection Pattern**: Introduced service interfaces for better testability and maintainability
-  - **Enhanced Code Organization**: Added proper folder structure (Services/, Models/, Interfaces/, Constants/)
-  - **Comprehensive Data Models**: Created structured models for better type safety and data handling
-
-- **Critical Bug Fixes and Reliability Improvements**
-  - **Fixed Self-Detection Issue**: Plugin now excludes InfoPanel's own process and system overlays ("DisplayWindow")
-  - **Primary Display Filtering**: Only monitors fullscreen applications on the main display, ignoring secondary monitors
-  - **Enhanced App Closure Detection**: Implemented dual-detection system combining continuous monitoring and periodic cleanup
-  - **Improved State Management**: Simplified monitoring flags to prevent rapid switching between capture states
-  - **Process Validation**: Added robust process existence checks and enhanced process filtering
-  - **Better Error Handling**: Comprehensive exception handling and logging throughout the application
-
-- **Performance and Stability Enhancements**
-  - **Optimized Detection Logic**: Restored original fullscreen detection algorithm with service-based implementation
-  - **Reliable Cleanup**: Ensures sensors properly reset to 0 when applications close or lose fullscreen
-  - **Enhanced Logging**: Detailed debug output for troubleshooting and monitoring state transitions
-  - **Memory Management**: Proper resource cleanup and disposal patterns
-
-## v1.0.18 (September 19, 2025)
-
-- **Initial Refactoring Attempt** (Superseded by v1.1.0)
-  - Split monolithic code into dedicated services and modules with proper separation of concerns.
-  - Introduced dependency injection pattern with service interfaces for better testability.
-  - Created dedicated services for performance monitoring, window detection, system information, and sensor management.
-  - Added comprehensive data models and constants for better maintainability.
-  - Improved error handling and logging throughout the application.
-  - Note: This version had functionality issues that were resolved in v1.1.0.
-
-## v1.0.17 (July 12, 2025)
-
-- **Improved Resolution Display Format**
-  - Changed resolution format to include spaces (e.g., "3840 x 2160" instead of "3840x2160") for better readability.
-  - Updated all instances of resolution display for consistency.
-
-## v1.0.16 (June 3, 2025)
-
-- **Added GPU Name Sensor**
-  - New PluginText sensor displays the name of the system's graphics card in the UI.
-  - Added System.Management reference for WMI queries to detect GPU information.
-- **Improved Build Configuration**
-  - Ensured all dependencies are placed in the root output folder without subdirectories.
-  - Added post-build target to automatically move DLLs from subdirectories to the root folder.
-  - Fixed dependency management for better plugin compatibility.
-
-## v1.0.15 (May 21, 2025)
-
-- Improved fullscreen detection for multi-monitor setups.
-- Used MonitorFromWindow for accurate fullscreen detection on the active monitor.
-- Continued reporting primary monitor's resolution and refresh rate for consistency.
-
-## v1.0.14 (May 21, 2025)
-
-- Added Main Display Resolution and Main Display Refresh Rate Sensors
-- Added PluginText sensor for main display resolution (e.g., 3840x2160) and PluginSensor for main display refresh rate (e.g., 240Hz).
-- Fixed incorrect use of PluginSensor for main display resolution by switching to PluginText.
-- Cached monitor info to minimize API calls.
-- Modified plugin to always report the primary monitor's default resolution and refresh rate for both fullscreen and non-fullscreen cases, ensuring consistency on multi-monitor systems.
-- Fixed sensor update logic to display primary monitor settings when no fullscreen app is detected, preventing 0x0 and 0Hz fallbacks.
-- Improved fullscreen detection using MonitorFromWindow to accurately detect fullscreen apps on the active monitor, aligning with InfoPanel developer guide, while maintaining primary monitor reporting.
-
-## v1.0.13 (Mar 22, 2025)
-
-- **Added Window Title Sensor**
-  - New sensor displays the title of the current fullscreen app for user-friendly identification.
-
-## v1.0.12 (Mar 10, 2025)
-
-- **Simplified Metrics**
-  - Removed frame time variance sensor and related calculations for a leaner plugin.
-
-## v1.0.11 (Feb 27, 2025)
-
-- **Performance and Robustness Enhancements**
-  - Reduced string allocations with format strings in logs.
-  - Simplified `Initialize` by moving initial PID check to `StartInitialMonitoringAsync`.
-  - Optimized `GetActiveFullscreenProcessId` to a synchronous method.
-  - Optimized `UpdateLowFpsMetrics` with single-pass min/max/histogram calculation.
-  - Enhanced exception logging with full stack traces.
-  - Added null safety for `_cts` checks.
-  - Implemented finalizer for unmanaged resource cleanup.
-
-## v1.0.10 (Feb 27, 2025)
-
-- **Removed 0.1% Low FPS Calculation**
-  - Simplified scope by eliminating 0.1% low metric from UI and calculations.
-
-## v1.0.9 (Feb 24, 2025)
-
-- **Fixed 1% Low Reset on Closure**
-  - Ensured immediate `ResetSensorsAndQueue` before cancellation to clear all metrics.
-  - Cleared histogram in `ResetSensorsAndQueue` to prevent stale percentiles.
-  - Blocked post-cancel updates in `UpdateFrameTimesAndMetrics`.
-
-## v1.0.8 (Feb 24, 2025)
-
-- **Fixed Initial Startup and Reset Delays**
-  - Moved event hook setup to `Initialize` for proper timing.
-  - Added immediate PID check in `Initialize` for instant startup.
-  - Forced immediate sensor reset on cancellation, improving shutdown speed.
-
-## v1.0.7 (Feb 24, 2025)
-
-- **Further Optimizations for Efficiency**
-  - Added volatile `_isMonitoring` flag to prevent redundant monitoring attempts.
-  - Pre-allocated histogram array in `UpdateLowFpsMetrics` to reduce GC pressure.
-  - Initially moved event hook setup to field initializer (reverted in v1.0.8).
-
-## v1.0.6 (Feb 24, 2025)
-
-- **Fixed Monitoring Restart on Focus Regain**
-  - Updated event handling to restart `FpsInspector` when the same PID regains focus.
-  - Adjusted debounce to ensure re-focus events are caught reliably.
-
-## v1.0.5 (Feb 24, 2025)
-
-- **Optimized Performance and Structure**
-  - Debounced event hook re-initializations to 500ms for efficiency.
-  - Unified sensor resets into `ResetSensorsAndQueue`.
-  - Switched to circular buffer with histogram for O(1) percentile approximations.
-  - Streamlined async calls, removed unnecessary `Task.Run`.
-  - Replaced `ConcurrentQueue` with circular buffer for memory efficiency.
-  - Simplified threading model for updates.
-  - Implemented Welford’s running variance algorithm.
-  - Simplified retry logic to a single async loop.
-  - Streamlined fullscreen detection logic.
-  - Simplified PID validation with lightweight checks.
-
-## v1.0.4 (Feb 24, 2025)
-
-- **Added Event Hooks and New Metrics**
-  - Introduced `SetWinEventHook` for window detection.
-  - Added 0.1% low FPS and variance metrics (0.1% later removed in v1.0.10).
-  - Improved fullscreen detection with `DwmGetWindowAttribute`.
-
-## v1.0.3 (Feb 24, 2025)
-
-- **Stabilized Resets, 1% Low FPS, and Update Smoothness**
-  - Added PID check in `UpdateAsync` to ensure `FpsInspector` stops on pid == 0.
-  - Fixed 1% low FPS calculation sticking, updated per frame.
-  - Unified updates via `FpsInspector` with 1s throttling for smoothness.
-
-## v1.0.2 (Feb 22, 2025)
-
-- **Improved Frame Time Update Frequency**
-  - Reduced `UpdateInterval` to 200ms from 1s for more frequent updates.
-
-## v1.0.1 (Feb 22, 2025)
-
-- **Enhanced Stability and Consistency**
-  - Aligned plugin name in constructor with header (`"InfoPanel.RTSS"`) and improved description.
-  - Added null check for `FpsInspector` results; resets frame time queue on PID switch.
-  - Improved retry logging for exhausted attempts.
-
-## v1.0.0 (Feb 20, 2025)
-
-- **Initial Stable Release**
-  - Core features: Detects fullscreen apps, monitors FPS in real-time, calculates frame time and 1% low FPS over 1000 frames.
-  - Stability enhancements: Implements 3 retries with 1-second delays for `FpsInspector` errors, 15-second stall detection with restarts.
-  - Removed early smoothing attempts due to InfoPanel UI limitations.

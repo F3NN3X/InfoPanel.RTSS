@@ -19,7 +19,7 @@ namespace InfoPanel.RTSS.Services
             // First try the assembly directory (where the plugin DLL is)
             _configFilePath = Path.Combine(assemblyDirectory, "InfoPanel.RTSS.ini");
             
-            Console.WriteLine($"ConfigurationService: Checking for config at: {_configFilePath}");
+            // Note: Cannot use file logger here as it depends on configuration being loaded first
             
             // If not found there, try the InfoPanel plugin data directory
             if (!File.Exists(_configFilePath))
@@ -27,7 +27,7 @@ namespace InfoPanel.RTSS.Services
                 var infoPanelConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), 
                     "InfoPanel", "plugins", "InfoPanel.RTSS", "InfoPanel.RTSS.ini");
                 
-                Console.WriteLine($"ConfigurationService: Config not found in assembly dir, checking: {infoPanelConfigPath}");
+                // Config search logic - no console output to keep InfoPanel clean
                 
                 if (File.Exists(infoPanelConfigPath))
                 {
@@ -35,7 +35,7 @@ namespace InfoPanel.RTSS.Services
                 }
                 else
                 {
-                    Console.WriteLine($"ConfigurationService: Config not found in either location, creating default at: {_configFilePath}");
+                    // Creating default config - no console output to keep InfoPanel clean
                     CreateDefaultConfigFile();
                 }
             }
@@ -63,6 +63,80 @@ namespace InfoPanel.RTSS.Services
         public int SmoothingFrames => GetIntValue("Display", "smoothingFrames", 120);
 
         /// <summary>
+        /// Whether debug logging to debug.log file is enabled.
+        /// </summary>
+        public bool IsDebugEnabled => GetBoolValue("Debug", "debug", false);
+
+        /// <summary>
+        /// The default message to display when no game is being captured.
+        /// </summary>
+        public string DefaultCaptureMessage => GetStringValue("Display", "defaultCaptureMessage", "Nothing to capture");
+
+        /// <summary>
+        /// Comma-separated list of process names to ignore (case-insensitive, without .exe).
+        /// </summary>
+        public string IgnoredProcesses => GetStringValue("Application_Filtering", "ignored_processes", "");
+
+        /// <summary>
+        /// Minimum FPS threshold for applications to be considered (applications below this are ignored).
+        /// </summary>
+        public double MinimumFpsThreshold => GetDoubleValue("Application_Filtering", "minimum_fps_threshold", 1.0);
+
+        /// <summary>
+        /// Whether to prefer fullscreen applications over windowed ones.
+        /// </summary>
+        public bool PreferFullscreen => GetBoolValue("Application_Filtering", "prefer_fullscreen", true);
+
+        /// <summary>
+        /// Gets custom game category rules from the configuration.
+        /// Returns a dictionary where key is the category name and value is a list of process patterns.
+        /// </summary>
+        public Dictionary<string, List<string>> GetCustomGameCategories()
+        {
+            var categories = new Dictionary<string, List<string>>();
+            
+            // Look for all sections that start with "Game_Category_"
+            foreach (var sectionName in _configData.Keys)
+            {
+                if (sectionName.StartsWith("Game_Category_", StringComparison.OrdinalIgnoreCase))
+                {
+                    var categoryName = sectionName.Substring("Game_Category_".Length);
+                    var patterns = new List<string>();
+                    
+                    var section = _configData[sectionName];
+                    foreach (var kvp in section)
+                    {
+                        // Support multiple patterns: pattern1, pattern2, etc. OR processes=pattern1,pattern2,pattern3
+                        if (kvp.Key.Equals("processes", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Comma-separated list in processes key
+                            var processPatterns = kvp.Value.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                .Select(p => p.Trim().ToLowerInvariant())
+                                .Where(p => !string.IsNullOrEmpty(p));
+                            patterns.AddRange(processPatterns);
+                        }
+                        else if (kvp.Key.StartsWith("pattern", StringComparison.OrdinalIgnoreCase) || 
+                                 kvp.Key.StartsWith("process", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Individual pattern keys: pattern1=game.exe, pattern2=*steam*, etc.
+                            if (!string.IsNullOrWhiteSpace(kvp.Value))
+                            {
+                                patterns.Add(kvp.Value.Trim().ToLowerInvariant());
+                            }
+                        }
+                    }
+                    
+                    if (patterns.Count > 0)
+                    {
+                        categories[categoryName] = patterns;
+                    }
+                }
+            }
+            
+            return categories;
+        }
+
+        /// <summary>
         /// Loads configuration from INI file.
         /// </summary>
         private Dictionary<string, Dictionary<string, string>> LoadConfiguration()
@@ -73,11 +147,11 @@ namespace InfoPanel.RTSS.Services
             {
                 if (!File.Exists(_configFilePath))
                 {
-                    Console.WriteLine($"ConfigurationService: Config file not found at {_configFilePath}, using defaults");
+                    // Config file not found, using defaults - no console output to keep InfoPanel clean
                     return config;
                 }
 
-                Console.WriteLine($"ConfigurationService: Loading configuration from {_configFilePath}");
+                // Loading configuration - no console output to keep InfoPanel clean
 
                 var lines = File.ReadAllLines(_configFilePath);
                 string? currentSection = null;
@@ -114,25 +188,33 @@ namespace InfoPanel.RTSS.Services
                     }
                 }
 
-                Console.WriteLine($"ConfigurationService: Loaded {config.Count} sections");
-                
-                // Log current settings safely
-                try
-                {
-                    Console.WriteLine($"ConfigurationService: updateInterval={UpdateInterval}ms");
-                }
-                catch (Exception settingsEx)
-                {
-                    Console.WriteLine($"ConfigurationService: Error reading settings: {settingsEx.Message}");
-                }
+                // Configuration sections loaded - no console output to keep InfoPanel clean
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"ConfigurationService: Error loading config file: {ex.Message}");
-                Console.WriteLine($"ConfigurationService: Stack trace: {ex.StackTrace}");
+                // Configuration loading error - no console output to keep InfoPanel clean
+                // Stack trace suppressed to keep InfoPanel clean
             }
 
             return config;
+        }
+
+        /// <summary>
+        /// Logs current configuration settings (called after _configData is initialized).
+        /// </summary>
+        public void LogCurrentSettings()
+        {
+            try
+            {
+                // Configuration values loaded - no console output to keep InfoPanel clean
+                // Debug status, update interval, smoothing frames, and capture message loaded
+                // Values available through properties but not logged to console
+                // File logger not available during configuration initialization
+            }
+            catch (Exception)
+            {
+                // Settings reading error - no console output to keep InfoPanel clean
+            }
         }
 
         /// <summary>
@@ -168,6 +250,35 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
+        /// Gets a double value from configuration.
+        /// </summary>
+        private double GetDoubleValue(string section, string key, double defaultValue)
+        {
+            if (_configData.TryGetValue(section, out var sectionData) && 
+                sectionData.TryGetValue(key, out var value))
+            {
+                if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var doubleValue))
+                {
+                    return doubleValue;
+                }
+            }
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// Gets a string value from configuration.
+        /// </summary>
+        private string GetStringValue(string section, string key, string defaultValue)
+        {
+            if (_configData.TryGetValue(section, out var sectionData) && 
+                sectionData.TryGetValue(key, out var value))
+            {
+                return value;
+            }
+            return defaultValue;
+        }
+
+        /// <summary>
         /// Creates a default configuration file.
         /// </summary>
         private void CreateDefaultConfigFile()
@@ -180,12 +291,33 @@ namespace InfoPanel.RTSS.Services
 # Download RTSS: https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html
 # Or install MSI Afterburner (includes RTSS): https://www.msi.com/Landing/afterburner
 
+[Debug]
+# Enable/disable debug logging to debug.log file
+# Set to true to enable detailed logging for troubleshooting
+# Set to false to disable logging for production use
+debug=true
+
 [Display]
 # Update interval in milliseconds (1000 = 1 second)
 updateInterval=1000
 
 # Number of frames to use for smoothing calculations (used for 1% low calculation)
-smoothingFrames=100";
+smoothingFrames=100
+
+# Default message to display when no game is being captured
+defaultCaptureMessage=Nothing to capture
+
+[Application_Filtering]
+# Comma-separated list of process names to ignore (case-insensitive, without .exe)
+# Example: StreamDeck,Teams,Teams.msix,Discord,Chrome
+ignored_processes=
+
+# Only monitor applications with FPS above this threshold
+# Applications with 0.0 FPS (like Stream Deck) will be ignored
+minimum_fps_threshold=1.0
+
+# Prefer fullscreen applications over windowed ones
+prefer_fullscreen=true";
 
                 // Create directory if it doesn't exist
                 var directory = Path.GetDirectoryName(_configFilePath);
@@ -195,11 +327,11 @@ smoothingFrames=100";
                 }
 
                 File.WriteAllText(_configFilePath, defaultConfig);
-                Console.WriteLine($"ConfigurationService: Created default config file at: {_configFilePath}");
+                // Default config file created - no console output to keep InfoPanel clean
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"ConfigurationService: Failed to create default config file: {ex.Message}");
+                // Failed to create default config file - no console output to keep InfoPanel clean
             }
         }
 
@@ -216,7 +348,7 @@ smoothingFrames=100";
                 _configData[section.Key] = section.Value;
             }
             
-            Console.WriteLine("ConfigurationService: Configuration reloaded");
+            // Configuration reloaded - no console output to keep InfoPanel clean
         }
     }
 }

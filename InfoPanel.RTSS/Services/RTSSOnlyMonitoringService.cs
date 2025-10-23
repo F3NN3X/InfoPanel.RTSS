@@ -60,45 +60,91 @@ namespace InfoPanel.RTSS.Services
     /// </summary>
     internal static class RTSSDataAnalyzer
     {
-        // RTSS Engine flags for graphics API detection (from RTSSSharedMemory.h)
-        private const uint RTSS_ENGINE_DIRECTX8 = 0x00000001;
-        private const uint RTSS_ENGINE_DIRECTX9 = 0x00000002;
-        private const uint RTSS_ENGINE_DIRECTX10 = 0x00000004;
-        private const uint RTSS_ENGINE_DIRECTX11 = 0x00000008;
-        private const uint RTSS_ENGINE_DIRECTX12 = 0x00000010;
-        private const uint RTSS_ENGINE_OPENGL = 0x00000020;
-        private const uint RTSS_ENGINE_VULKAN = 0x00000040;
+        // RTSS APPFLAG constants for graphics API detection (from RTSSSharedMemory.h v2.10+)
+        private const uint APPFLAG_OGL = 0x00000001;
+        private const uint APPFLAG_DD = 0x00000002;
+        private const uint APPFLAG_D3D8 = 0x00000003;
+        private const uint APPFLAG_D3D9 = 0x00000004;
+        private const uint APPFLAG_D3D9EX = 0x00000005;
+        private const uint APPFLAG_D3D10 = 0x00000006;
+        private const uint APPFLAG_D3D11 = 0x00000007;
+        private const uint APPFLAG_D3D12 = 0x00000008;
+        private const uint APPFLAG_D3D12AFR = 0x00000009;
+        private const uint APPFLAG_VULKAN = 0x0000000A;
+        
+        // Masks and architecture flags
+        private const uint APPFLAG_API_USAGE_MASK = 0x0000FFFF;
+        private const uint APPFLAG_ARCHITECTURE_X64 = 0x00010000;
+        private const uint APPFLAG_ARCHITECTURE_UWP = 0x00020000;
         
         /// <summary>
-        /// Analyzes RTSS engine flags to determine graphics API
+        /// Analyzes RTSS APPFLAG values to determine graphics API (RTSS v2.10+ format)
         /// </summary>
         public static string GetGraphicsAPI(uint rtssFlags)
         {
-            if ((rtssFlags & RTSS_ENGINE_DIRECTX12) != 0) return "DirectX 12";
-            if ((rtssFlags & RTSS_ENGINE_DIRECTX11) != 0) return "DirectX 11";
-            if ((rtssFlags & RTSS_ENGINE_DIRECTX10) != 0) return "DirectX 10";
-            if ((rtssFlags & RTSS_ENGINE_DIRECTX9) != 0) return "DirectX 9";
-            if ((rtssFlags & RTSS_ENGINE_DIRECTX8) != 0) return "DirectX 8";
-            if ((rtssFlags & RTSS_ENGINE_VULKAN) != 0) return "Vulkan";
-            if ((rtssFlags & RTSS_ENGINE_OPENGL) != 0) return "OpenGL";
-            return "Unknown";
+            // Extract the API value using the API usage mask (lower 16 bits)
+            uint apiValue = rtssFlags & APPFLAG_API_USAGE_MASK;
+            
+            string result = apiValue switch
+            {
+                APPFLAG_D3D12 => "DirectX 12",
+                APPFLAG_D3D12AFR => "DirectX 12 AFR",
+                APPFLAG_D3D11 => "DirectX 11", 
+                APPFLAG_D3D10 => "DirectX 10",
+                APPFLAG_D3D9EX => "DirectX 9Ex",
+                APPFLAG_D3D9 => "DirectX 9",
+                APPFLAG_D3D8 => "DirectX 8",
+                APPFLAG_VULKAN => "Vulkan",
+                APPFLAG_OGL => "OpenGL",
+                APPFLAG_DD => "DirectDraw",
+                _ => "Unknown"
+            };
+            
+            // Debug log for API detection (helpful for verifying the fix)
+            if (result != "Unknown")
+            {
+                Console.WriteLine($"[RTSS API Detection] Raw flags: 0x{rtssFlags:X8}, API value: 0x{apiValue:X4}, Detected: {result}");
+            }
+            
+            return result;
         }
         
         /// <summary>
-        /// Determines architecture type based on graphics API and engine version
+        /// Extracts process architecture information from RTSS flags
         /// </summary>
-        public static string GetArchitecture(string graphicsAPI, uint engineVersion)
+        public static string GetProcessArchitecture(uint rtssFlags)
         {
-            return graphicsAPI switch
+            bool isX64 = (rtssFlags & APPFLAG_ARCHITECTURE_X64) != 0;
+            bool isUWP = (rtssFlags & APPFLAG_ARCHITECTURE_UWP) != 0;
+            
+            return (isX64, isUWP) switch
             {
-                "DirectX 12" or "Vulkan" => "Modern Low-Level",
+                (true, true) => "x64 UWP",
+                (true, false) => "x64",
+                (false, true) => "UWP",
+                (false, false) => "x86"
+            };
+        }
+        
+        /// <summary>
+        /// Determines architecture type based on graphics API and RTSS flags
+        /// </summary>
+        public static string GetArchitecture(string graphicsAPI, uint rtssFlags)
+        {
+            string processArch = GetProcessArchitecture(rtssFlags);
+            string apiEra = graphicsAPI switch
+            {
+                "DirectX 12" or "DirectX 12 AFR" or "Vulkan" => "Modern Low-Level",
                 "DirectX 11" => "DirectX 11 Era", 
                 "DirectX 10" => "DirectX 10 Era",
-                "DirectX 9" => "Legacy DirectX",
+                "DirectX 9" or "DirectX 9Ex" => "Legacy DirectX",
                 "DirectX 8" => "Legacy DirectX",
                 "OpenGL" => "OpenGL",
-                _ => "Unknown"
+                "DirectDraw" => "Legacy DirectDraw",
+                _ => "Unknown API"
             };
+            
+            return $"{apiEra} ({processArch})";
         }
         
         /// <summary>
@@ -642,7 +688,7 @@ namespace InfoPanel.RTSS.Services
                     {
                         // Populate enhanced metrics using RTSSDataAnalyzer with validation
                         bestCandidate.GraphicsAPI = RTSSDataAnalyzer.GetGraphicsAPI(bestCandidate.RTSSFlags);
-                        bestCandidate.Architecture = RTSSDataAnalyzer.GetArchitecture(bestCandidate.GraphicsAPI, bestCandidate.RTSSEngineVersion);
+                        bestCandidate.Architecture = RTSSDataAnalyzer.GetArchitecture(bestCandidate.GraphicsAPI, bestCandidate.RTSSFlags);
                         bestCandidate.GameCategory = RTSSDataAnalyzer.GetGameCategory(bestCandidate.ProcessName, bestCandidate.GraphicsAPI, _configService);
                         bestCandidate.FrameTimeMs = bestCandidate.Fps > 0 ? 1000.0 / bestCandidate.Fps : 0.0;
                         bestCandidate.WindowTitle = GetWindowTitleForPid(bestCandidate.ProcessId);

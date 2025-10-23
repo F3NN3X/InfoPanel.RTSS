@@ -14,6 +14,20 @@
 - **Example Categories**: Pre-configured examples for Competitive FPS, Racing Games, VR Games, and Retro Games
 - **Backward Compatibility**: Default categorization still works when no custom categories are defined
 
+### 🔧 **[CRITICAL FIX] Graphics API Detection Overhaul**
+- **Root Cause**: Plugin was using **deprecated RTSS v2.9 bit flags**, causing Vulkan games to be misdetected as DirectX 11
+- **Issue Example**: No Man's Sky (Vulkan) incorrectly showed as "DirectX 11" due to bit collision in flag checking
+- **Solution**: Complete migration to **RTSS v2.10+ APPFLAG system**
+  - **Updated Constants**: Replaced deprecated `RTSS_ENGINE_*` bit flags with modern `APPFLAG_*` enumerated values
+  - **Fixed Detection Logic**: Changed from bit flag checking to proper value extraction using `APPFLAG_API_USAGE_MASK`
+  - **Enhanced Architecture Detection**: Added support for x64/UWP architecture flags from RTSS shared memory
+- **New API Support**: 
+  - **Accurate Vulkan Detection**: Now correctly identifies Vulkan games (No Man's Sky, DOOM Eternal, etc.)
+  - **DirectX 12 AFR**: Support for multi-GPU DirectX 12 Alternate Frame Rendering
+  - **DirectX 9Ex**: Enhanced DirectX 9 Extended detection
+  - **Process Architecture**: Shows x86/x64/UWP architecture alongside graphics API
+- **Result**: All graphics APIs now detected correctly, resolving long-standing Vulkan misdetection issue
+
 ### 🧪 **[REMOVED] Experimental RTSS Statistics Control**
 - **Added Then Removed**: Experimental feature to enable RTSS statistics recording programmatically
 - **Issue**: Caused InfoPanel crashes when enabled 

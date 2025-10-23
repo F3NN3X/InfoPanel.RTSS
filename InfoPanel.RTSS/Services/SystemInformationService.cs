@@ -12,9 +12,19 @@ namespace InfoPanel.RTSS.Services
     /// </summary>
     public class SystemInformationService : ISystemInformationService
     {
+        private readonly FileLoggingService? _fileLogger;
         private SystemInformation? _cachedSystemInfo;
         private DateTime _lastCacheUpdate = DateTime.MinValue;
         private readonly TimeSpan _cacheValidDuration = TimeSpan.FromMinutes(5); // Cache for 5 minutes
+        
+        /// <summary>
+        /// Initializes a new instance of the SystemInformationService.
+        /// </summary>
+        /// <param name="fileLogger">File logging service for debug output.</param>
+        public SystemInformationService(FileLoggingService? fileLogger = null)
+        {
+            _fileLogger = fileLogger;
+        }
 
         /// <summary>
         /// Gets the current system information including display settings and GPU name.
@@ -41,7 +51,7 @@ namespace InfoPanel.RTSS.Services
             };
 
             _lastCacheUpdate = DateTime.Now;
-            Console.WriteLine($"System info refreshed - Resolution: {resolution}, Refresh: {refreshRate}Hz, GPU: {gpuName}");
+            _fileLogger?.LogInfo($"System info refreshed - Resolution: {resolution}, Refresh: {refreshRate}Hz, GPU: {gpuName}");
 
             return _cachedSystemInfo;
         }
@@ -62,20 +72,20 @@ namespace InfoPanel.RTSS.Services
                     string resolution = $"{devMode.dmPelsWidth} x {devMode.dmPelsHeight}";
                     uint refreshRate = (uint)devMode.dmDisplayFrequency;
                     
-                    Console.WriteLine($"Primary monitor settings - Resolution: {resolution}, Refresh Rate: {refreshRate}Hz");
+                    _fileLogger?.LogInfo($"Primary monitor settings - Resolution: {resolution}, Refresh Rate: {refreshRate}Hz");
                     return (resolution, refreshRate);
                 }
                 else
                 {
-                    Console.WriteLine("Failed to get primary monitor settings via EnumDisplaySettings");
+                    _fileLogger?.LogInfo("Failed to get primary monitor settings via EnumDisplaySettings");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error getting primary monitor settings: {ex}");
+                _fileLogger?.LogError("Error getting primary monitor settings", ex);
             }
 
-            Console.WriteLine("Using fallback monitor settings");
+            _fileLogger?.LogInfo("Using fallback monitor settings");
             return ("0 x 0", 0u);
         }
 
@@ -97,17 +107,17 @@ namespace InfoPanel.RTSS.Services
                         var name = obj["Name"]?.ToString();
                         if (!string.IsNullOrWhiteSpace(name))
                         {
-                            Console.WriteLine($"GPU detected: {name}");
+                            _fileLogger?.LogInfo($"GPU detected: {name}");
                             return name;
                         }
                     }
                 }
                 
-                Console.WriteLine("No GPU found in WMI query results");
+                _fileLogger?.LogInfo("No GPU found in WMI query results");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error retrieving GPU name via WMI: {ex}");
+                _fileLogger?.LogError("Error retrieving GPU name via WMI", ex);
             }
 
             return "Unknown GPU";
@@ -120,7 +130,7 @@ namespace InfoPanel.RTSS.Services
         {
             _cachedSystemInfo = null;
             _lastCacheUpdate = DateTime.MinValue;
-            Console.WriteLine("System information cache invalidated");
+            _fileLogger?.LogInfo("System information cache invalidated");
         }
 
         /// <summary>
@@ -135,7 +145,7 @@ namespace InfoPanel.RTSS.Services
                 var monitorInfo = new MONITORINFOEX { cbSize = (uint)Marshal.SizeOf<MONITORINFOEX>() };
                 if (!GetMonitorInfo(monitorHandle, ref monitorInfo))
                 {
-                    Console.WriteLine($"Failed to get monitor info for handle {monitorHandle}");
+                    _fileLogger?.LogInfo($"Failed to get monitor info for handle {monitorHandle}");
                     return null;
                 }
 
@@ -149,15 +159,15 @@ namespace InfoPanel.RTSS.Services
                     string resolution = $"{devMode.dmPelsWidth} x {devMode.dmPelsHeight}";
                     uint refreshRate = (uint)devMode.dmDisplayFrequency;
                     
-                    Console.WriteLine($"Monitor {deviceName} settings - Resolution: {resolution}, Refresh: {refreshRate}Hz");
+                    _fileLogger?.LogInfo($"Monitor {deviceName} settings - Resolution: {resolution}, Refresh: {refreshRate}Hz");
                     return (resolution, refreshRate);
                 }
 
-                Console.WriteLine($"Failed to get display settings for device {deviceName}");
+                _fileLogger?.LogInfo($"Failed to get display settings for device {deviceName}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error getting monitor settings for handle {monitorHandle}: {ex}");
+                _fileLogger?.LogError($"Error getting monitor settings for handle {monitorHandle}", ex);
             }
 
             return null;
@@ -183,11 +193,11 @@ namespace InfoPanel.RTSS.Services
                     return true;
                 }, IntPtr.Zero);
 
-                Console.WriteLine($"Detected {monitors.Count} monitors");
+                _fileLogger?.LogInfo($"Detected {monitors.Count} monitors");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error enumerating monitors: {ex}");
+                _fileLogger?.LogError("Error enumerating monitors", ex);
             }
 
             return monitors;

@@ -19,7 +19,7 @@ namespace InfoPanel.RTSS.Services
             // First try the assembly directory (where the plugin DLL is)
             _configFilePath = Path.Combine(assemblyDirectory, "InfoPanel.RTSS.ini");
             
-            Console.WriteLine($"ConfigurationService: Checking for config at: {_configFilePath}");
+            // Note: Cannot use file logger here as it depends on configuration being loaded first
             
             // If not found there, try the InfoPanel plugin data directory
             if (!File.Exists(_configFilePath))
@@ -27,7 +27,7 @@ namespace InfoPanel.RTSS.Services
                 var infoPanelConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), 
                     "InfoPanel", "plugins", "InfoPanel.RTSS", "InfoPanel.RTSS.ini");
                 
-                Console.WriteLine($"ConfigurationService: Config not found in assembly dir, checking: {infoPanelConfigPath}");
+                // Config search logic - no console output to keep InfoPanel clean
                 
                 if (File.Exists(infoPanelConfigPath))
                 {
@@ -35,7 +35,7 @@ namespace InfoPanel.RTSS.Services
                 }
                 else
                 {
-                    Console.WriteLine($"ConfigurationService: Config not found in either location, creating default at: {_configFilePath}");
+                    // Creating default config - no console output to keep InfoPanel clean
                     CreateDefaultConfigFile();
                 }
             }
@@ -98,11 +98,11 @@ namespace InfoPanel.RTSS.Services
             {
                 if (!File.Exists(_configFilePath))
                 {
-                    Console.WriteLine($"ConfigurationService: Config file not found at {_configFilePath}, using defaults");
+                    // Config file not found, using defaults - no console output to keep InfoPanel clean
                     return config;
                 }
 
-                Console.WriteLine($"ConfigurationService: Loading configuration from {_configFilePath}");
+                // Loading configuration - no console output to keep InfoPanel clean
 
                 var lines = File.ReadAllLines(_configFilePath);
                 string? currentSection = null;
@@ -139,12 +139,12 @@ namespace InfoPanel.RTSS.Services
                     }
                 }
 
-                Console.WriteLine($"ConfigurationService: Loaded {config.Count} sections");
+                // Configuration sections loaded - no console output to keep InfoPanel clean
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"ConfigurationService: Error loading config file: {ex.Message}");
-                Console.WriteLine($"ConfigurationService: Stack trace: {ex.StackTrace}");
+                // Configuration loading error - no console output to keep InfoPanel clean
+                // Stack trace suppressed to keep InfoPanel clean
             }
 
             return config;
@@ -157,14 +157,14 @@ namespace InfoPanel.RTSS.Services
         {
             try
             {
-                Console.WriteLine($"ConfigurationService: Debug enabled: {IsDebugEnabled}");
-                Console.WriteLine($"ConfigurationService: Update interval: {UpdateInterval}ms");
-                Console.WriteLine($"ConfigurationService: Smoothing frames: {SmoothingFrames}");
-                Console.WriteLine($"ConfigurationService: Default capture message: '{DefaultCaptureMessage}'");
+                // Configuration values loaded - no console output to keep InfoPanel clean
+                // Debug status, update interval, smoothing frames, and capture message loaded
+                // Values available through properties but not logged to console
+                // File logger not available during configuration initialization
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"ConfigurationService: Error reading settings: {ex.Message}");
+                // Settings reading error - no console output to keep InfoPanel clean
             }
         }
 
@@ -278,11 +278,11 @@ prefer_fullscreen=true";
                 }
 
                 File.WriteAllText(_configFilePath, defaultConfig);
-                Console.WriteLine($"ConfigurationService: Created default config file at: {_configFilePath}");
+                // Default config file created - no console output to keep InfoPanel clean
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"ConfigurationService: Failed to create default config file: {ex.Message}");
+                // Failed to create default config file - no console output to keep InfoPanel clean
             }
         }
 
@@ -299,7 +299,7 @@ prefer_fullscreen=true";
                 _configData[section.Key] = section.Value;
             }
             
-            Console.WriteLine("ConfigurationService: Configuration reloaded");
+            // Configuration reloaded - no console output to keep InfoPanel clean
         }
     }
 }

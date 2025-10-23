@@ -44,7 +44,7 @@ namespace InfoPanel.RTSS.Services
             catch (Exception ex)
             {
                 // Fallback to console if file logging fails
-                Console.WriteLine($"FileLoggingService: Failed to initialize file logging: {ex.Message}");
+                Console.WriteLine($"FileLoggingService: Failed to initialize file logging: {ex.Message}"); // Keep console for file logger initialization errors
                 _logFilePath = string.Empty;
             }
         }
@@ -155,7 +155,7 @@ namespace InfoPanel.RTSS.Services
             catch (Exception ex)
             {
                 // Fallback to console if file write fails
-                Console.WriteLine($"FileLoggingService: Failed to write log: {ex.Message}");
+                Console.WriteLine($"FileLoggingService: Failed to write log: {ex.Message}"); // Keep console for file logger write errors
             }
         }
 

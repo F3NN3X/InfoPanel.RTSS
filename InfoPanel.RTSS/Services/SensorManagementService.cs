@@ -12,6 +12,7 @@ namespace InfoPanel.RTSS.Services
     public class SensorManagementService : ISensorManagementService
     {
         private readonly ConfigurationService? _configService;
+        private readonly FileLoggingService? _fileLogger;
         private readonly PluginSensor _fpsSensor;
         private readonly PluginSensor _onePercentLowFpsSensor;
         private readonly PluginSensor _currentFrameTimeSensor;
@@ -51,9 +52,11 @@ namespace InfoPanel.RTSS.Services
         /// Initializes a new instance of the SensorManagementService.
         /// </summary>
         /// <param name="configService">Configuration service for accessing debug settings.</param>
-        public SensorManagementService(ConfigurationService? configService = null)
+        /// <param name="fileLogger">File logging service for debug output.</param>
+        public SensorManagementService(ConfigurationService? configService = null, FileLoggingService? fileLogger = null)
         {
             _configService = configService;
+            _fileLogger = fileLogger;
             
             // Initialize performance sensors
             _fpsSensor = new PluginSensor(
@@ -176,7 +179,7 @@ namespace InfoPanel.RTSS.Services
                 "Unknown"
             );
 
-            Console.WriteLine("Sensor management service initialized with all sensors");
+            _fileLogger?.LogInfo("Sensor management service initialized with all sensors");
         }
 
         /// <summary>
@@ -211,7 +214,7 @@ namespace InfoPanel.RTSS.Services
 
             containers.Add(container);
             
-            Console.WriteLine($"Registered {container.Entries.Count} sensors in RTSS container");
+            _fileLogger?.LogInfo($"Registered {container.Entries.Count} sensors in RTSS container");
         }
 
         /// <summary>
@@ -246,7 +249,7 @@ namespace InfoPanel.RTSS.Services
                     _minFpsSensor.Value = 0;
                     _maxFpsSensor.Value = 0;
                     // Add logging for debugging
-                    Console.WriteLine("SensorManagementService: Reset all FPS sensors to 0");
+                    _fileLogger?.LogInfo("SensorManagementService: Reset all FPS sensors to 0");
                 }
 
                 // Update window information with caching to prevent flickering
@@ -257,7 +260,7 @@ namespace InfoPanel.RTSS.Services
                     uint monitoredPid = state.Performance.MonitoredProcessId;
                     
                     // DEBUG: Always log the state to understand what's happening
-                    Console.WriteLine($"[SENSOR DEBUG] IsMonitoring={state.IsMonitoring}, MonitoredPID={monitoredPid}, WindowPID={state.Window?.ProcessId ?? 0}, WindowTitle='{state.Window?.WindowTitle ?? "null"}'");
+                    _fileLogger?.LogInfo($"[SENSOR DEBUG] IsMonitoring={state.IsMonitoring}, MonitoredPID={monitoredPid}, WindowPID={state.Window?.ProcessId ?? 0}, WindowTitle='{state.Window?.WindowTitle ?? "null"}'");
                     
                     // Update cached title ONLY if window PID matches RTSS monitored PID
                     if (monitoredPid > 0 && 
@@ -267,14 +270,14 @@ namespace InfoPanel.RTSS.Services
                     {
                         if (_lastValidWindowTitle != state.Window.WindowTitle)
                         {
-                            Console.WriteLine($"Window title cached: '{state.Window.WindowTitle}' (PID: {monitoredPid})");
+                            _fileLogger?.LogInfo($"Window title cached: '{state.Window.WindowTitle}' (PID: {monitoredPid})");
                             _lastValidWindowTitle = state.Window.WindowTitle;
                         }
                     }
                     else
                     {
                         // Debug: Log why caching didn't happen
-                        Console.WriteLine($"Title NOT cached - MonitoredPID: {monitoredPid}, WindowPID: {state.Window?.ProcessId ?? 0}, Title: '{state.Window?.WindowTitle ?? "null"}', IsWhitespace: {string.IsNullOrWhiteSpace(state.Window?.WindowTitle)}");
+                        _fileLogger?.LogInfo($"Title NOT cached - MonitoredPID: {monitoredPid}, WindowPID: {state.Window?.ProcessId ?? 0}, Title: '{state.Window?.WindowTitle ?? "null"}', IsWhitespace: {string.IsNullOrWhiteSpace(state.Window?.WindowTitle)}");
                     }
                     
                     // Use cached title if we have one, otherwise show NoCapture
@@ -296,7 +299,7 @@ namespace InfoPanel.RTSS.Services
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error updating sensors: {ex}");
+                    _fileLogger?.LogError("Error updating sensors", ex);
                 }
             }
         }
@@ -337,11 +340,11 @@ namespace InfoPanel.RTSS.Services
                     // Clear cached window title
                     _lastValidWindowTitle = string.Empty;
 
-                    Console.WriteLine("All sensors reset to default values (including enhanced RTSS sensors)");
+                    _fileLogger?.LogInfo("All sensors reset to default values (including enhanced RTSS sensors)");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error resetting sensors: {ex}");
+                    _fileLogger?.LogError("Error resetting sensors", ex);
                 }
             }
         }
@@ -370,11 +373,11 @@ namespace InfoPanel.RTSS.Services
                     _minFrameTimeSensor.Value = 0;
                     _maxFrameTimeSensor.Value = 0;
 
-                    Console.WriteLine("Enhanced RTSS sensors reset to default values (game quit detected)");
+                    _fileLogger?.LogInfo("Enhanced RTSS sensors reset to default values (game quit detected)");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error resetting enhanced sensors: {ex}");
+                    _fileLogger?.LogError("Error resetting enhanced sensors", ex);
                 }
             }
         }
@@ -395,11 +398,11 @@ namespace InfoPanel.RTSS.Services
                     _onePercentLowFpsSensor.Value = metrics.OnePercentLowFps;
                     
                     // Log sensor updates for debugging
-                    Console.WriteLine($"Performance sensors updated - FPS: {metrics.Fps}, FrameTime: {metrics.FrameTime:F2}ms, 1%Low: {metrics.OnePercentLowFps}");
+                    _fileLogger?.LogInfo($"Performance sensors updated - FPS: {metrics.Fps}, FrameTime: {metrics.FrameTime:F2}ms, 1%Low: {metrics.OnePercentLowFps}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error updating performance sensors: {ex}");
+                    _fileLogger?.LogError("Error updating performance sensors", ex);
                 }
             }
         }
@@ -419,7 +422,7 @@ namespace InfoPanel.RTSS.Services
                     
                     if (debugEnabled)
                     {
-                        Console.WriteLine($"[DEBUG] UpdateWindowSensor - IsValid: {windowInfo.IsValid}, PID: {windowInfo.ProcessId}, Handle: {windowInfo.WindowHandle}, Fullscreen: {windowInfo.IsFullscreen}, Title: '{windowInfo.WindowTitle}'");
+                        _fileLogger?.LogInfo($"[DEBUG] UpdateWindowSensor - IsValid: {windowInfo.IsValid}, PID: {windowInfo.ProcessId}, Handle: {windowInfo.WindowHandle}, Fullscreen: {windowInfo.IsFullscreen}, Title: '{windowInfo.WindowTitle}'");
                     }
                     
                     if (windowInfo.IsValid)
@@ -430,7 +433,7 @@ namespace InfoPanel.RTSS.Services
                         
                         if (debugEnabled)
                         {
-                            Console.WriteLine($"[DEBUG] Setting title to: '{newTitle}' (from '{windowInfo.WindowTitle}')");
+                            _fileLogger?.LogInfo($"[DEBUG] Setting title to: '{newTitle}' (from '{windowInfo.WindowTitle}')");
                         }
                         
                         // Preserve existing good titles - don't overwrite with generic defaults
@@ -439,14 +442,14 @@ namespace InfoPanel.RTSS.Services
                             _windowTitleSensor.Value = newTitle;
                             if (debugEnabled)
                             {
-                                Console.WriteLine($"[DEBUG] Title sensor updated to: '{_windowTitleSensor.Value}'");
+                                _fileLogger?.LogInfo($"[DEBUG] Title sensor updated to: '{_windowTitleSensor.Value}'");
                             }
                         }
                         else
                         {
                             if (debugEnabled)
                             {
-                                Console.WriteLine($"[DEBUG] Title NOT updated - preserving existing: '{_windowTitleSensor.Value}'");
+                                _fileLogger?.LogInfo($"[DEBUG] Title NOT updated - preserving existing: '{_windowTitleSensor.Value}'");
                             }
                         }
                     }
@@ -455,14 +458,14 @@ namespace InfoPanel.RTSS.Services
                         // Reset to NoCapture when window becomes invalid
                         if (debugEnabled)
                         {
-                            Console.WriteLine($"[DEBUG] Window invalid - setting to NoCapture");
+                            _fileLogger?.LogInfo($"[DEBUG] Window invalid - setting to NoCapture");
                         }
                         _windowTitleSensor.Value = SensorConstants.NoCapture;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error updating window sensor: {ex}");
+                    _fileLogger?.LogError("Error updating window sensor", ex);
                 }
             }
         }
@@ -483,7 +486,7 @@ namespace InfoPanel.RTSS.Services
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error updating system sensors: {ex}");
+                    _fileLogger?.LogError("Error updating system sensors", ex);
                 }
             }
         }
@@ -499,11 +502,11 @@ namespace InfoPanel.RTSS.Services
                 try
                 {
                     _windowTitleSensor.Value = title;
-                    Console.WriteLine($"Window title sensor updated to: '{title}'");
+                    _fileLogger?.LogInfo($"Window title sensor updated to: '{title}'");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error updating window title sensor: {ex}");
+                    _fileLogger?.LogError("Error updating window title sensor", ex);
                 }
             }
         }
@@ -544,13 +547,13 @@ namespace InfoPanel.RTSS.Services
                     _minFrameTimeSensor.Value = (float)candidate.MinFrameTimeMs;
                     _maxFrameTimeSensor.Value = (float)candidate.MaxFrameTimeMs;
                     
-                    Console.WriteLine($"Enhanced sensors updated - API: {candidate.GraphicsAPI}, Category: {candidate.GameCategory}, Resolution: {candidate.ResolutionX}x{candidate.ResolutionY}");
-                    Console.WriteLine($"RTSS Stats sensors updated - Min: {candidate.MinFps:F1}, Avg: {candidate.AvgFps:F1}, Max: {candidate.MaxFps:F1} FPS");
-                    Console.WriteLine($"RTSS Frame Time sensors updated - Min: {candidate.MinFrameTimeMs:F2}, Avg: {candidate.AvgFrameTimeMs:F2}, Max: {candidate.MaxFrameTimeMs:F2} ms");
+                    _fileLogger?.LogInfo($"Enhanced sensors updated - API: {candidate.GraphicsAPI}, Category: {candidate.GameCategory}, Resolution: {candidate.ResolutionX}x{candidate.ResolutionY}");
+                    _fileLogger?.LogInfo($"RTSS Stats sensors updated - Min: {candidate.MinFps:F1}, Avg: {candidate.AvgFps:F1}, Max: {candidate.MaxFps:F1} FPS");
+                    _fileLogger?.LogInfo($"RTSS Frame Time sensors updated - Min: {candidate.MinFrameTimeMs:F2}, Avg: {candidate.AvgFrameTimeMs:F2}, Max: {candidate.MaxFrameTimeMs:F2} ms");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error updating enhanced sensors: {ex}");
+                    _fileLogger?.LogError("Error updating enhanced sensors", ex);
                 }
             }
         }

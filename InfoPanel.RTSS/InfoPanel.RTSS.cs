@@ -1,4 +1,4 @@
-// InfoPanel.RTSS v1.1.4 - RTSS-Only FPS Monitoring Plugin
+// InfoPanel.RTSS v1.1.5 - RTSS-Only FPS Monitoring Plugin
 using InfoPanel.Plugins;
 using InfoPanel.RTSS.Services;
 using InfoPanel.RTSS.Models;
@@ -43,8 +43,8 @@ namespace InfoPanel.RTSS
                 _configService = new ConfigurationService();
                 _configService.LogCurrentSettings(); // Log settings after config is loaded
                 _fileLogger = new FileLoggingService(_configService);
-                _systemInfoService = new SystemInformationService();
-                _sensorService = new SensorManagementService(_configService);
+                _systemInfoService = new SystemInformationService(_fileLogger);
+                _sensorService = new SensorManagementService(_configService, _fileLogger);
                 
                 // Initialize RTSS-only monitoring service with event handling
                 _rtssMonitoringService = new RTSSOnlyMonitoringService(_configService, _fileLogger);
@@ -55,7 +55,7 @@ namespace InfoPanel.RTSS
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error constructing InfoPanel.RTSS plugin: {ex}");
+                _fileLogger?.LogError("Error constructing InfoPanel.RTSS plugin", ex);
             }
         }
 
@@ -71,11 +71,11 @@ namespace InfoPanel.RTSS
             try
             {
                 _sensorService.CreateAndRegisterSensors(containers);
-                Console.WriteLine("RTSS sensors loaded successfully");
+                _fileLogger.LogInfo("RTSS sensors loaded successfully");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading sensors: {ex}");
+                _fileLogger.LogError("Error loading sensors", ex);
             }
         }
 
@@ -102,7 +102,6 @@ namespace InfoPanel.RTSS
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"UpdateAsync error: {ex}");
                 _fileLogger.LogError("UpdateAsync error", ex);
             }
         }
@@ -115,7 +114,6 @@ namespace InfoPanel.RTSS
             try
             {
                 _fileLogger.LogInfo("=== RTSS Plugin Initialize() called ===");
-                Console.WriteLine("=== RTSS Plugin Initialize() called ===");
 
                 _cancellationTokenSource = new CancellationTokenSource();
 
@@ -128,12 +126,10 @@ namespace InfoPanel.RTSS
                 _fileLogger.LogInfo("RTSS-only monitoring task started");
 
                 _fileLogger.LogInfo("RTSS Plugin initialization completed successfully");
-                Console.WriteLine("RTSS Plugin initialization completed");
             }
             catch (Exception ex)
             {
                 _fileLogger.LogError("Error during plugin initialization", ex);
-                Console.WriteLine($"Error during plugin initialization: {ex}");
             }
         }
 
@@ -189,7 +185,6 @@ namespace InfoPanel.RTSS
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in OnMetricsUpdated: {ex}");
                 _fileLogger.LogError("Error in OnMetricsUpdated", ex);
             }
         }
@@ -217,7 +212,6 @@ namespace InfoPanel.RTSS
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in OnEnhancedMetricsUpdated: {ex}");
                 _fileLogger.LogError("Error in OnEnhancedMetricsUpdated", ex);
             }
         }
@@ -245,6 +239,7 @@ namespace InfoPanel.RTSS
                     }
                     catch (Exception ex)
                     {
+                        // Can't use _fileLogger here as it may be disposed, fallback to console for disposal errors only
                         Console.WriteLine($"Error during disposal: {ex}");
                     }
                 }

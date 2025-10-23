@@ -1,5 +1,45 @@
 # CHANGELOG
 
+## v1.1.5 (October 23, 2025)
+
+**🧹 Console Output Cleanup & Legacy Code Removal**
+
+### 🔇 **Console Output Cleanup**
+- **Eliminated InfoPanel Console Flooding**: Replaced all `Console.WriteLine` statements with file-based logging
+  - **Main Plugin**: Converted 10+ console outputs to `_fileLogger.LogInfo()` calls
+  - **SensorManagementService**: Replaced 22+ console outputs with conditional file logging
+  - **SystemInformationService**: Converted 15+ console outputs to file logging
+  - **ConfigurationService**: Replaced console outputs with explanatory comments (file logger unavailable during initialization)
+  - **File Logger Exceptions**: Preserved 2 console outputs for file logger initialization/write errors (circular dependency prevention)
+  - **Disposal Exception**: Kept 1 console output for disposal errors as fallback when file logger may not be available
+
+### 🔧 **Enhanced Logging Architecture**
+- **Service Integration**: Updated service constructors to accept `FileLoggingService?` parameter
+- **Conditional Logging**: Implemented null-safe logging pattern: `_fileLogger?.LogInfo()`
+- **Dependency Injection**: Main plugin now passes file logger instance to all services requiring logging
+- **Debug Information Preservation**: All debug information still available in `debug.log` file
+
+### 🗑️ **Legacy Code Removal**
+- **Removed Legacy IPC Code**: Eliminated unused `FpsDataSharedMemory.cs` (350+ lines)
+  - **IPC Architecture Cleanup**: Removed entire `IPC/` folder containing legacy elevated service communication code
+  - **Shared Memory Classes**: Deleted `FpsDataReader`, `FpsDataWriter`, and `FpsData` struct definitions
+  - **Memory-Mapped File Code**: Removed unused cross-process communication infrastructure
+  - **Verification**: Confirmed zero references to removed code in active codebase
+
+### ✨ **User Experience Improvements**
+- **Clean InfoPanel Console**: Users now see clean console output without debug flooding
+- **Maintained Debug Capabilities**: All troubleshooting information still available in log files
+- **Leaner Codebase**: Reduced complexity by removing unused legacy components
+- **Better Performance**: Eliminated overhead from unused IPC and shared memory code
+
+### 🏗️ **Technical Improvements**
+- **Simplified Architecture**: Plugin now focuses entirely on RTSS-only monitoring without legacy fallbacks
+- **Reduced Build Artifacts**: Smaller plugin package due to removal of unused code
+- **Cleaner Project Structure**: Eliminated unused folders and simplified file organization
+- **Better Maintainability**: Reduced cognitive load by removing dead code paths
+
+---
+
 ## v1.1.4 (October 22, 2025)
 
 **🧹 Legacy Code Cleanup & Enhanced User Experience**

@@ -88,6 +88,30 @@ namespace InfoPanel.RTSS.Services
         public bool PreferFullscreen => GetBoolValue("Application_Filtering", "prefer_fullscreen", true);
 
         /// <summary>
+        /// Whether to enable focus-aware filtering for 1% low calculations.
+        /// When enabled, frame times recorded during focus loss (alt-tab, overlays) are excluded from 1% low calculations.
+        /// </summary>
+        public bool EnableFocusFiltering => GetBoolValue("Focus_Filtering", "enable_focus_filtering", true);
+
+        /// <summary>
+        /// Whether to use aggressive buffer recovery when focus is regained.
+        /// When enabled, immediately clears out-of-focus frame times from buffers.
+        /// </summary>
+        public bool AggressiveRecovery => GetBoolValue("Focus_Filtering", "aggressive_recovery", false);
+
+        /// <summary>
+        /// Whether to completely exclude unfocused frame times from calculations.
+        /// When enabled, frame times from unfocused states are not added to the buffer at all.
+        /// </summary>
+        public bool ExcludeUnfocusedFrames => GetBoolValue("Focus_Filtering", "exclude_unfocused_frames", true);
+
+        /// <summary>
+        /// Minimum seconds of focused gameplay required before calculating 1% low.
+        /// Prevents calculation based on insufficient focused frame data.
+        /// </summary>
+        public int MinFocusedBufferSeconds => GetIntValue("Focus_Filtering", "min_focused_buffer_seconds", 10);
+
+        /// <summary>
         /// Gets custom game category rules from the configuration.
         /// Returns a dictionary where key is the category name and value is a list of process patterns.
         /// </summary>
@@ -317,7 +341,28 @@ ignored_processes=
 minimum_fps_threshold=1.0
 
 # Prefer fullscreen applications over windowed ones
-prefer_fullscreen=true";
+prefer_fullscreen=true
+
+[Focus_Filtering]
+# Enable focus-aware filtering for 1% low calculations
+# When enabled, frame times from alt-tab/overlay scenarios are excluded from 1% low calculations
+# This prevents 1% low FPS from getting stuck at low values after focus loss events
+enable_focus_filtering=true
+
+# Use aggressive buffer recovery when focus is regained
+# When enabled, immediately clears out-of-focus frame times from buffers
+# Recommended: false (let natural 60-second cleanup handle it)
+aggressive_recovery=false
+
+# Completely exclude unfocused frame times from calculations
+# When enabled, frame times from unfocused states are not added to buffer at all
+# Recommended: true (prevents buffer contamination)
+exclude_unfocused_frames=true
+
+# Minimum seconds of focused gameplay required before calculating 1% low
+# Prevents calculation based on insufficient focused frame data
+# Recommended: 10 seconds minimum for stable calculations
+min_focused_buffer_seconds=10";
 
                 // Create directory if it doesn't exist
                 var directory = Path.GetDirectoryName(_configFilePath);

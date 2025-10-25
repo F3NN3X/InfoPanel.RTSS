@@ -50,8 +50,18 @@ namespace InfoPanel.RTSS.Statistics
         /// </summary>
         private void AddFrameDataToBuffer(double frameTimeMs)
         {
+            // Default to focused state for backward compatibility
+            AddFrameDataToBufferWithFocus(frameTimeMs, true);
+        }
+
+        /// <summary>
+        /// Add frame data to time-based buffer with focus state metadata.
+        /// Enables smart filtering for focus-aware 1% low calculations.
+        /// </summary>
+        private void AddFrameDataToBufferWithFocus(double frameTimeMs, bool wasFocused)
+        {
             var now = DateTime.UtcNow;
-            var frameData = new TimedFrameData(frameTimeMs, now);
+            var frameData = new TimedFrameData(frameTimeMs, now, wasFocused);
             
             lock (_frameBufferLock)
             {

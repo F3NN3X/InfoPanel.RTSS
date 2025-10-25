@@ -33,6 +33,11 @@ namespace InfoPanel.RTSS.Services
         private double _currentFrameTime = 0.0;
         private double _current1PercentLow = 0.0;
         
+        // Focus state tracking for smart filtering
+        private bool _lastKnownFocusState = true;
+        private DateTime _lastFocusChange = DateTime.UtcNow;
+        private int _focusChangeCount = 0;
+        
         // Frame time tracking for 1% low calculation
         private readonly Queue<double> _frameTimeBuffer = new Queue<double>();
         private const int FrameBufferSize = 100;
@@ -149,8 +154,27 @@ namespace InfoPanel.RTSS.Services
                     _currentFps = hookedProcess.Fps;
                     _currentFrameTime = _currentFps > 0 ? 1000.0 / _currentFps : 0.0;
                     
-                    // Update 1% low calculation using enhanced hybrid approach
-                    UpdateFrameTimeBuffer(_currentFrameTime);
+                    // Track focus state for smart filtering
+                    bool currentFocusState = IsProcessForeground(_currentMonitoredPid);
+                    bool focusStateChanged = currentFocusState != _lastKnownFocusState;
+                    
+                    if (focusStateChanged)
+                    {
+                        _lastFocusChange = DateTime.UtcNow;
+                        _focusChangeCount++;
+                        _fileLogger?.LogInfo($"[FOCUS CHANGE] Process {_currentMonitoredPid} focus: {_lastKnownFocusState} -> {currentFocusState} (change #{_focusChangeCount})");
+                        _lastKnownFocusState = currentFocusState;
+                        
+                        // Optional aggressive recovery: clear unfocused frames when focus is regained
+                        if (currentFocusState && _configService.EnableFocusFiltering && _configService.AggressiveRecovery)
+                        {
+                            ClearUnfocusedFramesFromBuffer();
+                            _fileLogger?.LogInfo("[AGGRESSIVE RECOVERY] Cleared unfocused frames from buffer after focus regained");
+                        }
+                    }
+                    
+                    // Update 1% low calculation using enhanced focus-aware approach
+                    UpdateFrameTimeBufferWithFocus(_currentFrameTime, currentFocusState);
                     _current1PercentLow = CalculateEnhanced1PercentLow();
                     
                     // Update enhanced RTSSCandidate with calculated metrics
@@ -543,13 +567,86 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
+        /// Focus-aware frame time buffer update with smart filtering capabilities.
+        /// Implements configurable focus filtering to prevent 1% low corruption from alt-tab/overlay events.
+        /// </summary>
+        private void UpdateFrameTimeBufferWithFocus(double frameTime, bool isFocused)
+        {
+            if (frameTime <= 0) return;
+            
+            // Check focus filtering configuration
+            bool shouldExcludeUnfocused = _configService.EnableFocusFiltering && _configService.ExcludeUnfocusedFrames;
+            
+            if (!isFocused && shouldExcludeUnfocused)
+            {
+                // Log unfocused frame exclusion (throttled to avoid spam)
+                _fileLogger?.LogDebugThrottled($"Excluding unfocused frame time: {frameTime:F2}ms (FPS: {(1000.0/frameTime):F1})", "unfocused_frame_excluded");
+                
+                // Still update session stats to track all frames, but skip buffer updates
+                UpdateSessionStatistics(frameTime);
+                return;
+            }
+            
+            // Always update legacy frame buffer for backward compatibility
+            _frameTimeBuffer.Enqueue(frameTime);
+            while (_frameTimeBuffer.Count > FrameBufferSize)
+            {
+                _frameTimeBuffer.Dequeue();
+            }
+            
+            // Add to time-based buffer with focus state metadata
+            AddFrameDataToBufferWithFocus(frameTime, isFocused);
+            
+            // Update session statistics
+            UpdateSessionStatistics(frameTime);
+            
+            // Debug logging for focus-aware filtering
+            if (_configService.EnableFocusFiltering)
+            {
+                _fileLogger?.LogDebugThrottled($"Frame added to buffer: {frameTime:F2}ms, Focused: {isFocused}, Buffer count: {_timedFrameBuffer.Count}", "focus_aware_update");
+            }
+        }
+
+        /// <summary>
+        /// Clears unfocused frames from the time-based buffer for aggressive recovery.
+        /// Used when focus is regained and aggressive recovery is enabled.
+        /// </summary>
+        private void ClearUnfocusedFramesFromBuffer()
+        {
+            lock (_frameBufferLock)
+            {
+                int originalCount = _timedFrameBuffer.Count;
+                var focusedFrames = _timedFrameBuffer.Where(f => f.WasFocused).ToArray();
+                
+                _timedFrameBuffer.Clear();
+                foreach (var frame in focusedFrames)
+                {
+                    _timedFrameBuffer.Enqueue(frame);
+                }
+                
+                int removedCount = originalCount - _timedFrameBuffer.Count;
+                _fileLogger?.LogInfo($"Aggressive recovery: Removed {removedCount} unfocused frames, kept {_timedFrameBuffer.Count} focused frames");
+            }
+        }
+
+        /// <summary>
         /// Add frame data to time-based buffer with automatic cleanup of old data
         /// Follows CapFrameX methodology for time-weighted 1% low calculation
         /// </summary>
         private void AddFrameDataToBuffer(double frameTimeMs)
         {
+            // Default to focused state for backward compatibility
+            AddFrameDataToBufferWithFocus(frameTimeMs, true);
+        }
+
+        /// <summary>
+        /// Add frame data to time-based buffer with focus state metadata.
+        /// Enables smart filtering for focus-aware 1% low calculations.
+        /// </summary>
+        private void AddFrameDataToBufferWithFocus(double frameTimeMs, bool wasFocused)
+        {
             var now = DateTime.UtcNow;
-            var frameData = new TimedFrameData(frameTimeMs, now);
+            var frameData = new TimedFrameData(frameTimeMs, now, wasFocused);
             
             lock (_frameBufferLock)
             {
@@ -615,27 +712,50 @@ namespace InfoPanel.RTSS.Services
         }
 
         /// <summary>
-        /// Calculate 1% low FPS using time-weighted method following CapFrameX approach
-        /// Returns the average frame rate during the worst 1% of gameplay time
+        /// Calculate 1% low FPS using time-weighted method following CapFrameX approach.
+        /// Now includes focus-aware filtering to exclude alt-tab/overlay frame times.
+        /// Returns the average frame rate during the worst 1% of focused gameplay time.
         /// </summary>
         private double Calculate1PercentLow()
         {
             lock (_frameBufferLock)
             {
-                // Need sufficient data for meaningful calculation
-                if (_timedFrameBuffer.Count < 60) // At least 1 second at 60 FPS
+                // Get all frame data
+                var allFrameData = _timedFrameBuffer.ToArray();
+                
+                // Apply focus filtering if enabled
+                var frameData = allFrameData;
+                if (_configService.EnableFocusFiltering)
                 {
+                    var focusedFrames = allFrameData.Where(f => f.WasFocused).ToArray();
+                    var unfocusedCount = allFrameData.Length - focusedFrames.Length;
+                    
+                    if (unfocusedCount > 0)
+                    {
+                        _fileLogger?.LogDebugThrottled($"Focus filtering: Using {focusedFrames.Length} focused frames, excluded {unfocusedCount} unfocused frames", "focus_filtering_stats");
+                    }
+                    
+                    frameData = focusedFrames;
+                }
+                
+                // Need sufficient data for meaningful calculation
+                if (frameData.Length < 60) // At least 1 second at 60 FPS
+                {
+                    _fileLogger?.LogDebugThrottled($"Insufficient frame data for 1% low calculation: {frameData.Length} frames (need 60+)", "insufficient_frames");
                     return 0.0;
                 }
 
                 try
                 {
-                    var frameData = _timedFrameBuffer.ToArray();
                     var totalDuration = frameData.Max(f => f.Timestamp) - frameData.Min(f => f.Timestamp);
                     
-                    // Need at least 10 seconds of data for stable 1% low
-                    if (totalDuration.TotalSeconds < 10)
+                    // Check minimum focused buffer duration if focus filtering is enabled
+                    double requiredDurationSeconds = _configService.EnableFocusFiltering ? 
+                        _configService.MinFocusedBufferSeconds : 10;
+                    
+                    if (totalDuration.TotalSeconds < requiredDurationSeconds)
                     {
+                        _fileLogger?.LogDebugThrottled($"Insufficient buffer duration: {totalDuration.TotalSeconds:F1}s (need {requiredDurationSeconds}s)", "insufficient_duration");
                         return 0.0;
                     }
 
@@ -662,18 +782,20 @@ namespace InfoPanel.RTSS.Services
                     var averageWorstFrameTime = worstFrames.Average(f => f.FrameTimeMs);
                     var onePercentLowFps = averageWorstFrameTime > 0 ? 1000.0 / averageWorstFrameTime : 0.0;
                     
-                    // Throttled logging (every 100 calculations)
+                    // Enhanced logging every 100 calculations
                     _onePercentLowCalculationCount++;
                     if (_onePercentLowCalculationCount % 100 == 0)
                     {
-                        _fileLogger?.LogInfo($"1% Low Calculation: {frameData.Length} frames over {totalDuration.TotalSeconds:F1}s, worst {worstFrames.Count} frames, avg worst: {averageWorstFrameTime:F2}ms = {onePercentLowFps:F1} FPS");
+                        string filterInfo = _configService.EnableFocusFiltering ? 
+                            $" (focus-filtered: {frameData.Length}/{allFrameData.Length} frames)" : "";
+                        _fileLogger?.LogInfo($"1% Low Calculation: {frameData.Length} frames over {totalDuration.TotalSeconds:F1}s, worst {worstFrames.Count} frames, avg worst: {averageWorstFrameTime:F2}ms = {onePercentLowFps:F1} FPS{filterInfo}");
                     }
                     
                     return onePercentLowFps;
                 }
                 catch (Exception ex)
                 {
-                    _fileLogger?.LogError($"Error calculating time-based 1% low: {ex.Message}");
+                    _fileLogger?.LogError($"Error calculating focus-aware 1% low: {ex.Message}");
                     return 0.0;
                 }
             }

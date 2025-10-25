@@ -8,10 +8,10 @@ InfoPanel.RTSS provides detailed performance statistics for running fullscreen a
 
 ![InfoPanel.RTSS Screenshot](https://i.imgur.com/shmb3rI.png)
 
-**Version:** 1.1.5  
+**Version:** 1.1.6  
 **Author:** F3NN3X
 
-> **🔧 Latest Update:** Version 1.1.5 includes a critical fix for graphics API detection, ensuring Vulkan games are now correctly identified instead of being misdetected as DirectX 11.
+> **🔧 Latest Update:** Version 1.1.6 features a major code refactoring for improved maintainability, single responsibility architecture, and enhanced component organization.
 
 ## Features
 

@@ -1,5 +1,76 @@
 # CHANGELOG
 
+## v1.1.6 (October 25, 2025)
+
+### 🏗️ **Major Code Refactoring - Single Responsibility Architecture**
+- **Architectural Overhaul**: Complete refactoring of monolithic codebase following Single Responsibility Principle
+- **File Structure Transformation**: 
+  - **Before**: Single `RTSSOnlyMonitoringService.cs` file (1,377 lines)
+  - **After**: Organized into specialized components across logical namespaces (920 lines main service + 7 focused components)
+- **New Directory Organization**:
+  - **Models/**: Data structures (`RTSSCandidate.cs`, `TimedFrameData.cs`, `SessionStatistics.cs`)
+  - **Analysis/**: Analysis components (`GraphicsAPIDetector.cs`, `WindowModeDetector.cs`, `GameCategorizer.cs`)
+  - **Statistics/**: Performance calculations (`FrameTimeCalculator.cs`, `SessionStatisticsManager.cs`)
+  - **Services/**: Core services (refactored `RTSSMonitoringService.cs`)
+
+### 🎯 **Component Extraction & Specialization**
+- **Data Models Extraction**:
+  - **RTSSCandidate**: Primary data model for RTSS process candidates with comprehensive gaming metrics
+  - **TimedFrameData**: Time-based frame data structure for CapFrameX methodology calculations
+  - **SessionStatistics**: Session-wide statistical aggregation with memory-efficient tracking
+- **Analysis Components**:
+  - **GraphicsAPIDetector**: Graphics API detection from RTSS flags (DirectX, Vulkan, OpenGL)
+  - **WindowModeDetector**: Enhanced window mode detection using Win32 API analysis
+  - **GameCategorizer**: Game classification based on process names, paths, and APIs
+- **Statistics Engines**:
+  - **FrameTimeCalculator**: Frame time calculations and 1% low FPS using CapFrameX methodology
+  - **SessionStatisticsManager**: Session-wide statistics and hybrid calculation system
+
+### 📊 **Enhanced 1% Low FPS Calculation System**
+- **CapFrameX Methodology Integration**: Implemented industry-standard CapFrameX frame time analysis for precise 1% low calculations
+- **Time-Weighted Accuracy**: Added `TimedFrameData` structure to store frame times with precise timestamps for accurate statistical calculations
+- **Hybrid Calculation System**: 
+  - **Real-Time Buffer**: Rolling 100-frame window for immediate 1% low calculations using 99th percentile methodology
+  - **Session-Wide Statistics**: Long-term tracking of worst frame times across entire gaming session
+  - **Enhanced Blending**: Intelligent combination of real-time and session data for improved accuracy over time
+- **Memory-Efficient Design**: 
+  - **Smart Buffer Management**: Automatic cleanup of frame time buffers when monitoring stops
+  - **Statistical Boundaries**: Session statistics track only essential data points to minimize memory usage
+  - **Performance Optimized**: Calculations designed for minimal CPU overhead during high-frequency updates
+- **Statistical Improvements**:
+  - **99th Percentile Calculation**: True 1% low using industry-standard percentile methodology instead of simple minimum values
+  - **Session Reset Capability**: Clean session boundary detection for accurate per-game statistics
+  - **Temporal Accuracy**: Frame time calculations account for actual timing variations rather than theoretical frame rates
+
+### 🧹 **Code Quality Improvements**
+- **Eliminated Code Duplication**: Removed 460+ lines of duplicate `RTSSDataAnalyzer` class
+- **File Renaming**: `RTSSOnlyMonitoringService.cs` → `RTSSMonitoringService.cs` (class renamed accordingly)
+- **Namespace Organization**: Added proper using statements for new namespaces (`InfoPanel.RTSS.Analysis`, `InfoPanel.RTSS.Statistics`)
+- **Method Call Updates**: Updated all method calls to use specialized components instead of monolithic analyzer
+- **Clean Architecture**: Each component now has a single, focused responsibility
+
+### 🚀 **Maintainability & Future-Ready Benefits**
+- **Testability**: Components can now be unit tested in isolation
+- **Reusability**: Analysis and statistics classes can be reused by other services
+- **Maintainability**: Much easier to find, understand, and modify specific functionality
+- **Extensibility**: Simple to add new analysis or statistics components
+- **Dependency Injection Ready**: Structure prepared for DI container integration
+- **33% Main File Size Reduction**: Primary service file reduced from 1,377 to 920 lines
+
+### 📋 **Technical Implementation Details**
+- **Phase 1**: Data model extraction to `Models/` directory with build validation
+- **Phase 2**: Analysis component extraction to `Analysis/` directory with method call updates
+- **Phase 3**: Statistics engine extraction to `Statistics/` directory with calculation updates
+- **Phase 4**: Service cleanup, renaming, and duplicate code removal
+- **Zero Performance Impact**: All functionality preserved with identical performance characteristics
+- **Full Compatibility**: External API unchanged, all configurations and data formats preserved
+
+### 📖 **Documentation Enhancement**
+- **Comprehensive Documentation**: Added detailed `CODE_REFACTORING_v1.1.6.md` in docs/ directory
+- **Architecture Guide**: Complete explanation of new component structure and relationships
+- **Migration Process**: Detailed documentation of refactoring phases and decisions
+- **Future Enhancement Opportunities**: Guidelines for dependency injection, unit testing, and plugin architecture
+
 ## v1.1.5 (October 23, 2025)
 
 ### 🎯 **User-Configurable Game Categories**

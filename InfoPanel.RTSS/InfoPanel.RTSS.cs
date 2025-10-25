@@ -1,4 +1,4 @@
-// InfoPanel.RTSS v1.1.5 - RTSS-Only FPS Monitoring Plugin
+// InfoPanel.RTSS v1.1.6 - RTSS-Only FPS Monitoring Plugin
 using InfoPanel.Plugins;
 using InfoPanel.RTSS.Services;
 using InfoPanel.RTSS.Models;
@@ -26,7 +26,7 @@ namespace InfoPanel.RTSS
 
         #region Private Fields
 
-        private readonly RTSSOnlyMonitoringService _rtssMonitoringService;
+        private readonly RTSSMonitoringService _rtssMonitoringService;
         private readonly SensorManagementService _sensorService;
         private readonly SystemInformationService _systemInfoService;
         private readonly ConfigurationService _configService;
@@ -48,7 +48,7 @@ namespace InfoPanel.RTSS
                 _sensorService = new SensorManagementService(_configService, _fileLogger);
                 
                 // Initialize RTSS-only monitoring service with event handling
-                _rtssMonitoringService = new RTSSOnlyMonitoringService(_configService, _fileLogger);
+                _rtssMonitoringService = new RTSSMonitoringService(_configService, _fileLogger);
                 _rtssMonitoringService.MetricsUpdated += OnMetricsUpdated;
                 _rtssMonitoringService.EnhancedMetricsUpdated += OnEnhancedMetricsUpdated;
 

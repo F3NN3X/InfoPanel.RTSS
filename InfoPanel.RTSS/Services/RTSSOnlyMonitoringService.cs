@@ -537,6 +537,67 @@ namespace InfoPanel.RTSS.Services
         private readonly Queue<double> _frameTimeBuffer = new Queue<double>();
         private const int FrameBufferSize = 100;
         
+        // Time-based frame data for accurate 1% low calculation following CapFrameX methodology
+        private struct TimedFrameData
+        {
+            public double FrameTimeMs { get; set; }
+            public DateTime Timestamp { get; set; }
+            
+            public TimedFrameData(double frameTimeMs, DateTime timestamp)
+            {
+                FrameTimeMs = frameTimeMs;
+                Timestamp = timestamp;
+            }
+        }
+
+        /// <summary>
+        /// Session-wide statistical aggregation for memory-efficient long-session tracking.
+        /// Uses SortedDictionary to maintain worst frame times without storing all frames.
+        /// </summary>
+        private class SessionStatistics
+        {
+            public DateTime SessionStart { get; set; } = DateTime.UtcNow;
+            public TimeSpan TotalSessionDuration => DateTime.UtcNow - SessionStart;
+            public long TotalFrameCount { get; set; } = 0;
+            
+            // SortedDictionary for efficient worst frame tracking (key=frameTime, value=count)
+            public SortedDictionary<double, int> WorstFrameTimes { get; set; } = new(new DescendingDoubleComparer());
+            
+            // Track aggregation efficiency
+            public int MaxWorstFramesTracked { get; set; } = 10000; // Configurable limit
+            public long TotalWorstFramesProcessed { get; set; } = 0;
+            
+            public void Reset()
+            {
+                SessionStart = DateTime.UtcNow;
+                TotalFrameCount = 0;
+                WorstFrameTimes.Clear();
+                TotalWorstFramesProcessed = 0;
+            }
+        }
+
+        /// <summary>
+        /// Custom comparer for SortedDictionary to maintain descending order (worst times first)
+        /// </summary>
+        private class DescendingDoubleComparer : IComparer<double>
+        {
+            public int Compare(double x, double y)
+            {
+                // Reverse comparison for descending order
+                return y.CompareTo(x);
+            }
+        }
+        
+        // Time-based frame buffer for industry-standard 1% low calculation
+        private readonly Queue<TimedFrameData> _timedFrameBuffer = new();
+        private readonly object _frameBufferLock = new object();
+        private static readonly TimeSpan MinBufferDuration = TimeSpan.FromSeconds(60);
+        private int _onePercentLowCalculationCount = 0;
+        
+        // Session-wide statistics for long gaming sessions
+        private readonly SessionStatistics _sessionStats = new();
+        private readonly object _sessionStatsLock = new object();
+        
         // Loop counter for periodic operations
         private int _loopCounter = 0;
         private DateTime _lastDebugLog = DateTime.MinValue;
@@ -622,6 +683,13 @@ namespace InfoPanel.RTSS.Services
                         _fileLogger?.LogInfo($"RTSS hook detected: switching from PID {_currentMonitoredPid} to PID {hookedProcess.ProcessId}");
                         _currentMonitoredPid = hookedProcess.ProcessId;
                         
+                        // Reset session statistics for new game/process
+                        lock (_sessionStatsLock)
+                        {
+                            _sessionStats.Reset();
+                            _fileLogger?.LogInfo("Session statistics reset for new process");
+                        }
+                        
                         // Get window title for the new process
                         _currentWindowTitle = GetWindowTitleForPid(hookedProcess.ProcessId);
                         
@@ -632,9 +700,9 @@ namespace InfoPanel.RTSS.Services
                     _currentFps = hookedProcess.Fps;
                     _currentFrameTime = _currentFps > 0 ? 1000.0 / _currentFps : 0.0;
                     
-                    // Update 1% low calculation
+                    // Update 1% low calculation using enhanced hybrid approach
                     UpdateFrameTimeBuffer(_currentFrameTime);
-                    _current1PercentLow = Calculate1PercentLow();
+                    _current1PercentLow = CalculateEnhanced1PercentLow();
                     
                     // Update enhanced RTSSCandidate with calculated metrics
                     hookedProcess.OnePercentLowFps = _current1PercentLow;
@@ -671,6 +739,18 @@ namespace InfoPanel.RTSS.Services
                         _currentFrameTime = 0.0;
                         _current1PercentLow = 0.0;
                         _frameTimeBuffer.Clear();
+                        
+                        // Clear time-based buffer as well
+                        lock (_frameBufferLock)
+                        {
+                            _timedFrameBuffer.Clear();
+                        }
+                        
+                        // Reset session statistics when no valid hooks
+                        lock (_sessionStatsLock)
+                        {
+                            _sessionStats.Reset();
+                        }
                         
                         // Fire event only when state actually changes
                         MetricsUpdated?.Invoke(0.0, 0.0, 0.0, _configService.DefaultCaptureMessage, 0);
@@ -999,31 +1079,253 @@ namespace InfoPanel.RTSS.Services
         {
             if (frameTime <= 0) return;
             
+            // Update legacy frame buffer (for compatibility)
             _frameTimeBuffer.Enqueue(frameTime);
-            
-            // Keep buffer at fixed size
             while (_frameTimeBuffer.Count > FrameBufferSize)
             {
                 _frameTimeBuffer.Dequeue();
             }
+            
+            // Update time-based buffer for enhanced 1% low calculation
+            AddFrameDataToBuffer(frameTime);
+            
+            // Update session statistics for long-term tracking
+            UpdateSessionStatistics(frameTime);
         }
 
         /// <summary>
-        /// Calculates 1% low FPS from frame time buffer
+        /// Add frame data to time-based buffer with automatic cleanup of old data
+        /// Follows CapFrameX methodology for time-weighted 1% low calculation
+        /// </summary>
+        private void AddFrameDataToBuffer(double frameTimeMs)
+        {
+            var now = DateTime.UtcNow;
+            var frameData = new TimedFrameData(frameTimeMs, now);
+            
+            lock (_frameBufferLock)
+            {
+                _timedFrameBuffer.Enqueue(frameData);
+                
+                // Remove frames older than 60 seconds
+                var cutoffTime = now.Subtract(MinBufferDuration);
+                while (_timedFrameBuffer.Count > 0 && _timedFrameBuffer.Peek().Timestamp < cutoffTime)
+                {
+                    _timedFrameBuffer.Dequeue();
+                }
+                
+                // Also remove excess frames to prevent memory growth (keep max 10,000 frames)
+                while (_timedFrameBuffer.Count > 10000)
+                {
+                    _timedFrameBuffer.Dequeue();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Update session-wide statistics for memory-efficient long-term tracking.
+        /// Maintains worst frame times without storing all frames using statistical aggregation.
+        /// </summary>
+        private void UpdateSessionStatistics(double frameTimeMs)
+        {
+            lock (_sessionStatsLock)
+            {
+                _sessionStats.TotalFrameCount++;
+                
+                // Only track frames worse than current tracked minimums to maintain efficiency
+                bool shouldTrack = _sessionStats.WorstFrameTimes.Count < _sessionStats.MaxWorstFramesTracked;
+                
+                if (!shouldTrack && _sessionStats.WorstFrameTimes.Count > 0)
+                {
+                    // Check if this frame is worse than our best tracked worst frame
+                    var bestWorstFrame = _sessionStats.WorstFrameTimes.Keys.Last(); // Last = smallest (best) due to descending sort
+                    shouldTrack = frameTimeMs > bestWorstFrame;
+                }
+                
+                if (shouldTrack)
+                {
+                    // Add or increment this frame time
+                    if (_sessionStats.WorstFrameTimes.ContainsKey(frameTimeMs))
+                    {
+                        _sessionStats.WorstFrameTimes[frameTimeMs]++;
+                    }
+                    else
+                    {
+                        _sessionStats.WorstFrameTimes[frameTimeMs] = 1;
+                        
+                        // If we exceed our limit, remove the best (smallest) worst frame
+                        if (_sessionStats.WorstFrameTimes.Count > _sessionStats.MaxWorstFramesTracked)
+                        {
+                            var bestWorstFrame = _sessionStats.WorstFrameTimes.Keys.Last();
+                            _sessionStats.WorstFrameTimes.Remove(bestWorstFrame);
+                        }
+                    }
+                    
+                    _sessionStats.TotalWorstFramesProcessed++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Calculate 1% low FPS using time-weighted method following CapFrameX approach
+        /// Returns the average frame rate during the worst 1% of gameplay time
         /// </summary>
         private double Calculate1PercentLow()
         {
-            if (_frameTimeBuffer.Count < 10) return 0.0;
+            lock (_frameBufferLock)
+            {
+                // Need sufficient data for meaningful calculation
+                if (_timedFrameBuffer.Count < 60) // At least 1 second at 60 FPS
+                {
+                    return 0.0;
+                }
+
+                try
+                {
+                    var frameData = _timedFrameBuffer.ToArray();
+                    var totalDuration = frameData.Max(f => f.Timestamp) - frameData.Min(f => f.Timestamp);
+                    
+                    // Need at least 10 seconds of data for stable 1% low
+                    if (totalDuration.TotalSeconds < 10)
+                    {
+                        return 0.0;
+                    }
+
+                    // Calculate 1% of total time duration
+                    var onePercentDuration = totalDuration.TotalMilliseconds * 0.01;
+                    
+                    // Sort frames by frame time (worst frames first)
+                    var sortedFrames = frameData.OrderByDescending(f => f.FrameTimeMs).ToArray();
+                    
+                    // Accumulate worst frame times until we reach 1% of total time
+                    double accumulatedTime = 0;
+                    var worstFrames = new List<TimedFrameData>();
+                    
+                    foreach (var frame in sortedFrames)
+                    {
+                        worstFrames.Add(frame);
+                        accumulatedTime += frame.FrameTimeMs;
+                        
+                        if (accumulatedTime >= onePercentDuration)
+                            break;
+                    }
+                    
+                    // Calculate average frame time of worst 1% of time
+                    var averageWorstFrameTime = worstFrames.Average(f => f.FrameTimeMs);
+                    var onePercentLowFps = averageWorstFrameTime > 0 ? 1000.0 / averageWorstFrameTime : 0.0;
+                    
+                    // Throttled logging (every 100 calculations)
+                    _onePercentLowCalculationCount++;
+                    if (_onePercentLowCalculationCount % 100 == 0)
+                    {
+                        _fileLogger?.LogInfo($"1% Low Calculation: {frameData.Length} frames over {totalDuration.TotalSeconds:F1}s, worst {worstFrames.Count} frames, avg worst: {averageWorstFrameTime:F2}ms = {onePercentLowFps:F1} FPS");
+                    }
+                    
+                    return onePercentLowFps;
+                }
+                catch (Exception ex)
+                {
+                    _fileLogger?.LogError($"Error calculating time-based 1% low: {ex.Message}");
+                    return 0.0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Enhanced 1% low calculation combining real-time (60s window) and session-wide statistics.
+        /// Provides both immediate responsiveness and long-term session accuracy.
+        /// </summary>
+        private double CalculateEnhanced1PercentLow()
+        {
+            // Calculate real-time 1% low from 60-second buffer
+            var realTime1PercentLow = Calculate1PercentLow();
             
-            var frameTimes = new List<double>(_frameTimeBuffer);
-            frameTimes.Sort();
+            // Calculate session-wide 1% low from statistical aggregation
+            var session1PercentLow = CalculateSession1PercentLow();
             
-            // Get 99th percentile (1% low means worst 1% of frames)
-            int index = (int)(frameTimes.Count * 0.99);
-            if (index >= frameTimes.Count) index = frameTimes.Count - 1;
-            
-            double worstFrameTime = frameTimes[index];
-            return worstFrameTime > 0 ? 1000.0 / worstFrameTime : 0.0;
+            // Hybrid approach: Use real-time for short sessions, session-wide for longer sessions
+            lock (_sessionStatsLock)
+            {
+                var sessionMinutes = _sessionStats.TotalSessionDuration.TotalMinutes;
+                
+                // For sessions under 10 minutes, primarily use real-time calculation
+                if (sessionMinutes < 10)
+                {
+                    return realTime1PercentLow;
+                }
+                
+                // For longer sessions, blend real-time and session-wide calculations
+                // Weight shifts from real-time to session-wide as session gets longer
+                var sessionWeight = Math.Min(0.8, sessionMinutes / 60.0); // Max 80% session weight at 1 hour
+                var realTimeWeight = 1.0 - sessionWeight;
+                
+                // If either calculation is invalid, use the valid one
+                if (realTime1PercentLow <= 0) return session1PercentLow;
+                if (session1PercentLow <= 0) return realTime1PercentLow;
+                
+                // Weighted blend of both calculations
+                var enhancedResult = (realTime1PercentLow * realTimeWeight) + (session1PercentLow * sessionWeight);
+                
+                // Enhanced logging every 100 calculations
+                if (_onePercentLowCalculationCount % 100 == 0)
+                {
+                    _fileLogger?.LogInfo($"Enhanced 1% Low: Session {sessionMinutes:F1}min, Real-time: {realTime1PercentLow:F1} FPS, Session: {session1PercentLow:F1} FPS, Blended: {enhancedResult:F1} FPS (weights: {realTimeWeight:F2}/{sessionWeight:F2})");
+                }
+                
+                return enhancedResult;
+            }
+        }
+
+        /// <summary>
+        /// Calculate session-wide 1% low from statistical aggregation without storing all frames.
+        /// Uses worst frame time tracking for memory-efficient long session analysis.
+        /// </summary>
+        private double CalculateSession1PercentLow()
+        {
+            lock (_sessionStatsLock)
+            {
+                // Need sufficient session data for meaningful calculation
+                if (_sessionStats.TotalFrameCount < 1000 || _sessionStats.WorstFrameTimes.Count == 0)
+                {
+                    return 0.0;
+                }
+                
+                try
+                {
+                    // Calculate 1% of total frames processed
+                    var onePercentFrameCount = Math.Max(1, (long)(_sessionStats.TotalFrameCount * 0.01));
+                    
+                    // Accumulate worst frames until we reach 1% of total frame count
+                    long accumulatedFrames = 0;
+                    double totalWorstFrameTime = 0;
+                    
+                    foreach (var kvp in _sessionStats.WorstFrameTimes)
+                    {
+                        var frameTime = kvp.Key;
+                        var count = kvp.Value;
+                        
+                        var framesToAdd = Math.Min(count, onePercentFrameCount - accumulatedFrames);
+                        totalWorstFrameTime += frameTime * framesToAdd;
+                        accumulatedFrames += framesToAdd;
+                        
+                        if (accumulatedFrames >= onePercentFrameCount)
+                            break;
+                    }
+                    
+                    // Calculate average worst frame time and convert to FPS
+                    if (accumulatedFrames > 0)
+                    {
+                        var averageWorstFrameTime = totalWorstFrameTime / accumulatedFrames;
+                        return averageWorstFrameTime > 0 ? 1000.0 / averageWorstFrameTime : 0.0;
+                    }
+                    
+                    return 0.0;
+                }
+                catch (Exception ex)
+                {
+                    _fileLogger?.LogError($"Error calculating session 1% low: {ex.Message}");
+                    return 0.0;
+                }
+            }
         }
 
         /// <summary>

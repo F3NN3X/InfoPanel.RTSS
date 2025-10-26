@@ -46,7 +46,7 @@ namespace InfoPanel.RTSS.Services
 
 
         /// <summary>
-        /// Whether RTSS monitoring should be used (always true in v1.2.0+).
+        /// Whether RTSS monitoring should be used (always true in v1.1.6+).
         /// Legacy property kept for configuration compatibility.
         /// </summary>
         [Obsolete("RTSS is now the only monitoring method. This property is kept for config compatibility.")]
@@ -340,10 +340,8 @@ namespace InfoPanel.RTSS.Services
             try
             {
                 var defaultConfig = @"[FPS_Monitoring]
-# InfoPanel.RTSS v1.2.0 uses RTSS + MSI Afterburner (MAHM) for enhanced monitoring
-# MAHM provides statistics without requiring RTSS benchmark mode
+# InfoPanel.RTSS v1.1.6+ uses RTSS (RivaTuner Statistics Server) exclusively
 # RTSS must be running for FPS monitoring to work
-# MSI Afterburner recommended for automatic statistics (no benchmark mode needed)
 # Download RTSS: https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html
 # Or install MSI Afterburner (includes RTSS): https://www.msi.com/Landing/afterburner
 

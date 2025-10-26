@@ -75,7 +75,7 @@ namespace InfoPanel.RTSS.Analysis
                 
                 if (mainWindow == IntPtr.Zero)
                 {
-                    logger?.LogInfo($"GetEnhancedDisplayMode: No main window for PID {processId}, falling back to basic detection");
+                    // No main window - likely background process or minimized
                     return GetDisplayMode(isFullscreen, 0, 0, refreshRate);
                 }
 
@@ -85,13 +85,11 @@ namespace InfoPanel.RTSS.Analysis
                 // Get window and client rectangles
                 if (!User32.GetWindowRect(mainWindow, out var windowRect))
                 {
-                    logger?.LogInfo($"GetEnhancedDisplayMode: Failed to get window rect for PID {processId}");
                     return GetDisplayMode(isFullscreen, 0, 0, refreshRate);
                 }
 
                 if (!GetClientRect(mainWindow, out var clientRect))
                 {
-                    logger?.LogInfo($"GetEnhancedDisplayMode: Failed to get client rect for PID {processId}");
                     return GetDisplayMode(isFullscreen, 0, 0, refreshRate);
                 }
 

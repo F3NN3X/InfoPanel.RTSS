@@ -29,6 +29,13 @@ namespace InfoPanel.RTSS.Services
         private IntPtr _pRTSSMemory = IntPtr.Zero;
         private unsafe RTSS_SHARED_MEMORY* _pRTSSHeader;
         
+        // Auto-Benchmark Mode Manager (v1.2.0 feature)
+        private BenchmarkModeManager? _benchmarkManager;
+        
+        // Public property to check benchmark mode status
+        public bool HasBenchmarkModeWriteAccess => _benchmarkManager?.HasWriteAccess ?? false;
+        public bool IsBenchmarkManagerInitialized => _benchmarkManager?.IsInitialized ?? false;
+        
         // Current monitoring state (ported from C++)
         private uint _lastOSDFrame = 0;
         private uint _updateCount = 0;
@@ -52,7 +59,11 @@ namespace InfoPanel.RTSS.Services
             _configService = configService;
             _fileLogger = fileLogger;
             
+            // Initialize auto-benchmark mode manager (v1.2.0 feature)
+            _benchmarkManager = new BenchmarkModeManager(fileLogger);
+            
             _fileLogger?.LogInfo("Enhanced RTSS monitoring service initialized - Direct C++ port");
+            _fileLogger?.LogInfo($"Auto-Benchmark Mode: {(_benchmarkManager.HasWriteAccess ? "✓ Enabled (Write Access)" : "✗ Disabled (Read-Only)")}");
         }
         
         /// <summary>
@@ -400,6 +411,13 @@ namespace InfoPanel.RTSS.Services
                         if (candidate != null)
                         {
                             applications.Add(candidate);
+                            
+                            // Auto-enable benchmark mode for 3D apps (v1.2.0 feature)
+                            // This ensures frame time statistics are available
+                            if (candidate.HasValid3DData && _benchmarkManager != null)
+                            {
+                                _benchmarkManager.EnableBenchmarkMode(appPtr, candidate.ProcessName, processId);
+                            }
                         }
                     }
                 }
@@ -643,6 +661,11 @@ namespace InfoPanel.RTSS.Services
             if (_disposed) return;
             
             StopMonitoringAsync().GetAwaiter().GetResult();
+            
+            // Cleanup benchmark mode manager
+            _benchmarkManager?.Dispose();
+            _benchmarkManager = null;
+            
             _disposed = true;
         }
     }

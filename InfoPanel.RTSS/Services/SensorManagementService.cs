@@ -34,6 +34,9 @@ namespace InfoPanel.RTSS.Services
         // Game resolution sensor removed - was confusing in borderless fullscreen mode
         private readonly PluginText _displayModeSensor;
         
+        // Auto-Benchmark Mode sensor (v1.2.0 feature)
+        private readonly PluginText _benchmarkModeSensor;
+        
         /// <summary>
         /// Cached window title to prevent flickering when window validation temporarily fails.
         /// Window.IsValid can become false during normal operation (e.g., when fullscreen state briefly changes,
@@ -155,6 +158,12 @@ namespace InfoPanel.RTSS.Services
                 "Unknown"
             );
 
+            _benchmarkModeSensor = new PluginText(
+                "benchmark-mode",
+                "Benchmark Mode",
+                "Initializing..."
+            );
+
             _fileLogger?.LogInfo("Sensor management service initialized with all sensors");
         }
 
@@ -187,6 +196,9 @@ namespace InfoPanel.RTSS.Services
             container.Entries.Add(_gameCategorySensor);
             // Game resolution sensor removed
             container.Entries.Add(_displayModeSensor);
+            
+            // Add auto-benchmark mode sensor (v1.2.0)
+            container.Entries.Add(_benchmarkModeSensor);
 
             containers.Add(container);
             
@@ -517,6 +529,37 @@ namespace InfoPanel.RTSS.Services
                 [SensorConstants.RefreshRateSensorId] = _refreshRateSensor.Value,
                 [SensorConstants.GpuNameSensorId] = _gpuNameSensor.Value
             };
+        }
+
+        /// <summary>
+        /// Updates the benchmark mode sensor based on RTSSMonitoringService status (v1.2.0 feature).
+        /// </summary>
+        /// <param name="hasWriteAccess">Whether BenchmarkModeManager has write access to RTSS shared memory.</param>
+        /// <param name="isInitialized">Whether BenchmarkModeManager is initialized.</param>
+        public void UpdateBenchmarkModeSensor(bool hasWriteAccess, bool isInitialized)
+        {
+            lock (_sensorLock)
+            {
+                try
+                {
+                    if (!isInitialized)
+                    {
+                        _benchmarkModeSensor.Value = "Failed (RTSS Not Running)";
+                    }
+                    else if (!hasWriteAccess)
+                    {
+                        _benchmarkModeSensor.Value = "✗ Disabled (Run as Administrator)";
+                    }
+                    else
+                    {
+                        _benchmarkModeSensor.Value = "✓ Enabled";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _fileLogger?.LogError("Error updating benchmark mode sensor", ex);
+                }
+            }
         }
     }
 }

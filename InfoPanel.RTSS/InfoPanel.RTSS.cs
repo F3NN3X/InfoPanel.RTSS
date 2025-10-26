@@ -96,6 +96,12 @@ namespace InfoPanel.RTSS
                 var systemInfo = _systemInfoService.GetSystemInformation();
                 _sensorService.UpdateSystemSensors(systemInfo);
 
+                // Update benchmark mode sensor (v1.2.0)
+                _sensorService.UpdateBenchmarkModeSensor(
+                    _rtssMonitoringService.HasBenchmarkModeWriteAccess,
+                    _rtssMonitoringService.IsBenchmarkManagerInitialized
+                );
+
                 await Task.Delay(100, cancellationToken).ConfigureAwait(false); // Basic throttling
 
                 // RTSS monitoring service handles all performance monitoring independently  

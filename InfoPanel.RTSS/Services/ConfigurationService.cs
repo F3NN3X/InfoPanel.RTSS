@@ -68,6 +68,23 @@ namespace InfoPanel.RTSS.Services
         public bool IsDebugEnabled => GetBoolValue("Debug", "debug", false);
 
         /// <summary>
+        /// Whether comprehensive RTSS shared memory dumping is enabled.
+        /// Creates RTSSmemory.log with complete raw memory analysis for troubleshooting.
+        /// </summary>
+        public bool IsRTSSDumpEnabled => GetBoolValue("Debug", "rtssdump", false);
+
+        /// <summary>
+        /// Whether complete RTSS structure analysis and dumping is enabled.
+        /// Creates RTSSCompleteDump.log with detailed structure analysis using official SDK headers.
+        /// </summary>
+        public bool IsRTSSCompleteDumpEnabled => GetBoolValue("Debug", "rtsscompletedump", false);
+
+        /// <summary>
+        /// Whether to use exact RTSS native algorithm for 1% low calculations.
+        /// </summary>
+        public bool UseRTSSExactAlgorithm => GetBoolValue("RTSS_Statistics", "use_rtss_exact_algorithm", true);
+
+        /// <summary>
         /// The default message to display when no game is being captured.
         /// </summary>
         public string DefaultCaptureMessage => GetStringValue("Display", "defaultCaptureMessage", "Nothing to capture");
@@ -110,6 +127,19 @@ namespace InfoPanel.RTSS.Services
         /// Prevents calculation based on insufficient focused frame data.
         /// </summary>
         public int MinFocusedBufferSeconds => GetIntValue("Focus_Filtering", "min_focused_buffer_seconds", 10);
+
+        /// <summary>
+        /// Whether to prefer RTSS native statistics when benchmark mode is enabled.
+        /// When enabled, uses RTSS's built-in 1% low calculations instead of custom calculations.
+        /// Requires user to enable benchmark mode in RTSS settings.
+        /// </summary>
+        public bool PreferRTSSNativeStats => GetBoolValue("RTSS_Statistics", "prefer_native_stats", true);
+
+        /// <summary>
+        /// Whether to fall back to custom calculations when RTSS native stats are unavailable.
+        /// When disabled, shows 0 for 1% low if RTSS benchmark mode is not enabled.
+        /// </summary>
+        public bool FallbackToCustomCalculations => GetBoolValue("RTSS_Statistics", "fallback_to_custom", true);
 
         /// <summary>
         /// Gets custom game category rules from the configuration.
@@ -362,7 +392,19 @@ exclude_unfocused_frames=true
 # Minimum seconds of focused gameplay required before calculating 1% low
 # Prevents calculation based on insufficient focused frame data
 # Recommended: 10 seconds minimum for stable calculations
-min_focused_buffer_seconds=10";
+min_focused_buffer_seconds=10
+
+[RTSS_Statistics]
+# Prefer RTSS native statistics when benchmark mode is enabled
+# When enabled, uses RTSS's built-in 1% low calculations instead of custom calculations
+# Requires user to enable benchmark mode in RTSS settings for accurate data
+# Recommended: true (uses RTSS professional-grade calculations)
+prefer_native_stats=true
+
+# Fall back to custom calculations when RTSS native stats are unavailable
+# When disabled, shows 0 for 1% low if RTSS benchmark mode is not enabled
+# Recommended: true (provides data even without benchmark mode)
+fallback_to_custom=true";
 
                 // Create directory if it doesn't exist
                 var directory = Path.GetDirectoryName(_configFilePath);

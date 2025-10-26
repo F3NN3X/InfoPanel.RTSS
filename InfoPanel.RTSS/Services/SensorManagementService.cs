@@ -16,6 +16,12 @@ namespace InfoPanel.RTSS.Services
         private readonly PluginSensor _fpsSensor;
         private readonly PluginSensor _onePercentLowFpsSensor;
         private readonly PluginSensor _currentFrameTimeSensor;
+        
+        // Native RTSS Statistics sensors (from dwStat* fields)
+        private readonly PluginSensor _minFpsSensor;
+        private readonly PluginSensor _avgFpsSensor;
+        private readonly PluginSensor _maxFpsSensor;
+        
         private readonly PluginText _windowTitleSensor;
         private readonly PluginText _resolutionSensor;
         private readonly PluginSensor _refreshRateSensor;
@@ -72,6 +78,28 @@ namespace InfoPanel.RTSS.Services
                 SensorConstants.CurrentFrameTimeSensorDisplayName,
                 0,
                 SensorConstants.FrameTimeUnit
+            );
+
+            // Initialize native RTSS statistics sensors
+            _minFpsSensor = new PluginSensor(
+                "min-fps",
+                "Min FPS",
+                0,
+                SensorConstants.FpsUnit
+            );
+
+            _avgFpsSensor = new PluginSensor(
+                "avg-fps", 
+                "Average FPS",
+                0,
+                SensorConstants.FpsUnit
+            );
+
+            _maxFpsSensor = new PluginSensor(
+                "max-fps",
+                "Max FPS", 
+                0,
+                SensorConstants.FpsUnit
             );
 
             // Initialize text sensors
@@ -142,6 +170,12 @@ namespace InfoPanel.RTSS.Services
             container.Entries.Add(_fpsSensor);
             container.Entries.Add(_onePercentLowFpsSensor);
             container.Entries.Add(_currentFrameTimeSensor);
+            
+            // Add native RTSS statistics sensors
+            container.Entries.Add(_minFpsSensor);
+            container.Entries.Add(_avgFpsSensor);
+            container.Entries.Add(_maxFpsSensor);
+            
             container.Entries.Add(_windowTitleSensor);
             container.Entries.Add(_resolutionSensor);
             container.Entries.Add(_refreshRateSensor);
@@ -251,6 +285,11 @@ namespace InfoPanel.RTSS.Services
                     _fpsSensor.Value = 0;
                     _onePercentLowFpsSensor.Value = 0;
                     _currentFrameTimeSensor.Value = 0;
+                    
+                    // Reset native RTSS statistics sensors
+                    _minFpsSensor.Value = 0;
+                    _avgFpsSensor.Value = 0;
+                    _maxFpsSensor.Value = 0;
 
                     // Reset information sensors to defaults
                     _windowTitleSensor.Value = SensorConstants.DefaultWindowTitle;
@@ -434,15 +473,26 @@ namespace InfoPanel.RTSS.Services
             {
                 try
                 {
+                    // Update performance sensors
+                    _fpsSensor.Value = (float)candidate.Fps;
+                    _onePercentLowFpsSensor.Value = (float)candidate.OnePercentLowFps;
+                    _currentFrameTimeSensor.Value = (float)candidate.FrameTimeMs;
+                    
+                    // Update native RTSS statistics sensors  
+                    _minFpsSensor.Value = (float)candidate.MinFps;
+                    _avgFpsSensor.Value = (float)candidate.AvgFps;
+                    _maxFpsSensor.Value = (float)candidate.MaxFps;
+                    
                     // Update enhanced text sensors with RTSSCandidate data
                     _graphicsApiSensor.Value = candidate.GraphicsAPI ?? "Unknown";
-                    _architectureSensor.Value = candidate.Architecture ?? "Unknown";
-                    _gameCategorySensor.Value = candidate.GameCategory ?? "Unknown";
-                    _displayModeSensor.Value = candidate.DisplayMode ?? "Unknown";
+                    _architectureSensor.Value = candidate.ArchitectureString ?? "Unknown";
+                    _gameCategorySensor.Value = "Gaming"; // Simplified for now
+                    _displayModeSensor.Value = candidate.WindowMode ?? "Unknown";
                     
-                    // Game resolution sensor removed - was confusing in borderless fullscreen mode
+                    // Update window title sensor
+                    _windowTitleSensor.Value = candidate.WindowTitle ?? "Nothing to capture";
                     
-                    _fileLogger?.LogDebug($"Enhanced sensors updated - API: {candidate.GraphicsAPI}, Category: {candidate.GameCategory}");
+                    _fileLogger?.LogDebug($"Enhanced sensors updated - FPS: {candidate.Fps:F1}, 1% Low: {candidate.OnePercentLowFps:F1}, API: {candidate.GraphicsAPI}, Resolution: {candidate.ResolutionString}");
                 }
                 catch (Exception ex)
                 {

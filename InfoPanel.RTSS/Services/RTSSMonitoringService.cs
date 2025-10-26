@@ -414,9 +414,16 @@ namespace InfoPanel.RTSS.Services
                             
                             // Auto-enable benchmark mode for 3D apps (v1.2.0 feature)
                             // This ensures frame time statistics are available
+                            // Pass index and offsets so BenchmarkModeManager can calculate pointer from its OWN writable mapping
                             if (candidate.HasValid3DData && _benchmarkManager != null)
                             {
-                                _benchmarkManager.EnableBenchmarkMode(appPtr, candidate.ProcessName, processId);
+                                _benchmarkManager.EnableBenchmarkMode(
+                                    i, 
+                                    _pRTSSHeader->dwAppEntrySize, 
+                                    _pRTSSHeader->dwAppArrOffset,
+                                    candidate.ProcessName, 
+                                    processId
+                                );
                             }
                         }
                     }

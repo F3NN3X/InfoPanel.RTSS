@@ -130,16 +130,19 @@ namespace InfoPanel.RTSS.Services
         /// Returns true if enabled successfully, false if write access denied or error.
         /// 
         /// Algorithm from rtss-auto.cpp:
-        /// 1. Read current dwStatFlags at offset 284
-        /// 2. Check if STATFLAG_RECORD (0x00000001) is already set
-        /// 3. If not set, enable via bitwise OR: dwStatFlags |= STATFLAG_RECORD
-        /// 4. Write back to shared memory
+        /// 1. Calculate app entry pointer using OUR writable memory mapping
+        /// 2. Read current dwStatFlags at offset 284
+        /// 3. Check if STATFLAG_RECORD (0x00000001) is already set
+        /// 4. If not set, enable via bitwise OR: dwStatFlags |= STATFLAG_RECORD
+        /// 5. Write back to shared memory
         /// </summary>
-        /// <param name="pAppBytes">Pointer to RTSS_SHARED_MEMORY_APP_ENTRY</param>
+        /// <param name="appIndex">Index of the application in RTSS app array</param>
+        /// <param name="appEntrySize">Size of each app entry (from dwAppEntrySize)</param>
+        /// <param name="appArrOffset">Offset to app array base (from dwAppArrOffset)</param>
         /// <param name="processName">Application name for logging</param>
         /// <param name="processId">Application PID for logging</param>
         /// <returns>True if enabled or already enabled, false on failure</returns>
-        public unsafe bool EnableBenchmarkMode(IntPtr pAppBytes, string processName, uint processId)
+        public unsafe bool EnableBenchmarkMode(uint appIndex, uint appEntrySize, uint appArrOffset, string processName, uint processId)
         {
             if (!IsInitialized || !_hasWriteAccess)
             {
@@ -150,6 +153,10 @@ namespace InfoPanel.RTSS.Services
             {
                 try
                 {
+                    // Calculate pointer to this app entry using OUR writable memory mapping
+                    IntPtr appArrayBase = _pMemory + (int)appArrOffset;
+                    IntPtr pAppBytes = appArrayBase + (int)(appIndex * appEntrySize);
+                    
                     // Calculate pointer to dwStatFlags (offset 284)
                     IntPtr pStatFlags = IntPtr.Add(pAppBytes, OFFSET_DWSTATFLAGS);
                     
@@ -198,11 +205,13 @@ namespace InfoPanel.RTSS.Services
         /// <summary>
         /// Check if benchmark mode is enabled for a specific application entry.
         /// </summary>
-        /// <param name="pAppBytes">Pointer to RTSS_SHARED_MEMORY_APP_ENTRY</param>
+        /// <param name="appIndex">Index of the application in RTSS app array</param>
+        /// <param name="appEntrySize">Size of each app entry (from dwAppEntrySize)</param>
+        /// <param name="appArrOffset">Offset to app array base (from dwAppArrOffset)</param>
         /// <returns>True if enabled, false otherwise</returns>
-        public bool IsBenchmarkModeEnabled(IntPtr pAppBytes)
+        public bool IsBenchmarkModeEnabled(uint appIndex, uint appEntrySize, uint appArrOffset)
         {
-            if (!IsInitialized || pAppBytes == IntPtr.Zero)
+            if (!IsInitialized)
             {
                 return false;
             }
@@ -211,6 +220,8 @@ namespace InfoPanel.RTSS.Services
             {
                 try
                 {
+                    IntPtr appArrayBase = _pMemory + (int)appArrOffset;
+                    IntPtr pAppBytes = appArrayBase + (int)(appIndex * appEntrySize);
                     IntPtr pStatFlags = IntPtr.Add(pAppBytes, OFFSET_DWSTATFLAGS);
                     uint currentFlags = (uint)Marshal.ReadInt32(pStatFlags);
                     return (currentFlags & STATFLAG_RECORD) != 0;
@@ -225,9 +236,9 @@ namespace InfoPanel.RTSS.Services
         /// <summary>
         /// Get current dwStatFlags value for diagnostic purposes.
         /// </summary>
-        public uint? GetStatFlags(IntPtr pAppBytes)
+        public uint? GetStatFlags(uint appIndex, uint appEntrySize, uint appArrOffset)
         {
-            if (!IsInitialized || pAppBytes == IntPtr.Zero)
+            if (!IsInitialized)
             {
                 return null;
             }
@@ -236,6 +247,8 @@ namespace InfoPanel.RTSS.Services
             {
                 try
                 {
+                    IntPtr appArrayBase = _pMemory + (int)appArrOffset;
+                    IntPtr pAppBytes = appArrayBase + (int)(appIndex * appEntrySize);
                     IntPtr pStatFlags = IntPtr.Add(pAppBytes, OFFSET_DWSTATFLAGS);
                     return (uint)Marshal.ReadInt32(pStatFlags);
                 }

@@ -343,6 +343,11 @@ namespace InfoPanel.RTSS.Services
                     _gameCategorySensor.Value = "Unknown";
                     // Game resolution sensor removed
                     _displayModeSensor.Value = "Unknown";
+                    
+                    // ⭐ CRITICAL FIX: Reset Min/Avg/Max FPS sensors to prevent stuck values
+                    _minFpsSensor.Value = 0;
+                    _avgFpsSensor.Value = 0;
+                    _maxFpsSensor.Value = 0;
 
                     _fileLogger?.LogInfo("Enhanced RTSS sensors reset to default values (game quit detected)");
                 }

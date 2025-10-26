@@ -285,11 +285,14 @@ namespace InfoPanel.RTSS.Services
         }
         
         /// <summary>
-        /// Main monitoring loop - frame-based polling like C++ version
+        /// Main monitoring loop - frame-based polling with time-based fallback
         /// </summary>
         private async Task MonitoringLoopAsync(CancellationToken cancellationToken)
         {
-            const int POLLING_INTERVAL_MS = 16; // ~60Hz polling like C++
+            const int POLLING_INTERVAL_MS = 16; // ~60Hz polling
+            const int FORCE_SCAN_INTERVAL_MS = 1000; // Force scan every 1 second even if no frame updates
+            
+            DateTime lastForceScan = DateTime.UtcNow;
             
             try
             {
@@ -308,17 +311,31 @@ namespace InfoPanel.RTSS.Services
                         foregroundPID = _pRTSSHeader->dwLastForegroundAppProcessID;
                     }
                     
-                    // Wait for frame update (exact same logic as C++)
-                    if (currentFrame == _lastOSDFrame)
+                    // Check if we should force a scan (time-based fallback)
+                    // This ensures we detect when games close even if RTSS stops updating frames
+                    bool forceScan = (DateTime.UtcNow - lastForceScan).TotalMilliseconds >= FORCE_SCAN_INTERVAL_MS;
+                    bool frameUpdated = currentFrame != _lastOSDFrame;
+                    
+                    // Only scan if frame updated OR force scan interval reached
+                    if (!frameUpdated && !forceScan)
                     {
                         await Task.Delay(POLLING_INTERVAL_MS, cancellationToken).ConfigureAwait(false);
                         continue;
                     }
                     
-                    _lastOSDFrame = currentFrame;
-                    _updateCount++;
+                    if (frameUpdated)
+                    {
+                        _lastOSDFrame = currentFrame;
+                        _updateCount++;
+                    }
                     
-                    // Scan all applications (ported from C++)
+                    if (forceScan)
+                    {
+                        lastForceScan = DateTime.UtcNow;
+                        _fileLogger?.LogInfo($"[ForceScan] Scanning applications (no frame update for 1s)");
+                    }
+                    
+                    // Scan all applications
                     var applications = ScanAllApplications();
                     
                     lock (_lock)
@@ -341,16 +358,18 @@ namespace InfoPanel.RTSS.Services
                             primaryApp.OnePercentLowFps, primaryApp.ProcessName, primaryApp.ProcessId);
                         EnhancedMetricsUpdated?.Invoke(primaryApp);
                     }
-                    
-                    if (applications.Any())
-                    {
-                        ApplicationsUpdated?.Invoke(applications);
-                    }
                     else
                     {
+                        // No primary 3D application detected - reset sensors
                         NoApplicationsDetected?.Invoke();
                         // Legacy event
                         MetricsUpdated?.Invoke(0.0, 0.0, 0.0, "Nothing to capture", 0);
+                    }
+                    
+                    // Notify about all applications list (even if no 3D apps)
+                    if (applications.Any())
+                    {
+                        ApplicationsUpdated?.Invoke(applications);
                     }
                     
                     // Summary logging every 60 frames (~1 second at 60Hz) - exact same as C++
@@ -448,6 +467,14 @@ namespace InfoPanel.RTSS.Services
                 var appEntry = Marshal.PtrToStructure<RTSS_SHARED_MEMORY_APP_ENTRY>(appPtr);
                 
                 uint processId = appEntry.dwProcessID;
+                
+                // CRITICAL FIX v1.2.0: Validate process still exists to avoid stuck values
+                // RTSS keeps stale entries in shared memory even after process exits
+                if (!IsProcessRunning((int)processId))
+                {
+                    return null; // Process no longer running, skip this stale entry
+                }
+                
                 uint flags = appEntry.dwFlags;
                 
                 // Timing data
@@ -569,6 +596,35 @@ namespace InfoPanel.RTSS.Services
             catch
             {
                 return string.Empty;
+            }
+        }
+        
+        /// <summary>
+        /// Check if process is still running (v1.2.0 fix for stuck values)
+        /// </summary>
+        private bool IsProcessRunning(int pid)
+        {
+            try
+            {
+                using var process = Process.GetProcessById(pid);
+                bool hasExited = process.HasExited;
+                
+                if (hasExited)
+                {
+                    _fileLogger?.LogInfo($"[ProcessCheck] PID {pid} has EXITED - will skip this RTSS entry");
+                }
+                
+                return !hasExited;
+            }
+            catch (ArgumentException)
+            {
+                _fileLogger?.LogInfo($"[ProcessCheck] PID {pid} NOT FOUND - will skip this RTSS entry");
+                return false; // Process not found
+            }
+            catch (Exception ex)
+            {
+                _fileLogger?.LogWarning($"[ProcessCheck] PID {pid} check failed: {ex.Message}");
+                return false; // Assume not running on error
             }
         }
         

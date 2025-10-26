@@ -21,6 +21,7 @@ namespace InfoPanel.RTSS.Services
     {
         private readonly FileLoggingService? _fileLogger;
         private readonly ConfigurationService _configService;
+        private readonly MAHMMonitoringService _mahmService;
         private readonly object _lock = new object();
         private bool _disposed = false;
         
@@ -52,7 +53,22 @@ namespace InfoPanel.RTSS.Services
             _configService = configService;
             _fileLogger = fileLogger;
             
-            _fileLogger?.LogInfo("Enhanced RTSS monitoring service initialized - Direct C++ port");
+            // Initialize MAHM service for framerate statistics (no benchmark mode needed)
+            _mahmService = new MAHMMonitoringService(fileLogger);
+            
+            _fileLogger?.LogInfo("Enhanced RTSS monitoring service initialized - Direct C++ port with MAHM statistics");
+            
+            // Log MAHM connection status
+            if (_mahmService.IsConnected)
+            {
+                _fileLogger?.LogInfo($"[MAHM] Connected successfully - {_mahmService.EntryCount} sensors available");
+                _fileLogger?.LogInfo("[MAHM] Framerate statistics will use MSI Afterburner (no RTSS benchmark mode required)");
+            }
+            else
+            {
+                _fileLogger?.LogWarning("[MAHM] Not connected - statistics will fallback to RTSS benchmark mode");
+                _fileLogger?.LogWarning("[MAHM] Tip: Start MSI Afterburner for reliable statistics without benchmark mode");
+            }
         }
         
         /// <summary>
@@ -435,12 +451,6 @@ namespace InfoPanel.RTSS.Services
                 uint resX = appEntry.dwResolutionX;
                 uint resY = appEntry.dwResolutionY;
                 
-                // RTSS native statistics (stored as DWORD * 10)
-                uint statMin = appEntry.dwStatFramerateMin;
-                uint statAvg = appEntry.dwStatFramerateAvg;
-                uint statMax = appEntry.dwStatFramerateMax;
-                uint stat1PctLow = appEntry.dwStatFramerate1Dot0PercentLow; // ⭐ Native RTSS 1% low!
-                
                 // Get process name (same logic as C++)
                 string processName = string.IsNullOrEmpty(appEntry.szName) 
                     ? GetProcessName((int)processId) 
@@ -455,14 +465,42 @@ namespace InfoPanel.RTSS.Services
                 float fps = RTSSCalculations.CalculateFramerate(time0, time1, frames);
                 float frameTimeMs = frameTimeUs / 1000.0f; // µs to ms (exact same as C++)
                 
-                // Extract RTSS native statistics (exact same as C++ - stored as DWORD * 10)
-                float minFps = RTSSCalculations.ConvertRTSSStatistic(statMin);
-                float avgFps = RTSSCalculations.ConvertRTSSStatistic(statAvg);
-                float maxFps = RTSSCalculations.ConvertRTSSStatistic(statMax);
-                float onePercentLow = RTSSCalculations.ConvertRTSSStatistic(stat1PctLow); // ⭐ Native RTSS 1% low!
-                
                 // Determine if this is a 3D application (exact same logic as C++)
                 bool is3DApp = RTSSCalculations.Is3DApplication(time0, time1, frames);
+                
+                // Statistics: Try MAHM first (no benchmark mode), fallback to RTSS
+                float minFps, avgFps, maxFps, onePercentLow;
+                
+                var mahmStats = _mahmService.GetFramerateStatistics();
+                if (mahmStats.HasValue && (mahmStats.Value.minFps > 0 || mahmStats.Value.avgFps > 0))
+                {
+                    // Use MAHM statistics (MSI Afterburner) - no benchmark mode required ✓
+                    (minFps, avgFps, maxFps, onePercentLow) = (
+                        mahmStats.Value.minFps ?? 0,
+                        mahmStats.Value.avgFps ?? 0,
+                        mahmStats.Value.maxFps ?? 0,
+                        mahmStats.Value.onePercentLow ?? 0
+                    );
+                }
+                else
+                {
+                    // Fallback to RTSS native statistics (requires benchmark mode enabled)
+                    uint statMin = appEntry.dwStatFramerateMin;
+                    uint statAvg = appEntry.dwStatFramerateAvg;
+                    uint statMax = appEntry.dwStatFramerateMax;
+                    uint stat1PctLow = appEntry.dwStatFramerate1Dot0PercentLow;
+                    
+                    minFps = RTSSCalculations.ConvertRTSSStatistic(statMin);
+                    avgFps = RTSSCalculations.ConvertRTSSStatistic(statAvg);
+                    maxFps = RTSSCalculations.ConvertRTSSStatistic(statMax);
+                    onePercentLow = RTSSCalculations.ConvertRTSSStatistic(stat1PctLow);
+                    
+                    // Log warning if fallback statistics are all zero (benchmark mode likely disabled)
+                    if (minFps == 0 && avgFps == 0 && maxFps == 0 && onePercentLow == 0 && is3DApp)
+                    {
+                        _fileLogger?.LogWarning($"[{processName}] RTSS statistics unavailable (benchmark mode disabled?) - Try starting MSI Afterburner for MAHM statistics");
+                    }
+                }
                 
                 // Get API name
                 string apiName = RTSSFlags.GetAPIName(flags);
@@ -643,6 +681,7 @@ namespace InfoPanel.RTSS.Services
             if (_disposed) return;
             
             StopMonitoringAsync().GetAwaiter().GetResult();
+            _mahmService?.Dispose();
             _disposed = true;
         }
     }

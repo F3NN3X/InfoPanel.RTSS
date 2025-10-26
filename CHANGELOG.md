@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## v1.2.0 (October 26, 2025)
+
+### 🚀 **MAJOR: MSI Afterburner (MAHM) Integration - Eliminates Benchmark Mode Dependency**
+- **Problem Solved**: RTSS benchmark mode auto-disables after game exit, requiring manual re-enable every session
+- **Solution**: Integrated MSI Afterburner Hardware Monitoring (MAHM) shared memory for reliable statistics without configuration
+- **New Architecture**:
+  - **MAHMSharedMemory.cs**: Complete v2.0 MAHM structure definitions with 40+ sensor type constants
+  - **MAHMMonitoringService.cs**: Dedicated service for reading MSI Afterburner sensor data via shared memory
+  - **Hybrid Statistics System**: Tries MAHM first (no benchmark mode), falls back to RTSS if Afterburner not running
+- **User Benefits**:
+  - **Zero Configuration**: Statistics work automatically when MSI Afterburner is running (most users already have it)
+  - **Always Available**: No more missing statistics due to disabled benchmark mode
+  - **More Reliable**: MAHM statistics don't require RTSS configuration changes
+  - **Hardware Sensors Ready**: Foundation for future Phase 2 (CPU temp, GPU usage, VRAM, etc.)
+- **Technical Implementation**:
+  - **Primary Statistics Source**: FramerateMin/Avg/Max/1Dot0PercentLow from MAHM (Source IDs 0x52-0x55)
+  - **Graceful Degradation**: Logs warning if MAHM unavailable, suggests starting Afterburner
+  - **Memory Safety**: Proper signature validation, version checking, cleanup on dispose
+  - **Logging Integration**: Comprehensive MAHM connection status logging for troubleshooting
+- **Compatibility**: Works with existing RTSS infrastructure, no breaking changes to plugin API
+
+### 📚 **Documentation**
+- **MAHM_INTEGRATION_SUMMARY.md**: Comprehensive technical documentation of Phase 1 implementation
+- **MAHM_TESTING_GUIDE.md**: Step-by-step testing scenarios for verifying MAHM functionality
+- **Updated README.md**: Added v1.2.0 features and MSI Afterburner recommendation
+- **Updated Configuration Comments**: All config files now reference MAHM integration
+
 ## v1.1.6 (October 25, 2025)
 
 ### 🏗️ **Major Code Refactoring - Single Responsibility Architecture**

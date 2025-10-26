@@ -1,4 +1,4 @@
-// InfoPanel.RTSS v1.1.6 - RTSS-Only FPS Monitoring Plugin
+// InfoPanel.RTSS v1.2.0 - RTSS + MSI Afterburner (MAHM) FPS Monitoring Plugin
 using InfoPanel.Plugins;
 using InfoPanel.RTSS.Services;
 using InfoPanel.RTSS.Models;

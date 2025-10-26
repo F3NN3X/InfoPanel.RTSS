@@ -8,10 +8,10 @@ InfoPanel.RTSS provides detailed performance statistics for running fullscreen a
 
 ![InfoPanel.RTSS Screenshot](https://i.imgur.com/shmb3rI.png)
 
-**Version:** 1.1.6  
+**Version:** 1.2.0  
 **Author:** F3NN3X
 
-> **🔧 Latest Update:** Version 1.1.6 features a major code refactoring for improved maintainability, single responsibility architecture, and enhanced component organization.
+> **� Latest Update:** Version 1.2.0 adds MSI Afterburner (MAHM) integration to eliminate RTSS benchmark mode dependency! Statistics now work automatically when MSI Afterburner is running, with no manual configuration needed.
 
 ## Features
 

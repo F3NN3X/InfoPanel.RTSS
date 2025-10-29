@@ -2,6 +2,59 @@
 
 ## v1.2.0 (December 2024)
 
+### 🐛 **Critical Bug Fixes - Sensor Reset & Configuration**
+
+#### **Fixed: Stuck Sensor Values After Game Close**
+- **Problem Resolved**: Min/Avg/Max FPS and other sensors remained stuck showing game values after closing games
+- **Root Cause #1 - Event Logic Error**: 
+  - `NoApplicationsDetected` event only fired when `applications.Any()` returned false (never happened)
+  - Background system apps (browser, Discord, etc.) always present in RTSS shared memory
+  - Solution: Changed event to fire when no 3D game detected (`primaryApp == null`)
+- **Root Cause #2 - Incomplete Sensor Reset**: 
+  - `ResetEnhancedSensors()` only reset Graphics API, Architecture, Game Category, Display Mode
+  - Min/Avg/Max FPS sensors were never reset, retaining last game's values
+  - Solution: Added Min/Avg/Max sensor resets to `ResetEnhancedSensors()` method
+- **Technical Implementation**:
+  - **Event Logic Fix** (RTSSMonitoringService.cs): NoApplicationsDetected fires when no foreground 3D app
+  - **Sensor Reset Fix** (SensorManagementService.cs): Reset Min/Avg/Max to 0 when game closes
+  - **Process Validation**: IsProcessRunning() prevents stale RTSS entries from updating sensors
+  - **Time-Based Fallback**: 1-second force scan ensures detection even when RTSS frame counter stalls
+- **Result**: All sensors now reset correctly within 1 second when games close
+- **Testing**: Validated with NMS and Ride - both reset cleanly after game exit
+
+#### **Fixed: Custom Capture Message Not Reading from INI**
+- **Problem Resolved**: `defaultCaptureMessage` setting in INI file was ignored
+- **Root Cause**: Multiple hardcoded "Nothing to capture" strings instead of reading configuration
+- **Locations Fixed**:
+  - SensorManagementService.cs: 5 hardcoded strings replaced with `_configService.DefaultCaptureMessage`
+  - RTSSMonitoringService.cs: MetricsUpdated event now passes configuration value
+  - Sensor initialization, reset methods, window title updates, fallback values
+- **Result**: Users can now customize "no game" message via INI configuration
+- **Example**: `defaultCaptureMessage=Waiting for game...` now works correctly
+- **Backward Compatible**: Defaults to "Nothing to capture" if not configured
+
+#### **Implemented: InfoPanel Config File Path Integration**
+- **Feature Added**: Proper InfoPanel plugin architecture for configuration file management
+- **Problem Resolved**: "Open Config" button in InfoPanel UI was non-functional
+- **Root Cause**: Config path hardcoded as `"InfoPanel.RTSS.ini"` instead of following InfoPanel pattern
+- **Implementation**: 
+  - Added `_configFilePath` private field to store dynamic path
+  - Set path in constructor using `Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName + ".ini"`
+  - Expose via `ConfigFilePath` property for InfoPanel integration
+  - Modified ConfigurationService to accept optional path parameter
+- **Config File Location**: `C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS.dll.ini`
+- **Benefits**:
+  - InfoPanel "Open Config" button now works correctly
+  - Config file properly located in InfoPanel plugins directory
+  - Seamless integration with InfoPanel's configuration management
+  - Backward compatible with existing installations
+- **Pattern Source**: Based on Spotify plugin implementation (documented in docs/filepath.md)
+
+#### **Enhanced: Force Scan Logging Visibility**
+- **Improvement**: Upgraded ForceScan debug messages from LogDebug to LogInfo level
+- **Reason**: LogDebug filtered out by FileLoggingService (minimum level = LogLevel.Info)
+- **Result**: ForceScan operations now visible in debug logs for troubleshooting
+
 ### 🎯 **Auto-Benchmark Mode - Eliminates Manual RTSS Configuration**
 - **Revolutionary Feature**: Automatic RTSS benchmark mode enablement via shared memory writes
 - **Problem Solved**: RTSS benchmark mode auto-disables after game exit, requiring manual re-enabling for frame time statistics

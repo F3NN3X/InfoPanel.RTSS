@@ -255,12 +255,17 @@ The plugin can be customized through the `InfoPanel.RTSS.ini` configuration file
 #### Display Settings
 - **`defaultCaptureMessage`**: Customize the message displayed when no game is being monitored
   - **Default**: `"Nothing to capture"`
-  - **Examples**: 
+  - **Custom Text Examples**: 
     - `"Waiting for game..."`
     - `"Ready to monitor"`
     - `"No active monitoring"`
     - `"Aucun jeu détecté"` (French)
     - `"Kein Spiel erkannt"` (German)
+  - **Blank Display Options**:
+    - **Empty String**: `defaultCaptureMessage=` (leave blank - shows single space)
+    - **Single Space**: `defaultCaptureMessage= ` (explicitly use one space)
+    - **Unicode Blank**: `defaultCaptureMessage=⠀` (invisible Braille blank character U+2800)
+    - **Note**: If you see "0" displayed when using blank, try using a single space instead
 
 #### Debug Settings
 - **`debug`**: Enable/disable debug logging for troubleshooting

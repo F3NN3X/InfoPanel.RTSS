@@ -50,13 +50,36 @@
   - Backward compatible with existing installations
 - **Pattern Source**: Based on Spotify plugin implementation (documented in docs/filepath.md)
 
+#### **Implemented: Plugin Reload Functionality**
+- **Feature Added**: InfoPanel "Reload Plugin" button now properly reinitializes plugin with updated INI settings
+- **Problem Resolved**: Previously, clicking "Reload Plugin" had no effect - required full InfoPanel restart
+- **Root Cause**: Services created in constructor with old configuration, never recreated during reload
+- **Technical Implementation**:
+  - **Refactored Service Lifecycle**: Moved service creation from constructor to Initialize() method
+  - **CleanupServices() Method**: Proper cleanup of services, events, and monitoring tasks
+  - **Nullable Services**: Removed `readonly` modifiers to allow service recreation
+  - **Reload Flow**: Initialize() calls CleanupServices() first, then creates fresh services
+  - **Configuration Re-read**: ConfigurationService recreated on each Initialize(), reads updated INI
+  - **Event Management**: Unsubscribe old events before cleanup, resubscribe after recreation
+- **Lifecycle Pattern**:
+  1. Constructor: Only sets `_configFilePath` (InfoPanel integration)
+  2. Initialize(): CleanupServices() → Create services → Subscribe events → Start monitoring
+  3. CleanupServices(): Unsubscribe events → Stop monitoring → Dispose services → Clear references
+  4. Dispose(): Calls CleanupServices() for final cleanup
+- **Benefits**:
+  - Edit INI file, click "Reload Plugin" → changes apply immediately
+  - No need to restart InfoPanel application
+  - All configuration changes (debug logging, capture messages, settings) update live
+  - Proper cleanup prevents resource leaks during reload
+- **Pattern Source**: Based on Spotify plugin reload architecture (documented in docs/filepath.md)
+
 #### **Enhanced: Force Scan Logging Visibility**
 - **Improvement**: Upgraded ForceScan debug messages from LogDebug to LogInfo level
 - **Reason**: LogDebug filtered out by FileLoggingService (minimum level = LogLevel.Info)
 - **Result**: ForceScan operations now visible in debug logs for troubleshooting
 
 ### 🎯 **Auto-Benchmark Mode - Eliminates Manual RTSS Configuration**
-- **Revolutionary Feature**: Automatic RTSS benchmark mode enablement via shared memory writes
+- **Feature**: Automatic RTSS benchmark mode enablement via shared memory writes
 - **Problem Solved**: RTSS benchmark mode auto-disables after game exit, requiring manual re-enabling for frame time statistics
 - **Solution**: Direct port of proven C++ implementation (`rtss-auto.cpp`) to C# for seamless integration
 - **Zero User Configuration**: Plugin automatically enables benchmark mode when detecting 3D applications - no RTSS settings changes needed

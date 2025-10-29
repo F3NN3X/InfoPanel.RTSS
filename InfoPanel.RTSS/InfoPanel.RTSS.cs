@@ -27,12 +27,12 @@ namespace InfoPanel.RTSS
 
         #region Private Fields
 
-        private string? _configFilePath; // Set in Initialize() using assembly path
-        private readonly RTSSMonitoringService _rtssMonitoringService;
-        private readonly SensorManagementService _sensorService;
-        private readonly SystemInformationService _systemInfoService;
-        private readonly ConfigurationService _configService;
-        private readonly FileLoggingService _fileLogger;
+        private string? _configFilePath; // Set in constructor using assembly path
+        private RTSSMonitoringService? _rtssMonitoringService;
+        private SensorManagementService? _sensorService;
+        private SystemInformationService? _systemInfoService;
+        private ConfigurationService? _configService;
+        private FileLoggingService? _fileLogger;
         private CancellationTokenSource? _cancellationTokenSource;
         
         #endregion
@@ -41,32 +41,12 @@ namespace InfoPanel.RTSS
 
         public InfoPanelRTSS() : base("InfoPanel.RTSS", "InfoPanel RTSS Monitor", "Advanced RTSS-based performance monitoring plugin for InfoPanel")
         {
-            try
-            {
-                // Set config file path first (InfoPanel integration pattern)
-                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                string basePath = assembly.ManifestModule.FullyQualifiedName;
-                _configFilePath = $"{basePath}.ini";
-                
-                // Now create services with config path
-                _configService = new ConfigurationService(_configFilePath);
-                _configService.LogCurrentSettings(); // Log settings after config is loaded
-                _fileLogger = new FileLoggingService(_configService);
-                _systemInfoService = new SystemInformationService(_fileLogger);
-                _sensorService = new SensorManagementService(_configService, _fileLogger);
-                
-                // Initialize RTSS-only monitoring service with event handling
-                _rtssMonitoringService = new RTSSMonitoringService(_configService, _fileLogger);
-                _rtssMonitoringService.MetricsUpdated += OnMetricsUpdated;
-                _rtssMonitoringService.EnhancedMetricsUpdated += OnEnhancedMetricsUpdated;
-
-                _fileLogger.LogInfo("InfoPanel.RTSS plugin constructed successfully");
-                _fileLogger.LogInfo($"Config file path: {_configFilePath}");
-            }
-            catch (Exception ex)
-            {
-                _fileLogger?.LogError("Error constructing InfoPanel.RTSS plugin", ex);
-            }
+            // Set config file path only (InfoPanel integration pattern)
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            string basePath = assembly.ManifestModule.FullyQualifiedName;
+            _configFilePath = $"{basePath}.ini";
+            
+            // Services will be created in Initialize() to support reload functionality
         }
 
         #endregion
@@ -78,6 +58,8 @@ namespace InfoPanel.RTSS
         /// </summary>
         public override void Load(List<InfoPanel.Plugins.IPluginContainer> containers)
         {
+            if (_sensorService == null || _fileLogger == null) return;
+            
             try
             {
                 _sensorService.CreateAndRegisterSensors(containers);
@@ -99,6 +81,8 @@ namespace InfoPanel.RTSS
         /// </summary>
         public override async Task UpdateAsync(CancellationToken cancellationToken)
         {
+            if (_systemInfoService == null || _sensorService == null || _rtssMonitoringService == null || _fileLogger == null) return;
+            
             try
             {
                 // Update system sensors (GPU, resolution, etc.)
@@ -129,23 +113,39 @@ namespace InfoPanel.RTSS
         {
             try
             {
+                // Clean up any existing services (for reload scenario)
+                CleanupServices();
+                
+                // Create all services fresh (reads updated INI)
+                _configService = new ConfigurationService(_configFilePath);
+                _configService.LogCurrentSettings();
+                _fileLogger = new FileLoggingService(_configService);
+                
                 _fileLogger.LogInfo("=== RTSS Performance Monitoring Plugin Initialize() ===");
-
+                _fileLogger.LogInfo($"Config file: {_configFilePath}");
+                
+                _systemInfoService = new SystemInformationService(_fileLogger);
+                _sensorService = new SensorManagementService(_configService, _fileLogger);
+                _rtssMonitoringService = new RTSSMonitoringService(_configService, _fileLogger);
+                
+                // Subscribe to events
+                _rtssMonitoringService.MetricsUpdated += OnMetricsUpdated;
+                _rtssMonitoringService.EnhancedMetricsUpdated += OnEnhancedMetricsUpdated;
+                
+                // Initialize and start monitoring
                 _cancellationTokenSource = new CancellationTokenSource();
-
-                // Initialize system information
                 var systemInfo = _systemInfoService.GetSystemInformation();
                 _fileLogger.LogSystemInfo("Information", $"GPU: {systemInfo.GpuName}, Display: {systemInfo.Resolution}@{systemInfo.RefreshRate}Hz");
-
+                
                 // Start RTSS shared memory monitoring
                 _ = Task.Run(async () => await _rtssMonitoringService.StartMonitoringAsync(_cancellationTokenSource.Token).ConfigureAwait(false));
                 _fileLogger.LogInfo("RTSS shared memory monitoring started");
-
+                
                 _fileLogger.LogInfo("RTSS Plugin initialization completed successfully");
             }
             catch (Exception ex)
             {
-                _fileLogger.LogError("Error during plugin initialization", ex);
+                _fileLogger?.LogError("Error during plugin initialization", ex);
             }
         }
 
@@ -163,6 +163,8 @@ namespace InfoPanel.RTSS
         /// </summary>
         private void OnMetricsUpdated(double fps, double frameTime, double onePercentLow, string windowTitle, int processId)
         {
+            if (_sensorService == null || _fileLogger == null) return;
+            
             try
             {
                 // Create performance metrics object
@@ -210,6 +212,8 @@ namespace InfoPanel.RTSS
         /// </summary>
         private void OnEnhancedMetricsUpdated(RTSSCandidate candidate)
         {
+            if (_sensorService == null || _fileLogger == null) return;
+            
             try
             {
                 // Enhanced metrics logging for new native statistics
@@ -231,6 +235,55 @@ namespace InfoPanel.RTSS
 
         #endregion
 
+        #region Cleanup and Disposal
+
+        /// <summary>
+        /// Cleans up services to prepare for reload or disposal.
+        /// </summary>
+        private void CleanupServices()
+        {
+            try
+            {
+                _fileLogger?.LogInfo("Cleaning up services for reload...");
+                
+                // Unsubscribe events
+                if (_rtssMonitoringService != null)
+                {
+                    _rtssMonitoringService.MetricsUpdated -= OnMetricsUpdated;
+                    _rtssMonitoringService.EnhancedMetricsUpdated -= OnEnhancedMetricsUpdated;
+                }
+                
+                // Stop monitoring
+                _cancellationTokenSource?.Cancel();
+                _rtssMonitoringService?.StopMonitoringAsync().Wait(TimeSpan.FromSeconds(2));
+                
+                // Dispose services
+                _rtssMonitoringService?.Dispose();
+                _cancellationTokenSource?.Dispose();
+                
+                // Clear references
+                _rtssMonitoringService = null;
+                _sensorService = null;
+                _systemInfoService = null;
+                _configService = null;
+                _cancellationTokenSource = null;
+                
+                // Note: Keep _fileLogger for last to allow logging during cleanup
+                _fileLogger?.LogInfo("Service cleanup completed successfully");
+                _fileLogger?.Dispose();
+                _fileLogger = null;
+                
+                // Allow cleanup to complete
+                Task.Delay(100).Wait();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[RTSS Plugin] Cleanup error: {ex.Message}");
+            }
+        }
+
+        #endregion
+
         #region IDisposable Implementation
 
         private bool _disposed = false;
@@ -241,20 +294,7 @@ namespace InfoPanel.RTSS
             {
                 if (disposing)
                 {
-                    try
-                    {
-                        _cancellationTokenSource?.Cancel();
-                        _rtssMonitoringService?.Dispose();
-                        _cancellationTokenSource?.Dispose();
-                        
-                        _fileLogger?.LogInfo("InfoPanel.RTSS plugin disposed successfully");
-                        _fileLogger?.Dispose();
-                    }
-                    catch (Exception ex)
-                    {
-                        // Can't use _fileLogger here as it may be disposed, fallback to console for disposal errors only
-                        Console.WriteLine($"Error during disposal: {ex}");
-                    }
+                    CleanupServices();
                 }
                 _disposed = true;
             }

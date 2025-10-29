@@ -41,7 +41,7 @@ namespace InfoPanel.RTSS.Constants
         public const string FrameTimeUnit = "ms";
         public const string RefreshRateUnit = "Hz";
 
-        public const string DefaultWindowTitle = "Nothing to capture";
+        // DefaultWindowTitle removed in v1.2.0 - now uses ConfigurationService.DefaultCaptureMessage
         public const string DefaultResolution = "0 x 0";
         public const string DefaultGpuName = "Unknown GPU";
         public const string NoCapture = "-";

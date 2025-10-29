@@ -69,13 +69,13 @@ namespace InfoPanel.RTSS.Services
         /// <summary>
         /// Start monitoring all RTSS-hooked applications (like C++ MonitorAllApps)
         /// </summary>
-        public async Task<bool> StartMonitoringAsync(CancellationToken cancellationToken = default)
+        public Task<bool> StartMonitoringAsync(CancellationToken cancellationToken = default)
         {
-            if (_disposed) return false;
+            if (_disposed) return Task.FromResult(false);
             
             lock (_lock)
             {
-                if (_monitoringTask != null) return true;
+                if (_monitoringTask != null) return Task.FromResult(true);
                 
                 _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             }
@@ -84,7 +84,7 @@ namespace InfoPanel.RTSS.Services
             if (!InitializeRTSSMemory())
             {
                 _fileLogger?.LogError("Failed to initialize RTSS shared memory - ensure RTSS is running!");
-                return false;
+                return Task.FromResult(false);
             }
             
             _fileLogger?.LogInfo("=== RTSS Background Monitor Starting ===");
@@ -93,7 +93,7 @@ namespace InfoPanel.RTSS.Services
             // Start monitoring task (C++ monitoring loop ported to async)
             _monitoringTask = Task.Run(async () => await MonitoringLoopAsync(_cancellationTokenSource.Token));
             
-            return true;
+            return Task.FromResult(true);
         }
         
         /// <summary>

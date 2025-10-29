@@ -363,7 +363,7 @@ namespace InfoPanel.RTSS.Services
                         // No primary 3D application detected - reset sensors
                         NoApplicationsDetected?.Invoke();
                         // Legacy event
-                        MetricsUpdated?.Invoke(0.0, 0.0, 0.0, "Nothing to capture", 0);
+                        MetricsUpdated?.Invoke(0.0, 0.0, 0.0, _configService.DefaultCaptureMessage, 0);
                     }
                     
                     // Notify about all applications list (even if no 3D apps)

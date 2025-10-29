@@ -109,7 +109,7 @@ namespace InfoPanel.RTSS.Services
             _windowTitleSensor = new PluginText(
                 SensorConstants.WindowTitleSensorId,
                 SensorConstants.WindowTitleSensorDisplayName,
-                SensorConstants.DefaultWindowTitle
+                _configService?.DefaultCaptureMessage ?? "Nothing to capture"
             );
 
             _resolutionSensor = new PluginText(
@@ -269,7 +269,7 @@ namespace InfoPanel.RTSS.Services
                 {
                     // When not monitoring, reset cache and show default
                     _lastValidWindowTitle = string.Empty;
-                    _windowTitleSensor.Value = SensorConstants.DefaultWindowTitle;
+                    _windowTitleSensor.Value = _configService?.DefaultCaptureMessage ?? "Nothing to capture";
                 }
 
                 // Update system information (always available)
@@ -304,7 +304,7 @@ namespace InfoPanel.RTSS.Services
                     _maxFpsSensor.Value = 0;
 
                     // Reset information sensors to defaults
-                    _windowTitleSensor.Value = SensorConstants.DefaultWindowTitle;
+                    _windowTitleSensor.Value = _configService?.DefaultCaptureMessage ?? "Nothing to capture";
                     _resolutionSensor.Value = SensorConstants.DefaultResolution;
                     _refreshRateSensor.Value = 0;
                     _gpuNameSensor.Value = SensorConstants.DefaultGpuName;
@@ -408,9 +408,10 @@ namespace InfoPanel.RTSS.Services
                             : "Untitled";
                         
                         var currentTitle = _windowTitleSensor.Value;
+                        var defaultMessage = _configService?.DefaultCaptureMessage ?? "Nothing to capture";
                         
                         // Preserve existing good titles - don't overwrite with generic defaults
-                        if (newTitle != "Untitled" || currentTitle == SensorConstants.NoCapture || currentTitle == SensorConstants.DefaultWindowTitle)
+                        if (newTitle != "Untitled" || currentTitle == SensorConstants.NoCapture || currentTitle == defaultMessage)
                         {
                             // Only log and update if the title actually changed
                             if (newTitle != currentTitle)
@@ -507,7 +508,7 @@ namespace InfoPanel.RTSS.Services
                     _displayModeSensor.Value = candidate.WindowMode ?? "Unknown";
                     
                     // Update window title sensor
-                    _windowTitleSensor.Value = candidate.WindowTitle ?? "Nothing to capture";
+                    _windowTitleSensor.Value = candidate.WindowTitle ?? (_configService?.DefaultCaptureMessage ?? "Nothing to capture");
                     
                     _fileLogger?.LogDebug($"Enhanced sensors updated - FPS: {candidate.Fps:F1}, 1% Low: {candidate.OnePercentLowFps:F1}, API: {candidate.GraphicsAPI}, Resolution: {candidate.ResolutionString}");
                 }

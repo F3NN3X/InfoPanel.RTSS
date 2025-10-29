@@ -10,34 +10,44 @@ namespace InfoPanel.RTSS.Services
         private readonly string _configFilePath;
         private readonly Dictionary<string, Dictionary<string, string>> _configData;
 
-        public ConfigurationService()
+        /// <summary>
+        /// Initializes the configuration service with the specified config file path.
+        /// If no path is provided, uses InfoPanel plugin pattern (assembly path + .ini).
+        /// </summary>
+        /// <param name="configFilePath">Optional: Path to config file. If null, auto-detects using assembly path.</param>
+        public ConfigurationService(string? configFilePath = null)
         {
-            // Try multiple possible locations for the config file
-            var assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            var assemblyDirectory = Path.GetDirectoryName(assemblyPath) ?? Environment.CurrentDirectory;
+            if (!string.IsNullOrEmpty(configFilePath))
+            {
+                // Use provided path (InfoPanel integration pattern)
+                _configFilePath = configFilePath;
+            }
+            else
+            {
+                // Fallback: Try multiple possible locations for the config file
+                var assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                var assemblyDirectory = Path.GetDirectoryName(assemblyPath) ?? Environment.CurrentDirectory;
+                
+                // First try the assembly directory (where the plugin DLL is)
+                _configFilePath = Path.Combine(assemblyDirectory, "InfoPanel.RTSS.ini");
+                
+                // If not found there, try the InfoPanel plugin data directory
+                if (!File.Exists(_configFilePath))
+                {
+                    var infoPanelConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), 
+                        "InfoPanel", "plugins", "InfoPanel.RTSS", "InfoPanel.RTSS.ini");
+                    
+                    if (File.Exists(infoPanelConfigPath))
+                    {
+                        _configFilePath = infoPanelConfigPath;
+                    }
+                }
+            }
             
-            // First try the assembly directory (where the plugin DLL is)
-            _configFilePath = Path.Combine(assemblyDirectory, "InfoPanel.RTSS.ini");
-            
-            // Note: Cannot use file logger here as it depends on configuration being loaded first
-            
-            // If not found there, try the InfoPanel plugin data directory
+            // Create default config if it doesn't exist
             if (!File.Exists(_configFilePath))
             {
-                var infoPanelConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), 
-                    "InfoPanel", "plugins", "InfoPanel.RTSS", "InfoPanel.RTSS.ini");
-                
-                // Config search logic - no console output to keep InfoPanel clean
-                
-                if (File.Exists(infoPanelConfigPath))
-                {
-                    _configFilePath = infoPanelConfigPath;
-                }
-                else
-                {
-                    // Creating default config - no console output to keep InfoPanel clean
-                    CreateDefaultConfigFile();
-                }
+                CreateDefaultConfigFile();
             }
             
             _configData = LoadConfiguration();

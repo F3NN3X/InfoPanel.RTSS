@@ -20,12 +20,14 @@ namespace InfoPanel.RTSS
 
         public override TimeSpan UpdateInterval => TimeSpan.FromSeconds(1);
         
-        public override string? ConfigFilePath => "InfoPanel.RTSS.ini";
+        // InfoPanel integration: Expose config file path for "Open Config" button
+        public override string? ConfigFilePath => _configFilePath;
 
         #endregion
 
         #region Private Fields
 
+        private string? _configFilePath; // Set in Initialize() using assembly path
         private readonly RTSSMonitoringService _rtssMonitoringService;
         private readonly SensorManagementService _sensorService;
         private readonly SystemInformationService _systemInfoService;
@@ -41,7 +43,13 @@ namespace InfoPanel.RTSS
         {
             try
             {
-                _configService = new ConfigurationService();
+                // Set config file path first (InfoPanel integration pattern)
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                string basePath = assembly.ManifestModule.FullyQualifiedName;
+                _configFilePath = $"{basePath}.ini";
+                
+                // Now create services with config path
+                _configService = new ConfigurationService(_configFilePath);
                 _configService.LogCurrentSettings(); // Log settings after config is loaded
                 _fileLogger = new FileLoggingService(_configService);
                 _systemInfoService = new SystemInformationService(_fileLogger);
@@ -53,6 +61,7 @@ namespace InfoPanel.RTSS
                 _rtssMonitoringService.EnhancedMetricsUpdated += OnEnhancedMetricsUpdated;
 
                 _fileLogger.LogInfo("InfoPanel.RTSS plugin constructed successfully");
+                _fileLogger.LogInfo($"Config file path: {_configFilePath}");
             }
             catch (Exception ex)
             {

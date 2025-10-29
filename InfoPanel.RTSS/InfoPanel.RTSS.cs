@@ -42,9 +42,12 @@ namespace InfoPanel.RTSS
         public InfoPanelRTSS() : base("InfoPanel.RTSS", "InfoPanel RTSS Monitor", "Advanced RTSS-based performance monitoring plugin for InfoPanel")
         {
             // Set config file path only (InfoPanel integration pattern)
+            // Use InfoPanel.RTSS.ini (not InfoPanel.RTSS.dll.ini) to match template filename
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            string basePath = assembly.ManifestModule.FullyQualifiedName;
-            _configFilePath = $"{basePath}.ini";
+            string assemblyPath = assembly.ManifestModule.FullyQualifiedName;
+            
+            // Remove .dll extension: "InfoPanel.RTSS.dll" → "InfoPanel.RTSS.ini"
+            _configFilePath = assemblyPath.Replace(".dll", ".ini");
             
             // Services will be created in Initialize() to support reload functionality
         }

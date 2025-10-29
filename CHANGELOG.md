@@ -39,16 +39,32 @@
 - **Root Cause**: Config path hardcoded as `"InfoPanel.RTSS.ini"` instead of following InfoPanel pattern
 - **Implementation**: 
   - Added `_configFilePath` private field to store dynamic path
-  - Set path in constructor using `Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName + ".ini"`
+  - Set path in constructor using assembly path with `.dll` replaced by `.ini`
   - Expose via `ConfigFilePath` property for InfoPanel integration
   - Modified ConfigurationService to accept optional path parameter
-- **Config File Location**: `C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS.dll.ini`
+- **Config File Location**: `C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS\InfoPanel.RTSS.ini`
 - **Benefits**:
   - InfoPanel "Open Config" button now works correctly
   - Config file properly located in InfoPanel plugins directory
   - Seamless integration with InfoPanel's configuration management
-  - Backward compatible with existing installations
+  - Consistent filename matches template INI file
+  - Users can copy template directly to plugins folder
 - **Pattern Source**: Based on Spotify plugin implementation (documented in docs/filepath.md)
+
+#### **Fixed: INI Filename Consistency**
+- **Problem Resolved**: Plugin created `InfoPanel.RTSS.dll.ini` while template was `InfoPanel.RTSS.ini`
+- **Root Cause**: Config path used `"{assemblyPath}.ini"` which included `.dll` extension
+- **Solution**: Replace `.dll` with `.ini` to match template filename
+- **Implementation**: `_configFilePath = assemblyPath.Replace(".dll", ".ini")`
+- **Result**: 
+  - Runtime config: `C:\ProgramData\InfoPanel\plugins\InfoPanel.RTSS\InfoPanel.RTSS.ini`
+  - Template file: `InfoPanel.RTSS\InfoPanel.RTSS.ini`
+  - Perfect filename match! ✅
+- **Benefits**:
+  - No confusion about which INI file to edit
+  - Template can be copied directly to plugins folder
+  - Documentation references correct filename
+  - Eliminates dual-INI file confusion
 
 #### **Implemented: Plugin Reload Functionality**
 - **Feature Added**: InfoPanel "Reload Plugin" button now properly reinitializes plugin with updated INI settings

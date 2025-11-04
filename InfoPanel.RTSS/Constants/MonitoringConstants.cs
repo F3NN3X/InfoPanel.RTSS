@@ -1,54 +1,19 @@
 namespace InfoPanel.RTSS.Constants
 {
     /// <summary>
-    /// Contains configuration constants used throughout the FPS monitoring plugin.
+    /// Contains configuration constants used throughout the RTSS monitoring plugin.
     /// </summary>
     public static class MonitoringConstants
     {
-        /// <summary>
-        /// Maximum number of frame time samples to store in the circular buffer.
-        /// </summary>
-        public const int MaxFrameTimes = 1000;
-
-        /// <summary>
-        /// Number of retry attempts for FpsInspector startup.
-        /// </summary>
-        public const int RetryAttempts = 3;
-
-        /// <summary>
-        /// Delay between retry attempts in milliseconds.
-        /// </summary>
-        public const int RetryDelayMs = 1000;
-
-        /// <summary>
-        /// Minimum number of frame times required for valid 1% low FPS calculation.
-        /// </summary>
-        public const int MinFrameTimesForLowFps = 10;
-
-        /// <summary>
-        /// Recalculate 1% low FPS every N frames.
-        /// </summary>
-        public const int LowFpsRecalcInterval = 30;
-
-        /// <summary>
-        /// Debounce window events by this many milliseconds.
-        /// </summary>
-        public const int EventDebounceMs = 500;
-
-        /// <summary>
-        /// Require this percentage of monitor area coverage for fullscreen detection.
-        /// </summary>
-        public const float FullscreenAreaThreshold = 0.95f;
-
         /// <summary>
         /// Update interval for UI sensors in seconds.
         /// </summary>
         public const int UiUpdateIntervalSeconds = 1;
 
         /// <summary>
-        /// Size of the histogram used for 1% low FPS calculation.
+        /// Require this percentage of monitor area coverage for fullscreen detection.
         /// </summary>
-        public const int HistogramSize = 100;
+        public const float FullscreenAreaThreshold = 0.95f;
     }
 
     /// <summary>
@@ -76,7 +41,7 @@ namespace InfoPanel.RTSS.Constants
         public const string FrameTimeUnit = "ms";
         public const string RefreshRateUnit = "Hz";
 
-        public const string DefaultWindowTitle = "Nothing to capture";
+        // DefaultWindowTitle removed in v1.2.0 - now uses ConfigurationService.DefaultCaptureMessage
         public const string DefaultResolution = "0 x 0";
         public const string DefaultGpuName = "Unknown GPU";
         public const string NoCapture = "-";

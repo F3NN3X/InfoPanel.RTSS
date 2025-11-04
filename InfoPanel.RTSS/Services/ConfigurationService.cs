@@ -10,34 +10,44 @@ namespace InfoPanel.RTSS.Services
         private readonly string _configFilePath;
         private readonly Dictionary<string, Dictionary<string, string>> _configData;
 
-        public ConfigurationService()
+        /// <summary>
+        /// Initializes the configuration service with the specified config file path.
+        /// If no path is provided, uses InfoPanel plugin pattern (assembly path + .ini).
+        /// </summary>
+        /// <param name="configFilePath">Optional: Path to config file. If null, auto-detects using assembly path.</param>
+        public ConfigurationService(string? configFilePath = null)
         {
-            // Try multiple possible locations for the config file
-            var assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            var assemblyDirectory = Path.GetDirectoryName(assemblyPath) ?? Environment.CurrentDirectory;
+            if (!string.IsNullOrEmpty(configFilePath))
+            {
+                // Use provided path (InfoPanel integration pattern)
+                _configFilePath = configFilePath;
+            }
+            else
+            {
+                // Fallback: Try multiple possible locations for the config file
+                var assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                var assemblyDirectory = Path.GetDirectoryName(assemblyPath) ?? Environment.CurrentDirectory;
+                
+                // First try the assembly directory (where the plugin DLL is)
+                _configFilePath = Path.Combine(assemblyDirectory, "InfoPanel.RTSS.ini");
+                
+                // If not found there, try the InfoPanel plugin data directory
+                if (!File.Exists(_configFilePath))
+                {
+                    var infoPanelConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), 
+                        "InfoPanel", "plugins", "InfoPanel.RTSS", "InfoPanel.RTSS.ini");
+                    
+                    if (File.Exists(infoPanelConfigPath))
+                    {
+                        _configFilePath = infoPanelConfigPath;
+                    }
+                }
+            }
             
-            // First try the assembly directory (where the plugin DLL is)
-            _configFilePath = Path.Combine(assemblyDirectory, "InfoPanel.RTSS.ini");
-            
-            // Note: Cannot use file logger here as it depends on configuration being loaded first
-            
-            // If not found there, try the InfoPanel plugin data directory
+            // Create default config if it doesn't exist
             if (!File.Exists(_configFilePath))
             {
-                var infoPanelConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), 
-                    "InfoPanel", "plugins", "InfoPanel.RTSS", "InfoPanel.RTSS.ini");
-                
-                // Config search logic - no console output to keep InfoPanel clean
-                
-                if (File.Exists(infoPanelConfigPath))
-                {
-                    _configFilePath = infoPanelConfigPath;
-                }
-                else
-                {
-                    // Creating default config - no console output to keep InfoPanel clean
-                    CreateDefaultConfigFile();
-                }
+                CreateDefaultConfigFile();
             }
             
             _configData = LoadConfiguration();
@@ -68,6 +78,23 @@ namespace InfoPanel.RTSS.Services
         public bool IsDebugEnabled => GetBoolValue("Debug", "debug", false);
 
         /// <summary>
+        /// Whether comprehensive RTSS shared memory dumping is enabled.
+        /// Creates RTSSmemory.log with complete raw memory analysis for troubleshooting.
+        /// </summary>
+        public bool IsRTSSDumpEnabled => GetBoolValue("Debug", "rtssdump", false);
+
+        /// <summary>
+        /// Whether complete RTSS structure analysis and dumping is enabled.
+        /// Creates RTSSCompleteDump.log with detailed structure analysis using official SDK headers.
+        /// </summary>
+        public bool IsRTSSCompleteDumpEnabled => GetBoolValue("Debug", "rtsscompletedump", false);
+
+        /// <summary>
+        /// Whether to use exact RTSS native algorithm for 1% low calculations.
+        /// </summary>
+        public bool UseRTSSExactAlgorithm => GetBoolValue("RTSS_Statistics", "use_rtss_exact_algorithm", true);
+
+        /// <summary>
         /// The default message to display when no game is being captured.
         /// </summary>
         public string DefaultCaptureMessage => GetStringValue("Display", "defaultCaptureMessage", "Nothing to capture");
@@ -86,6 +113,43 @@ namespace InfoPanel.RTSS.Services
         /// Whether to prefer fullscreen applications over windowed ones.
         /// </summary>
         public bool PreferFullscreen => GetBoolValue("Application_Filtering", "prefer_fullscreen", true);
+
+        /// <summary>
+        /// Whether to enable focus-aware filtering for 1% low calculations.
+        /// When enabled, frame times recorded during focus loss (alt-tab, overlays) are excluded from 1% low calculations.
+        /// </summary>
+        public bool EnableFocusFiltering => GetBoolValue("Focus_Filtering", "enable_focus_filtering", true);
+
+        /// <summary>
+        /// Whether to use aggressive buffer recovery when focus is regained.
+        /// When enabled, immediately clears out-of-focus frame times from buffers.
+        /// </summary>
+        public bool AggressiveRecovery => GetBoolValue("Focus_Filtering", "aggressive_recovery", false);
+
+        /// <summary>
+        /// Whether to completely exclude unfocused frame times from calculations.
+        /// When enabled, frame times from unfocused states are not added to the buffer at all.
+        /// </summary>
+        public bool ExcludeUnfocusedFrames => GetBoolValue("Focus_Filtering", "exclude_unfocused_frames", true);
+
+        /// <summary>
+        /// Minimum seconds of focused gameplay required before calculating 1% low.
+        /// Prevents calculation based on insufficient focused frame data.
+        /// </summary>
+        public int MinFocusedBufferSeconds => GetIntValue("Focus_Filtering", "min_focused_buffer_seconds", 10);
+
+        /// <summary>
+        /// Whether to prefer RTSS native statistics when benchmark mode is enabled.
+        /// When enabled, uses RTSS's built-in 1% low calculations instead of custom calculations.
+        /// Requires user to enable benchmark mode in RTSS settings.
+        /// </summary>
+        public bool PreferRTSSNativeStats => GetBoolValue("RTSS_Statistics", "prefer_native_stats", true);
+
+        /// <summary>
+        /// Whether to fall back to custom calculations when RTSS native stats are unavailable.
+        /// When disabled, shows 0 for 1% low if RTSS benchmark mode is not enabled.
+        /// </summary>
+        public bool FallbackToCustomCalculations => GetBoolValue("RTSS_Statistics", "fallback_to_custom", true);
 
         /// <summary>
         /// Gets custom game category rules from the configuration.
@@ -317,7 +381,40 @@ ignored_processes=
 minimum_fps_threshold=1.0
 
 # Prefer fullscreen applications over windowed ones
-prefer_fullscreen=true";
+prefer_fullscreen=true
+
+[Focus_Filtering]
+# Enable focus-aware filtering for 1% low calculations
+# When enabled, frame times from alt-tab/overlay scenarios are excluded from 1% low calculations
+# This prevents 1% low FPS from getting stuck at low values after focus loss events
+enable_focus_filtering=true
+
+# Use aggressive buffer recovery when focus is regained
+# When enabled, immediately clears out-of-focus frame times from buffers
+# Recommended: false (let natural 60-second cleanup handle it)
+aggressive_recovery=false
+
+# Completely exclude unfocused frame times from calculations
+# When enabled, frame times from unfocused states are not added to buffer at all
+# Recommended: true (prevents buffer contamination)
+exclude_unfocused_frames=true
+
+# Minimum seconds of focused gameplay required before calculating 1% low
+# Prevents calculation based on insufficient focused frame data
+# Recommended: 10 seconds minimum for stable calculations
+min_focused_buffer_seconds=10
+
+[RTSS_Statistics]
+# Prefer RTSS native statistics when benchmark mode is enabled
+# When enabled, uses RTSS's built-in 1% low calculations instead of custom calculations
+# Requires user to enable benchmark mode in RTSS settings for accurate data
+# Recommended: true (uses RTSS professional-grade calculations)
+prefer_native_stats=true
+
+# Fall back to custom calculations when RTSS native stats are unavailable
+# When disabled, shows 0 for 1% low if RTSS benchmark mode is not enabled
+# Recommended: true (provides data even without benchmark mode)
+fallback_to_custom=true";
 
                 // Create directory if it doesn't exist
                 var directory = Path.GetDirectoryName(_configFilePath);

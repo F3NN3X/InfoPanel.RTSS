@@ -45,9 +45,12 @@ jobs:
     - name: Check tag matches version
       if: startsWith(github.ref, 'refs/tags/')
       shell: pwsh
+      env:
+        REF_NAME: ${{ github.ref_name }}
+        VERSION: ${{ steps.get_version.outputs.VERSION }}
       run: |
-        if ("${{ github.ref_name }}" -ne "v${{ steps.get_version.outputs.VERSION }}") {
-            Write-Error "Tag ${{ github.ref_name }} does not match csproj version ${{ steps.get_version.outputs.VERSION }}"
+        if ($env:REF_NAME -ne "v$env:VERSION") {
+            Write-Error "Tag $env:REF_NAME does not match csproj version $env:VERSION"
             exit 1
         }
 
@@ -55,7 +58,7 @@ jobs:
       shell: pwsh
       run: |
         $version = "${{ steps.get_version.outputs.VERSION }}"
-        $sourcePath = "InfoPanel.RTSS\bin\Release\net8.0-windows\InfoPanel.RTSS-v$version\InfoPanel.RTSS"
+        $sourcePath = "InfoPanel.RTSS\bin\Release\net8.0-windows$r-v$version$r"
         $zipName = "InfoPanel.RTSS-v$version.zip"
         if (Test-Path $sourcePath) {
             Compress-Archive -Path "$sourcePath" -DestinationPath $zipName -ErrorAction Stop

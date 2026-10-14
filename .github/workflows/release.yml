@@ -58,7 +58,7 @@ jobs:
       shell: pwsh
       run: |
         $version = "${{ steps.get_version.outputs.VERSION }}"
-        $sourcePath = "InfoPanel.RTSS\bin\Release\net8.0-windows$r-v$version$r"
+        $sourcePath = "InfoPanel.RTSS\bin\Release\net8.0-windows\InfoPanel.RTSS-v$version\InfoPanel.RTSS"
         $zipName = "InfoPanel.RTSS-v$version.zip"
         if (Test-Path $sourcePath) {
             Compress-Archive -Path "$sourcePath" -DestinationPath $zipName -ErrorAction Stop
